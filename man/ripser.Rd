@@ -9,6 +9,9 @@ ripser(mat)
 \arguments{
 \item{mat}{numeric matrix containing point cloud}
 }
+\value{
+3-column matrix, with each row representing a TDA feature
+}
 \description{
 The `mat` parameter should be a numeric matrix with each row corresponding
 to a single point, and each column corresponding to a single dimension. Thus,

@@ -6,6 +6,7 @@
 #' in 5 dimensions.
 #'
 #' @param mat numeric matrix containing point cloud
+#' @return 3-column matrix, with each row representing a TDA feature
 #' @export
 #' @examples
 #'
