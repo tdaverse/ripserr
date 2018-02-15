@@ -2,7 +2,7 @@ Package: ripserr
 Type: Package
 Title: Calculate Vietoris-Rips Persistent Homology
 Date: 2018-02-15
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: c(
     person("Raoul", "Wadhwa", email = "raoulwadhwa@gmail.com", role = c("cre", "aut")),
     person("Andrew", "Dhawan", role = "aut"),
