@@ -2,4 +2,5 @@
 
 export(ripser)
 importFrom(Rcpp,sourceCpp)
+importFrom(stats,complete.cases)
 useDynLib(ripserr)
