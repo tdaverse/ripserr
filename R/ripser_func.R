@@ -7,7 +7,42 @@
 #'
 #' @param mat numeric matrix containing point cloud
 #' @export
+#' @examples
+#'
+#' # create a 2-d point cloud of a circle (100 points)
+#' num.pts <- 100
+#' rand.angle <- runif(num.pts, 0, 2*pi)
+#' pt.cloud <- cbind(cos(rand.angle), sin(rand.angle))
+#'
+#' # calculate persistent homology (num.pts by 3 numeric matrix)
+#' pers.hom <- ripser(pt.cloud)
 ripser <- function(mat) {
-  ans_mat <- ripser_cpp(mat)
-  return(matrix(ans_mat, byrow = TRUE, ncol = 3))
+
+  # make sure matrix has at least 2 columns and at least 2 rows
+  if (nrow(mat) < 2 | ncol(mat) < 2) {
+    stop("Point cloud must have at least 2 points and at least 2 dimensions.")
+  }
+
+  # make sure matrix contains numeric (or integer) values
+  # assumption: matrix can only hold objects of one class so only need to check
+  #   one element
+  temp <- mat[1, 1]
+  if (class(temp) != "numeric" && class(temp) != "integer") {
+    stop("Point cloud must contain values of class `numeric` or `integer` only.")
+  }
+
+  # make sure there are no NAs in matrix
+  if (sum(complete.cases(mat)) < nrow(mat)) {
+    stop("Point cloud has missing values.")
+  }
+
+  # actually do work
+  ans_vec <- ripser_cpp(mat)
+
+  # format properly and return
+  ans_mat <- matrix(ans_vec,
+                    byrow = TRUE,
+                    ncol = 3)
+  colnames(ans_mat) <- c("dimension", "birth", "death")
+  return(ans_mat)
 }
