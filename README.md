@@ -1,4 +1,4 @@
-# ripserr: An R package for calculating Vietoris-Rips persistent homology
+# ripserr: An R package for Ripser to calculate Vietoris-Rips persistent homology
 
 ## Purpose
 
