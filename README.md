@@ -1,5 +1,9 @@
 # ripserr: An R package for Ripser to calculate Vietoris-Rips persistent homology
 
+## NOTICE
+
+The functionality of ripserr has been implemented within the TDAstats R package (which is a more comprehensive toolset for topological data analysis). To calculate, visualize, and conduct statistical inference on persistent homology in R, see the [TDAstats GitHub repository](https://github.com/rrrlw/TDAstats) or the [CRAN page for TDAstats](https://CRAN.R-project.org/package=TDAstats).
+
 ## Purpose
 
 A popular method of topological data analysis (TDA) is to analyze the topology of a point cloud by building a Vietoris-Rips complex (sometimes shortened simply to Rips complex) and plotting a persistence diagram or topological barcode for further  analysis. However, the process of building a Vietoris-Rips complex is computationally expensive. Ulrich Bauer's Ripser C++ library (https://github.com/Ripser/ripser) dramatically outpaces its competition (Dionysus, DIPHA, GUDHI, Perseus, PHAT) in both speed and memory, but has not been integrated completely with R. Some attempts (e.g. code by [clarkfitzg](https://gist.github.com/clarkfitzg/5f81592cf851e6cfe14187e4cdede56a) and the [RipserOnR](https://github.com/holt0102/RipserOnR) project) to integrate Ripser for R use do exist, but none (to our knowledge) completely integrate Ripser as a functional R package without any manual setup steps.
