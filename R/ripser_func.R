@@ -7,7 +7,6 @@
 #'
 #' @param mat numeric matrix containing point cloud
 #' @return 3-column matrix, with each row representing a TDA feature
-#' @importFrom stats complete.cases
 #' @export
 #' @examples
 #'
@@ -34,7 +33,7 @@ ripser <- function(mat) {
   }
 
   # make sure there are no NAs in matrix
-  if (sum(stats::complete.cases(mat)) < nrow(mat)) {
+  if (sum(is.na(mat)) > 0) {
     stop("Point cloud has missing values.")
   }
 
