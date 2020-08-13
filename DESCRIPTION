@@ -16,8 +16,7 @@ Authors@R:
              role = "aut",
              comment = c(ORCID = "0000-0003-2971-7673")))
 Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
