@@ -1,12 +1,20 @@
 Package: ripserr
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+Title: Calculate Persistent Homology with Ripser and Cubical Ripser
+Version: 0.0.1
+Authors@R:
+    c(person(given = "Raoul",
+             family = "Wadhwa",
+             role = c("aut", "cre"),
+             email = "raoulwadhwa@gmail.com",
+             comment = c(ORCID = "0000-0003-0503-9580")),
+      person(given = "Matt",
+             family = "Piekenbrock",
+             role = "aut",
+             email = "matt.piekenbrock@gmail.com"),
+      person(given = "Jacob",
+             family = "Scott",
+             role = "aut",
+             comment = c(ORCID = "0000-0003-2971-7673")))
 Description: What the package does (one paragraph).
 License: `use_mit_license()`, `use_gpl3_license()` or friends to
     pick a license
@@ -14,3 +22,5 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+URL: https://github.com/rrrlw/ripserr
+BugReports: https://github.com/rrrlw/ripserr/issues
