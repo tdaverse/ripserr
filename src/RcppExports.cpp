@@ -5,6 +5,19 @@
 
 using namespace Rcpp;
 
+// cubical_2dim
+Rcpp::NumericMatrix cubical_2dim(const Rcpp::NumericMatrix& image, double threshold, int method);
+RcppExport SEXP _ripserr_cubical_2dim(SEXP imageSEXP, SEXP thresholdSEXP, SEXP methodSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type image(imageSEXP);
+    Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
+    Rcpp::traits::input_parameter< int >::type method(methodSEXP);
+    rcpp_result_gen = Rcpp::wrap(cubical_2dim(image, threshold, method));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ripser_cpp_dist
 NumericVector ripser_cpp_dist(const NumericVector& dist_r, int dim, float thresh, int p);
 RcppExport SEXP _ripserr_ripser_cpp_dist(SEXP dist_rSEXP, SEXP dimSEXP, SEXP threshSEXP, SEXP pSEXP) {
@@ -36,6 +49,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_ripserr_cubical_2dim", (DL_FUNC) &_ripserr_cubical_2dim, 3},
     {"_ripserr_ripser_cpp_dist", (DL_FUNC) &_ripserr_ripser_cpp_dist, 4},
     {"_ripserr_ripser_cpp", (DL_FUNC) &_ripserr_ripser_cpp, 5},
     {NULL, NULL, 0}

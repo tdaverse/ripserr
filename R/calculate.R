@@ -121,3 +121,8 @@ calculate_homology <- function(mat, dim = 1, threshold = -1, p = 2L, format = "c
     return(ans_mat)
   }
 }
+
+#' @export
+cubical <- function(mat, threshold = 9999, method = 0) {
+  return(cubical_2dim(mat, threshold, method))
+}

@@ -37,6 +37,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
+#include <Rcpp.h>
 
 using namespace std;
 
@@ -177,96 +178,26 @@ public:
   file_format format;
 
   // constructor (w/ file read)
-  DenseCubicalGrids(const string& filename, double _threshold, file_format _format)
+  DenseCubicalGrids(const Rcpp::NumericMatrix& image, double _threshold)
   {
+    // set vars
     threshold = _threshold;
-    format = _format;
+    ax = image.nrow();
+    ay = image.ncol();
 
-    if (format == DIPHA) // ???.complex, DIPHA format
+    // assert that dimensions are not too big
+    assert(0 < ax && ax < 2000 && 0 < ay && ay < 1000);
+
+    // copy over data from NumericMatrix into DenseCubicalGrids member var
+    double dou;
+    for (int y = 0; y < ay + 2; y++)
     {
-      ifstream reading_file;
-
-      ifstream fin(filename, ios::in | ios::binary);
-      cout << filename << endl;
-
-      int64_t d;
-      fin.read((char*) &d, sizeof(int64_t)); // magic number
-      assert(d == 8067171840);
-      fin.read((char*) &d, sizeof(int64_t)); // type number
-      assert(d == 1);
-      fin.read((char*) &d, sizeof(int64_t)); //data num
-      fin.read((char*) &d, sizeof(int64_t)); // dim
-      dim = d;
-      assert(dim == 2);
-      fin.read((char*) &d, sizeof(int64_t));
-      ax = d;
-      fin.read((char*) &d, sizeof(int64_t));
-      ay = d;
-      assert(0 < ax && ax < 2000 && 0 < ay && ay < 1000);
-      cout << "ax : ay = " << ax << " : " << ay << endl;
-
-      double dou;
-      for (int y = 0; y < ay + 2; ++y)
+      for (int x = 0; x < ax + 2; x++)
       {
-        for (int x = 0; x < ax + 2; ++x)
-        {
-          if (0 < x && x <= ax && 0 < y && y <= ay)
-          {
-            if (!fin.eof())
-            {
-              fin.read((char*) &dou, sizeof(double));
-              dense2[x][y] = dou;
-            }
-            else
-            {
-              cout << "file endof error " << endl;
-            }
-          }
-          else
-          {
-            dense2[x][y] = threshold;
-          }
-        }
-      }
-      fin.close();
-    }
-    else if(format == PERSEUS)// PERSEUS format
-    {
-      ifstream reading_file;
-      reading_file.open(filename.c_str(), ios::in);
-      cout << filename << endl;
-
-      string reading_line_buffer;
-      getline(reading_file, reading_line_buffer);
-      dim = atoi(reading_line_buffer.c_str());
-      getline(reading_file, reading_line_buffer);
-      ax = atoi(reading_line_buffer.c_str());
-      getline(reading_file, reading_line_buffer);
-      ay = atoi(reading_line_buffer.c_str());
-      assert(0 < ax && ax < 2000 && 0 < ay && ay < 1000);
-      cout << "ax : ay = " << ax << " : " << ay << endl;
-
-      for (int y = 0; y <ay + 2; ++y)
-      {
-        for (int x = 0; x < ax + 2; ++x)
-        {
-          if (0 < x && x <= ax && 0 < y && y <= ay)
-          {
-            if (!reading_file.eof())
-            {
-              getline(reading_file, reading_line_buffer);
-              dense2[x][y] = atoi(reading_line_buffer.c_str());
-              if (dense2[x][y] == -1)
-              {
-                dense2[x][y] = threshold;
-              }
-            }
-          }
-          else
-          {
-            dense2[x][y] = threshold;
-          }
-        }
+        if (0 < x && x <= ax && 0 < y && y <= ay)
+          dense2[x][y] = image(x - 1, y - 1);
+        else
+          dense2[x][y] = threshold;
       }
     }
   }
@@ -698,7 +629,7 @@ public:
 };
 
 /*****compute_pairs*****/
-template <class Key, class T> class hash_map : public std::unordered_map<Key, T> {};
+template <class Key, class T> class hash_map : public unordered_map<Key, T> {};
 
 class ComputePairs
 {
@@ -928,205 +859,50 @@ public:
   }
 };
 
-/*****cubicalripser_2dim*****/
-enum calculation_method
+// method = 0 --> link find algo (default)
+// method = 1 --> compute pairs algo
+// [[Rcpp::export]]
+Rcpp::NumericMatrix cubical_2dim(const Rcpp::NumericMatrix& image, double threshold, int method)
 {
-  LINKFIND,
-  COMPUTEPAIRS
-};
-
-void print_usage_and_exit(int exit_code)
-{
-  cerr << "Usage: "
-       << "CR2 "
-       << "[options] [input_filename]" << endl
-       << endl
-       << "Options:" << endl
-       << endl
-       << "  --help           print this screen" << endl
-       << "  --format         use the specified file format for the input. Options are:" << endl
-       << "                     dipha          (pixel data in DIPHA file format; default)" << endl
-       << "                     perseus        (pixel data in Perseus file format)" << endl
-       << "  --threshold <t>  compute cubical complexes up to birth time <t>" << endl
-       << "  --method         method to compute the persistent homology of the cubical complexes. Options are" << endl
-       << "                     link_find      (calculating the 0-dim PP, use 'link_find' algorithm; default)" << endl
-       << "                     compute_pairs  (calculating the 0-dim PP, use 'compute_pairs' algorithm)" << endl
-       << "  --output         name of file that will contain the persistence diagram " << endl
-       << "  --print          print persistence pairs on your console" << endl
-       << endl;
-
-  exit(exit_code);
-}
-
-// placeholder for compilation to work - RENAME w/ Rcpp stuff once cubical_2dim is fully ported
-int main(int argc, char** argv)
-{
-  const char* filename = nullptr;
-  string output_filename = "answer_2dim.diagram"; //default name
-  file_format format = DIPHA;
-  calculation_method method = LINKFIND;
-  double threshold = 99999;
   bool print = false;
-
-  for (int i = 1; i < argc; ++i)
-  {
-    const string arg(argv[i]);
-    if (arg == "--help")
-    {
-      print_usage_and_exit(0);
-    }
-    else if (arg == "--threshold")
-    {
-      string parameter = string(argv[++i]);
-      size_t next_pos;
-      threshold = stod(parameter, &next_pos);
-      if (next_pos != parameter.size())
-        print_usage_and_exit(-1);
-    }
-    else if (arg == "--format")
-    {
-      string parameter = string(argv[++i]);
-      if (parameter == "dipha")
-      {
-        format = DIPHA;
-      }
-      else if (parameter == "perseus")
-      {
-        format = PERSEUS;
-      }
-      else
-      {
-        print_usage_and_exit(-1);
-      }
-    }
-    else if(arg == "--method")
-    {
-      string parameter = string(argv[++i]);
-      if (parameter == "link_find")
-      {
-        method = LINKFIND;
-      }
-      else if (parameter == "compute_pairs")
-      {
-        method = COMPUTEPAIRS;
-      }
-      else
-      {
-        print_usage_and_exit(-1);
-      }
-    }
-    else if (arg == "--output")
-    {
-      output_filename = string(argv[++i]);
-    }
-    else if(arg == "--print")
-    {
-      print = true;
-    }
-    else
-    {
-      if (filename)
-      {
-        print_usage_and_exit(-1);
-      }
-      filename = argv[i];
-    }
-  }
-
-  ifstream file_stream(filename);
-  if (filename && file_stream.fail())
-  {
-    cerr << "couldn't open file " << filename << std::endl;
-    exit(-1);
-  }
 
   vector<WritePairs> writepairs; // dim birth death
   writepairs.clear();
 
-  DenseCubicalGrids* dcg = new DenseCubicalGrids(filename, threshold, format);
+  DenseCubicalGrids* dcg = new DenseCubicalGrids(image, threshold);
   ColumnsToReduce* ctr = new ColumnsToReduce(dcg);
 
   switch(method)
   {
-  case LINKFIND:
-  {
-    JointPairs* jp = new JointPairs(dcg, ctr, writepairs, print);
-    jp->joint_pairs_main(); // dim0
-
-    ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
-    cp->compute_pairs_main(); // dim1
-
-    break;
-  }
-
-  case COMPUTEPAIRS:
-  {
-    ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
-    cp->compute_pairs_main(); // dim0
-    cp->assemble_columns_to_reduce();
-
-    cp->compute_pairs_main(); // dim1
-
-    break;
-  }
-  }
-
-
-#ifdef FILE_OUTPUT
-  ofstream writing_file;
-
-  string extension = ".csv";
-  if (equal(extension.rbegin(), extension.rend(), output_filename.rbegin()) == true)
-  {
-    string outname = output_filename;
-    cout << outname << endl;
-    writing_file.open(outname, ios::out);
-
-    if(!writing_file.is_open())
+    case 0:
     {
-      cout << " error: open file for output failed! " << endl;
+      JointPairs* jp = new JointPairs(dcg, ctr, writepairs, print);
+      jp->joint_pairs_main(); // dim0
+
+      ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
+      cp->compute_pairs_main(); // dim1
+
+      break;
     }
 
-    int64_t p = writepairs.size();
-    for (int64_t i = 0; i < p; ++i)
+    case 1:
     {
-      writing_file << writepairs[i].getDimension() << ",";
+      ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
+      cp->compute_pairs_main(); // dim0
+      cp->assemble_columns_to_reduce();
 
-      writing_file << writepairs[i].getBirth() << ",";
-      writing_file << writepairs[i].getDeath() << endl;
+      cp->compute_pairs_main(); // dim1
+
+      break;
     }
-    writing_file.close();
   }
-  else
+
+  Rcpp::NumericMatrix ans(writepairs.size(), 3);
+  for (int i = 0; i < ans.nrow(); i++)
   {
-    writing_file.open(output_filename, ios::out | ios::binary);
-
-    if (!writing_file.is_open())
-    {
-      cout << " error: open file for output failed! " << endl;
-    }
-
-    int64_t mn = 8067171840;
-    writing_file.write((char*) &mn, sizeof(int64_t)); // magic number
-    int64_t type = 2;
-    writing_file.write((char*) &type, sizeof(int64_t)); // type number of PERSISTENCE_DIAGRAM
-    int64_t p = writepairs.size();
-    cout << "the number of pairs : " << p << endl;
-    writing_file.write((char*) &p, sizeof(int64_t)); // number of points in the diagram p
-    for(int64_t i = 0; i < p; ++i)
-    {
-      int64_t writedim = writepairs[i].getDimension();
-      writing_file.write((char*) &writedim, sizeof(int64_t)); // dim
-
-      double writebirth = writepairs[i].getBirth();
-      writing_file.write((char*) &writebirth, sizeof(double)); // birth
-
-      double writedeath = writepairs[i].getDeath();
-      writing_file.write((char*) &writedeath, sizeof(double)); // death
-    }
-    writing_file.close();
+    ans(i, 0) = writepairs[i].getDimension();
+    ans(i, 1) = writepairs[i].getBirth();
+    ans(i, 2) = writepairs[i].getDeath();
   }
-#endif
-
-  return 0;
+  return ans;
 }
