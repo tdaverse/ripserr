@@ -691,7 +691,7 @@ public:
     }
 
     wp->push_back(WritePairs(-1, min_birth, dcg->threshold));
-    sort(ctr->columns_to_reduce.begin(), ctr->columns_to_reduce.end(), BirthdayIndexComparator(c));
+    sort(ctr->columns_to_reduce.begin(), ctr->columns_to_reduce.end(), BirthdayIndexComparator());
   }
 };
 
