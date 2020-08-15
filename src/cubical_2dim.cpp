@@ -27,6 +27,10 @@
 */
 
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <algorithm>
+#include <cassert>
 #include <cstdint>
 
 using namespace std;
@@ -148,6 +152,143 @@ struct BirthdayIndexInverseComparator
         return true;
       }
     }
+  }
+};
+
+/*****dense_cubical_grids*****/
+enum file_format
+{
+  DIPHA,
+  PERSEUS
+};
+
+class DenseCubicalGrids // file_read
+{
+public:
+  double threshold;
+  int dim;
+  int ax, ay;
+  double dense2[2048][1024];
+  file_format format;
+
+  // constructor (w/ file read)
+  DenseCubicalGrids(const string& filename, double _threshold, file_format _format)
+  {
+    threshold = _threshold;
+    format = _format;
+
+    if (format == DIPHA) // ???.complex, DIPHA format
+    {
+      ifstream reading_file;
+
+      ifstream fin(filename, ios::in | ios::binary);
+      cout << filename << endl;
+
+      int64_t d;
+      fin.read((char*) &d, sizeof(int64_t)); // magic number
+      assert(d == 8067171840);
+      fin.read((char*) &d, sizeof(int64_t)); // type number
+      assert(d == 1);
+      fin.read((char*) &d, sizeof(int64_t)); //data num
+      fin.read((char*) &d, sizeof(int64_t)); // dim
+      dim = d;
+      assert(dim == 2);
+      fin.read((char*) &d, sizeof(int64_t));
+      ax = d;
+      fin.read((char*) &d, sizeof(int64_t));
+      ay = d;
+      assert(0 < ax && ax < 2000 && 0 < ay && ay < 1000);
+      cout << "ax : ay = " << ax << " : " << ay << endl;
+
+      double dou;
+      for (int y = 0; y < ay + 2; ++y)
+      {
+        for (int x = 0; x < ax + 2; ++x)
+        {
+          if (0 < x && x <= ax && 0 < y && y <= ay)
+          {
+            if (!fin.eof())
+            {
+              fin.read((char*) &dou, sizeof(double));
+              dense2[x][y] = dou;
+            }
+            else
+            {
+              cout << "file endof error " << endl;
+            }
+          }
+          else
+          {
+            dense2[x][y] = threshold;
+          }
+        }
+      }
+      fin.close();
+    }
+    else if(format == PERSEUS)// PERSEUS format
+    {
+      ifstream reading_file;
+      reading_file.open(filename.c_str(), ios::in);
+      cout << filename << endl;
+
+      string reading_line_buffer;
+      getline(reading_file, reading_line_buffer);
+      dim = atoi(reading_line_buffer.c_str());
+      getline(reading_file, reading_line_buffer);
+      ax = atoi(reading_line_buffer.c_str());
+      getline(reading_file, reading_line_buffer);
+      ay = atoi(reading_line_buffer.c_str());
+      assert(0 < ax && ax < 2000 && 0 < ay && ay < 1000);
+      cout << "ax : ay = " << ax << " : " << ay << endl;
+
+      for (int y = 0; y <ay + 2; ++y)
+      {
+        for (int x = 0; x < ax + 2; ++x)
+        {
+          if (0 < x && x <= ax && 0 < y && y <= ay)
+          {
+            if (!reading_file.eof())
+            {
+              getline(reading_file, reading_line_buffer);
+              dense2[x][y] = atoi(reading_line_buffer.c_str());
+              if (dense2[x][y] == -1)
+              {
+                dense2[x][y] = threshold;
+              }
+            }
+          }
+          else
+          {
+            dense2[x][y] = threshold;
+          }
+        }
+      }
+    }
+  }
+
+  // getter
+  double getBirthday(int index, int dim)
+  {
+    int cx = index & 0x07ff;
+    int cy = (index >> 11) & 0x03ff;
+    int cm = (index >> 21) & 0xff;
+
+    switch (dim)
+    {
+      case 0:
+        return dense2[cx][cy];
+      case 1:
+        switch (cm)
+        {
+          case 0:
+            return max(dense2[cx][cy], dense2[cx + 1][cy]);
+          default:
+            return max(dense2[cx][cy], dense2[cx][cy + 1]);
+        }
+      case 2:
+        return max(max(dense2[cx][cy], dense2[cx + 1][cy]), max(dense2[cx][cy + 1], dense2[cx + 1][cy + 1]));
+    }
+    return threshold;
   }
 };
 
