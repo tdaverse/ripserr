@@ -28,6 +28,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <unordered_map>
 #include <string>
 #include <algorithm>
 #include <cassert>
@@ -320,6 +322,46 @@ public:
   double getDeath()
   {
     return death;
+  }
+};
+
+/*****columns_to_reduce*****/
+class ColumnsToReduce
+{
+  // member vars
+public:
+  vector<BirthdayIndex> columns_to_reduce;
+  int dim;
+  int max_of_index;
+
+  // constructor
+  ColumnsToReduce(DenseCubicalGrids* _dcg)
+  {
+    dim = 0;
+    int ax = _dcg->ax;
+    int ay = _dcg->ay;
+    max_of_index = 2048 * (ay + 2);
+    int index;
+    double birthday;
+    for (int y = ay; y > 0; --y)
+    {
+      for (int x = ax; x > 0; --x)
+      {
+        birthday = _dcg->dense2[x][y];
+        index = x | (y << 11);
+        if (birthday != _dcg -> threshold)
+        {
+          columns_to_reduce.push_back(BirthdayIndex(birthday, index, 0));
+        }
+      }
+    }
+    sort(columns_to_reduce.begin(), columns_to_reduce.end(), BirthdayIndexComparator());
+  }
+
+  // getter (length of member vector)
+  int size()
+  {
+    return columns_to_reduce.size();
   }
 };
 
