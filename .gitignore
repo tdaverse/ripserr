@@ -3,3 +3,6 @@
 .Rproj.user
 *.Rproj
 .DS_*
+
+# images/test runs
+*.png
