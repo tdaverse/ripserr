@@ -10,6 +10,8 @@ cubical(mat, threshold = 9999, method = 0)
 \item{mat}{numeric matrix containing pixel data}
 
 \item{threshold}{maximum diameter for computation of Cubical complex}
+
+\item{method}{choose betwen link_join and compute_pairs from Cubical Ripser}
 }
 \value{
 3-column matrix with each row representing a TDA feature

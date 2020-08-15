@@ -128,6 +128,7 @@ calculate_homology <- function(mat, dim = 1, threshold = -1, p = 2L, format = "c
 #'
 #' @param mat numeric matrix containing pixel data
 #' @param threshold maximum diameter for computation of Cubical complex
+#' @param method choose betwen link_join and compute_pairs from Cubical Ripser
 #' @return 3-column matrix with each row representing a TDA feature
 #' @export
 cubical <- function(mat, threshold = 9999, method = 0) {
