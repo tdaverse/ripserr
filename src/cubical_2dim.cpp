@@ -448,7 +448,7 @@ public:
             {
               count++;
               index = ((cy) << 11) | cx;
-              birthday = max({birthtime, dcg->dense2[cx][cy + 1], dcg->dense2[cx + 1][cy + 1]});
+              birthday = max(max(birthtime, dcg->dense2[cx][cy + 1]), dcg->dense2[cx + 1][cy + 1]);
               if (birthday != threshold)
               {
                 nextCoface = BirthdayIndex(birthday, index, 2);
@@ -459,7 +459,7 @@ public:
             {
               count++;
               index = ((cy - 1) << 11) | cx;
-              birthday = max({birthtime, dcg->dense2[cx][cy - 1], dcg->dense2[cx + 1][cy - 1]});
+              birthday = max(max(birthtime, dcg->dense2[cx][cy - 1]), dcg->dense2[cx + 1][cy - 1]);
               if (birthday != threshold)
               {
                 nextCoface = BirthdayIndex(birthday, index, 2);
@@ -472,7 +472,7 @@ public:
             {
               count ++;
               index = ((cy) << 11) | cx;
-              birthday = max({birthtime, dcg->dense2[cx + 1][cy], dcg->dense2[cx + 1][cy + 1]});
+              birthday = max(max(birthtime, dcg->dense2[cx + 1][cy]), dcg->dense2[cx + 1][cy + 1]);
               if (birthday != threshold)
               {
                 nextCoface = BirthdayIndex(birthday, index, 2);
@@ -483,7 +483,7 @@ public:
             {
               count++;
               index = ((cy) << 11) | (cx - 1);
-              birthday = max({birthtime, dcg->dense2[cx - 1][cy], dcg->dense2[cx - 1][cy + 1]});
+              birthday = max(max(birthtime, dcg->dense2[cx - 1][cy]), dcg->dense2[cx - 1][cy + 1]);
               if (birthday != threshold)
               {
                 nextCoface = BirthdayIndex(birthday, index, 2);
