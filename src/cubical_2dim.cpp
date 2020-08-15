@@ -3,7 +3,7 @@
  Takeki Sudo and Kazushi Ahara. Details of the original software are below the
  dashed line.
  -Raoul Wadhwa
--------------------------------------------------------------------------------
+ -------------------------------------------------------------------------------
  Copyright 2017-2018 Takeki Sudo and Kazushi Ahara.
  This file is part of CubicalRipser_2dim.
  CubicalRipser: C++ system for computation of Cubical persistence pairs
@@ -24,7 +24,9 @@
  PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  You should have received a copy of the GNU Lesser General Public License along
  with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
+
+#define FILE_OUTPUT
 
 #include <iostream>
 #include <fstream>
@@ -278,18 +280,18 @@ public:
 
     switch (dim)
     {
+    case 0:
+      return dense2[cx][cy];
+    case 1:
+      switch (cm)
+      {
       case 0:
-        return dense2[cx][cy];
-      case 1:
-        switch (cm)
-        {
-          case 0:
-            return max(dense2[cx][cy], dense2[cx + 1][cy]);
-          default:
-            return max(dense2[cx][cy], dense2[cx][cy + 1]);
-        }
-      case 2:
-        return max(max(dense2[cx][cy], dense2[cx + 1][cy]), max(dense2[cx][cy + 1], dense2[cx + 1][cy + 1]));
+        return max(dense2[cx][cy], dense2[cx + 1][cy]);
+      default:
+        return max(dense2[cx][cy], dense2[cx][cy + 1]);
+      }
+    case 2:
+      return max(max(dense2[cx][cy], dense2[cx + 1][cy]), max(dense2[cx][cy + 1], dense2[cx + 1][cy + 1]));
     }
     return threshold;
   }
@@ -410,89 +412,89 @@ public:
     double birthday = 0;
     switch (dim)
     {
-      case 0:
-        for (int i = count; i < 4; i++)
+    case 0:
+      for (int i = count; i < 4; i++)
+      {
+        switch (i)
         {
-          switch (i)
-          {
-            case 0: // y+
-              index = (1 << 21) | ((cy) << 11) | (cx);
-              birthday = max(birthtime, dcg->dense2[cx  ][cy+1]);
-              break;
-            case 1: // y-
-              index = (1 << 21) | ((cy-1) << 11) | (cx);
-              birthday = max(birthtime, dcg->dense2[cx  ][cy-1]);
-              break;
-            case 2: // x+
-              index = (0 << 21) | ((cy) << 11) | (cx);
-              birthday = max(birthtime, dcg->dense2[cx+1][cy  ]);
-              break;
-            case 3: // x-
-              index = (0 << 21) | ((cy) << 11) | (cx-1);
-              birthday = max(birthtime, dcg->dense2[cx-1][cy  ]);
-              break;
-          }
+        case 0: // y+
+          index = (1 << 21) | ((cy) << 11) | (cx);
+          birthday = max(birthtime, dcg->dense2[cx  ][cy+1]);
+          break;
+        case 1: // y-
+          index = (1 << 21) | ((cy-1) << 11) | (cx);
+          birthday = max(birthtime, dcg->dense2[cx  ][cy-1]);
+          break;
+        case 2: // x+
+          index = (0 << 21) | ((cy) << 11) | (cx);
+          birthday = max(birthtime, dcg->dense2[cx+1][cy  ]);
+          break;
+        case 3: // x-
+          index = (0 << 21) | ((cy) << 11) | (cx-1);
+          birthday = max(birthtime, dcg->dense2[cx-1][cy  ]);
+          break;
+        }
 
+        if (birthday != threshold)
+        {
+          count = i + 1;
+          nextCoface = BirthdayIndex(birthday, index, 1);
+          return true;
+        }
+      }
+      return false;
+    case 1:
+      switch (cm)
+      {
+      case 0:
+        if (count == 0) // upper
+        {
+          count++;
+          index = ((cy) << 11) | cx;
+          birthday = max(max(birthtime, dcg->dense2[cx][cy + 1]), dcg->dense2[cx + 1][cy + 1]);
           if (birthday != threshold)
           {
-            count = i + 1;
-            nextCoface = BirthdayIndex(birthday, index, 1);
+            nextCoface = BirthdayIndex(birthday, index, 2);
+            return true;
+          }
+        }
+        if (count == 1) // lower
+        {
+          count++;
+          index = ((cy - 1) << 11) | cx;
+          birthday = max(max(birthtime, dcg->dense2[cx][cy - 1]), dcg->dense2[cx + 1][cy - 1]);
+          if (birthday != threshold)
+          {
+            nextCoface = BirthdayIndex(birthday, index, 2);
             return true;
           }
         }
         return false;
       case 1:
-        switch (cm)
+        if (count == 0) // right
         {
-          case 0:
-            if (count == 0) // upper
-            {
-              count++;
-              index = ((cy) << 11) | cx;
-              birthday = max(max(birthtime, dcg->dense2[cx][cy + 1]), dcg->dense2[cx + 1][cy + 1]);
-              if (birthday != threshold)
-              {
-                nextCoface = BirthdayIndex(birthday, index, 2);
-                return true;
-              }
-            }
-            if (count == 1) // lower
-            {
-              count++;
-              index = ((cy - 1) << 11) | cx;
-              birthday = max(max(birthtime, dcg->dense2[cx][cy - 1]), dcg->dense2[cx + 1][cy - 1]);
-              if (birthday != threshold)
-              {
-                nextCoface = BirthdayIndex(birthday, index, 2);
-                return true;
-              }
-            }
-            return false;
-          case 1:
-            if (count == 0) // right
-            {
-              count ++;
-              index = ((cy) << 11) | cx;
-              birthday = max(max(birthtime, dcg->dense2[cx + 1][cy]), dcg->dense2[cx + 1][cy + 1]);
-              if (birthday != threshold)
-              {
-                nextCoface = BirthdayIndex(birthday, index, 2);
-                return true;
-              }
-            }
-            if (count == 1) //left
-            {
-              count++;
-              index = ((cy) << 11) | (cx - 1);
-              birthday = max(max(birthtime, dcg->dense2[cx - 1][cy]), dcg->dense2[cx - 1][cy + 1]);
-              if (birthday != threshold)
-              {
-                nextCoface = BirthdayIndex(birthday, index, 2);
-                return true;
-              }
-            }
-            return false;
+          count ++;
+          index = ((cy) << 11) | cx;
+          birthday = max(max(birthtime, dcg->dense2[cx + 1][cy]), dcg->dense2[cx + 1][cy + 1]);
+          if (birthday != threshold)
+          {
+            nextCoface = BirthdayIndex(birthday, index, 2);
+            return true;
+          }
         }
+        if (count == 1) //left
+        {
+          count++;
+          index = ((cy) << 11) | (cx - 1);
+          birthday = max(max(birthtime, dcg->dense2[cx - 1][cy]), dcg->dense2[cx - 1][cy + 1]);
+          if (birthday != threshold)
+          {
+            nextCoface = BirthdayIndex(birthday, index, 2);
+            return true;
+          }
+        }
+        return false;
+      }
     }
     return false;
   }
@@ -643,14 +645,14 @@ public:
 
       switch (cm)
       {
-        case 0:
-          ce0 = ((cy) << 11) | cx;
-          ce1 = ((cy) << 11) | (cx + 1);
-          break;
-        default:
-          ce0 = ((cy) << 11) | cx;
-          ce1 = ((cy + 1) << 11) | cx;
-          break;
+      case 0:
+        ce0 = ((cy) << 11) | cx;
+        ce1 = ((cy) << 11) | (cx + 1);
+        break;
+      default:
+        ce0 = ((cy) << 11) | cx;
+      ce1 = ((cy + 1) << 11) | cx;
+      break;
       }
 
       u = dset.find(ce0);
@@ -1046,27 +1048,27 @@ int main(int argc, char** argv)
 
   switch(method)
   {
-    case LINKFIND:
-    {
-      JointPairs* jp = new JointPairs(dcg, ctr, writepairs, print);
-      jp->joint_pairs_main(); // dim0
+  case LINKFIND:
+  {
+    JointPairs* jp = new JointPairs(dcg, ctr, writepairs, print);
+    jp->joint_pairs_main(); // dim0
 
-      ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
-      cp->compute_pairs_main(); // dim1
+    ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
+    cp->compute_pairs_main(); // dim1
 
-      break;
-    }
+    break;
+  }
 
-    case COMPUTEPAIRS:
-    {
-      ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
-      cp->compute_pairs_main(); // dim0
-      cp->assemble_columns_to_reduce();
+  case COMPUTEPAIRS:
+  {
+    ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
+    cp->compute_pairs_main(); // dim0
+    cp->assemble_columns_to_reduce();
 
-      cp->compute_pairs_main(); // dim1
+    cp->compute_pairs_main(); // dim1
 
-      break;
-    }
+    break;
+  }
   }
 
 
@@ -1077,6 +1079,7 @@ int main(int argc, char** argv)
   if (equal(extension.rbegin(), extension.rend(), output_filename.rbegin()) == true)
   {
     string outname = output_filename;
+    cout << outname << endl;
     writing_file.open(outname, ios::out);
 
     if(!writing_file.is_open())
