@@ -95,12 +95,6 @@ public:
   {
     return dim;
   }
-
-  // print member vals to console
-  void print()
-  {
-    cout << "(dob:" << birthday << "," << index << ")" << endl;
-  }
 };
 
 struct BirthdayIndexComparator
@@ -561,11 +555,6 @@ public:
     ctr->dim = 1;
     double min_birth = dcg->threshold;
 
-    if (print == true)
-    {
-      cout << "persistence intervals in dim " << 0 << ":" << endl;
-    }
-
     for (BirthdayIndex e : dim1_simplex_list)
     {
       int index = e.getIndex();
@@ -603,11 +592,6 @@ public:
         }
         else
         {
-          if (print == true)
-          {
-            cout << "[" << birth << "," << death << ")" << endl;
-          }
-
           wp->push_back(WritePairs(0, birth, death));
           dset.link(u, v);
         }
@@ -616,11 +600,6 @@ public:
       {
         ctr->columns_to_reduce.push_back(e);
       }
-    }
-
-    if (print == true)
-    {
-      cout << "[" << min_birth << ", )" << endl;
     }
 
     wp->push_back(WritePairs(-1, min_birth, dcg->threshold));
@@ -660,11 +639,6 @@ public:
   //   workhorse
   void compute_pairs_main()
   {
-    if (print == true)
-    {
-      cout << "persistence intervals in dim " << dim << ":" << endl;
-    }
-
     vector<BirthdayIndex> coface_entries;
     SimplexCoboundaryEnumerator cofaces;
     unordered_map<int, priority_queue<BirthdayIndex, vector<BirthdayIndex>, BirthdayIndexComparator>> recorded_wc;
@@ -773,20 +747,10 @@ public:
     {
       if (_death != dcg-> threshold)
       {
-        if (print == true)
-        {
-          cout << "[" <<_birth << "," << _death << ")" << endl;
-        }
-
         wp->push_back(WritePairs(_dim, _birth, _death));
       }
       else
       {
-        if (print == true)
-        {
-          cout << "[" << _birth << ", )" << endl;
-        }
-
         wp->push_back(WritePairs(-1, _birth, dcg -> threshold));
       }
     }

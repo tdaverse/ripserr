@@ -56,7 +56,7 @@ calculate_homology <- function(mat, dim = 1, threshold = -1, p = 2L, format = "c
 
   ## If dist object passed in directly, use that, otherwise check various conditions that
   ## mat is a valid matrix object
-  if (is(mat, "dist")) {
+  if (methods::is(mat, "dist")) {
     format <- "distmat"
     stopifnot(all(is.numeric(mat)))
     ans_vec <- ripser_cpp_dist(mat, dim, threshold, p)
@@ -122,6 +122,13 @@ calculate_homology <- function(mat, dim = 1, threshold = -1, p = 2L, format = "c
   }
 }
 
+#' Calculate Persistent Homology using a Cubical Complex
+#'
+#' Temporary description.
+#'
+#' @param mat numeric matrix containing pixel data
+#' @param threshold maximum diameter for computation of Cubical complex
+#' @return 3-column matrix with each row representing a TDA feature
 #' @export
 cubical <- function(mat, threshold = 9999, method = 0) {
   return(cubical_2dim(mat, threshold, method))
