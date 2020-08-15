@@ -365,6 +365,144 @@ public:
   }
 };
 
+/*****simplex_coboundary_enumerator*****/
+class SimplexCoboundaryEnumerator
+{
+  // member vars
+public:
+  BirthdayIndex simplex;
+  DenseCubicalGrids* dcg;
+  int dim;
+  double birthtime;
+  int ax, ay;
+  int cx, cy, cm;
+  int count;
+  BirthdayIndex nextCoface;
+  double threshold;
+
+  // constructor
+  SimplexCoboundaryEnumerator()
+  {
+    nextCoface = BirthdayIndex(0, -1, 1);
+  }
+
+  // member methods
+  void setSimplexCoboundaryEnumerator(BirthdayIndex _s, DenseCubicalGrids* _dcg)
+  {
+    simplex = _s;
+    dcg = _dcg;
+    dim = simplex.dim;
+    birthtime = simplex.birthday;
+    ax = _dcg->ax;
+    ay = _dcg->ay;
+
+    cx = (simplex.index) & 0x07ff;
+    cy = (simplex.index >> 11) & 0x03ff;
+    cm = (simplex.index >> 21) & 0xff;
+
+    threshold = _dcg->threshold;
+    count = 0;
+  }
+  bool hasNextCoface()
+  {
+    int index = 0;
+    double birthday = 0;
+    switch (dim)
+    {
+      case 0:
+        for (int i = count; i < 4; i++)
+        {
+          switch (i)
+          {
+            case 0: // y+
+              index = (1 << 21) | ((cy) << 11) | (cx);
+              birthday = max(birthtime, dcg->dense2[cx  ][cy+1]);
+              break;
+            case 1: // y-
+              index = (1 << 21) | ((cy-1) << 11) | (cx);
+              birthday = max(birthtime, dcg->dense2[cx  ][cy-1]);
+              break;
+            case 2: // x+
+              index = (0 << 21) | ((cy) << 11) | (cx);
+              birthday = max(birthtime, dcg->dense2[cx+1][cy  ]);
+              break;
+            case 3: // x-
+              index = (0 << 21) | ((cy) << 11) | (cx-1);
+              birthday = max(birthtime, dcg->dense2[cx-1][cy  ]);
+              break;
+          }
+
+          if (birthday != threshold)
+          {
+            count = i + 1;
+            nextCoface = BirthdayIndex(birthday, index, 1);
+            return true;
+          }
+        }
+        return false;
+      case 1:
+        switch (cm)
+        {
+          case 0:
+            if (count == 0) // upper
+            {
+              count++;
+              index = ((cy) << 11) | cx;
+              birthday = max({birthtime, dcg->dense2[cx][cy + 1], dcg->dense2[cx + 1][cy + 1]});
+              if (birthday != threshold)
+              {
+                nextCoface = BirthdayIndex(birthday, index, 2);
+                return true;
+              }
+            }
+            if (count == 1) // lower
+            {
+              count++;
+              index = ((cy - 1) << 11) | cx;
+              birthday = max({birthtime, dcg->dense2[cx][cy - 1], dcg->dense2[cx + 1][cy - 1]});
+              if (birthday != threshold)
+              {
+                nextCoface = BirthdayIndex(birthday, index, 2);
+                return true;
+              }
+            }
+            return false;
+          case 1:
+            if (count == 0) // right
+            {
+              count ++;
+              index = ((cy) << 11) | cx;
+              birthday = max({birthtime, dcg->dense2[cx + 1][cy], dcg->dense2[cx + 1][cy + 1]});
+              if (birthday != threshold)
+              {
+                nextCoface = BirthdayIndex(birthday, index, 2);
+                return true;
+              }
+            }
+            if (count == 1) //left
+            {
+              count++;
+              index = ((cy) << 11) | (cx - 1);
+              birthday = max({birthtime, dcg->dense2[cx - 1][cy], dcg->dense2[cx - 1][cy + 1]});
+              if (birthday != threshold)
+              {
+                nextCoface = BirthdayIndex(birthday, index, 2);
+                return true;
+              }
+            }
+            return false;
+        }
+    }
+    return false;
+  }
+
+  // getter
+  BirthdayIndex getNextCoface()
+  {
+    return nextCoface;
+  }
+};
+
 // placeholder for compilation to work - REMOVE once cubical_2dim is fully ported
 int main()
 {
