@@ -27,6 +27,7 @@
  */
 
 #include <iostream>
+#include <cstdint>
 
 using namespace std;
 
@@ -206,6 +207,36 @@ public:
 };
 
 /*****write_pairs*****/
+class WritePairs
+{
+  // member vars
+public:
+  int64_t dim;
+  double birth;
+  double death;
+
+  // constructor
+  WritePairs(int64_t _dim, double _birth, double _death)
+  {
+    dim = _dim;
+    birth = _birth;
+    death = _death;
+  }
+
+  // getters
+  int64_t getDimension()
+  {
+    return dim;
+  }
+  double getBirth()
+  {
+    return birth;
+  }
+  double getDeath()
+  {
+    return death;
+  }
+};
 
 /*****vertices*****/
 
