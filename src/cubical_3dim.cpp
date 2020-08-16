@@ -26,6 +26,8 @@
  with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#define FILE_OUTPUT
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -35,6 +37,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <cassert>
+#include <Rcpp.h>
 
 using namespace std;
 
@@ -346,6 +349,24 @@ enum file_format
   PERSEUS
 };
 
+// helper methods to deal w/ multi-dimensional arrays
+int dim_3_to_1(int x, int y, int z, int nx, int ny, int nz)
+{
+  return (x + nx * y + nx * ny * z);
+}
+int x_dim_1_to_3(int n, int nx, int ny, int nz)
+{
+  return (n % nx);
+}
+int y_dim_1_to_3(int n, int nx, int ny, int nz)
+{
+  return (n / nx % ny);
+}
+int z_dim_1_to_3(int n, int nx, int ny, int nz)
+{
+  return (n / (nx * ny) % nz);
+}
+
 class DenseCubicalGrids // file_read
 {
   // member vars
@@ -357,113 +378,60 @@ public:
   file_format format;
 
   // constructor
-  DenseCubicalGrids(const string& filename, double _threshold, file_format _format)
+  DenseCubicalGrids(Rcpp::NumericVector& image, double _threshold, int nx, int ny, int nz)
   {
-    threshold = _threshold;
-    format = _format;
-
-    switch (format)
+    // convert NumericVector into appropriate dimension array
+    double ***slices = new double**[nx];
+    for (int i = 0; i < nx; i++)
     {
-      case DIPHA:
-      {
-        ifstream reading_file;
-
-        ifstream fin( filename, ios::in | ios::binary );
-        cout << filename << endl;
-
-        int64_t d;
-        fin.read( ( char * ) &d, sizeof( int64_t ) ); // magic number
-        assert(d == 8067171840);
-        fin.read( ( char * ) &d, sizeof( int64_t ) ); // type number
-        assert(d == 1);
-        fin.read( ( char * ) &d, sizeof( int64_t ) ); //data num
-        fin.read( ( char * ) &d, sizeof( int64_t ) ); // dim
-        dim = d;
-        assert(dim == 3);
-        fin.read( ( char * ) &d, sizeof( int64_t ) );
-        ax = d;
-        fin.read( ( char * ) &d, sizeof( int64_t ) );
-        ay = d;
-        fin.read( ( char * ) &d, sizeof( int64_t ) );
-        az = d;
-        assert(0 < ax && ax < 510 && 0 < ay && ay < 510 && 0 < az && az < 510);
-        cout << "ax : ay : az = " << ax << " : " << ay << " : " << az << endl;
-
-        double dou;
-        for(int z = 0; z < az + 2; ++z)
-        {
-          for (int y = 0; y < ay + 2; ++y)
-          {
-            for (int x = 0; x < ax + 2; ++x)
-            {
-              if(0 < x && x <= ax && 0 < y && y <= ay && 0 < z && z <= az)
-              {
-                if (!fin.eof())
-                {
-                  fin.read( ( char * ) &dou, sizeof( double ) );
-                  dense3[x][y][z] = dou;
-                }
-                else
-                {
-                  cerr << "file endof error " << endl;
-                }
-              }
-              else
-              {
-                dense3[x][y][z] = threshold;
-              }
-            }
-          }
-        }
-        fin.close();
-        break;
-      }
-
-      case PERSEUS:
-      {
-        ifstream reading_file;
-        reading_file.open(filename.c_str(), ios::in);
-
-        string reading_line_buffer;
-        getline(reading_file, reading_line_buffer);
-        dim = atoi(reading_line_buffer.c_str());
-        getline(reading_file, reading_line_buffer);
-        ax = atoi(reading_line_buffer.c_str());
-        getline(reading_file, reading_line_buffer);
-        ay = atoi(reading_line_buffer.c_str());
-        getline(reading_file, reading_line_buffer);
-        az = atoi(reading_line_buffer.c_str());
-        assert(0 < ax && ax < 510 && 0 < ay && ay < 510 && 0 < az && az < 510);
-        cout << "ax : ay : az = " << ax << " : " << ay << " : " << az << endl;
-
-        for(int z = 0; z < az + 2; ++z)
-        {
-          for (int y = 0; y <ay + 2; ++y)
-          {
-            for (int x = 0; x < ax + 2; ++x)
-            {
-              if(0 < x && x <= ax && 0 < y && y <= ay && 0 < z && z <= az)
-              {
-                if (!reading_file.eof())
-                {
-                  getline(reading_file, reading_line_buffer);
-                  dense3[x][y][z] = atoi(reading_line_buffer.c_str());
-                  if (dense3[x][y][z] == -1)
-                  {
-                    dense3[x][y][z] = threshold;
-                  }
-                }
-              }
-              else
-              {
-                dense3[x][y][z] = threshold;
-              }
-            }
-          }
-        }
-        break;
-      }
+      slices[i] = new double*[ny];
+      for (int j = 0; j < ny ;j++)
+        slices[i][j] = new double[nz];
     }
+
+    int tempX, tempY, tempZ;
+    for (int i = 0; i < nx * ny * nz; i++)
+    {
+      tempX = i % nx;
+      tempY = i / nx % ny;
+      tempZ = i / (nx * ny) % nz;
+      slices[tempX][tempY][tempZ] = image(i);
+    }
+
+    threshold = _threshold;
+
+    ax = nx;
+    ay = ny;
+    az = nz;
+    assert(0 < ax && ax < 510 && 0 < ay && ay < 510 && 0 < az && az < 510);
+
+    for (int i = 0; i <= nx + 1; i++)
+      for (int j = 0; j <= ny + 1; j++)
+        for (int k = 0; k <= nz + 1; k++)
+          if (0 < i && i <= nx && 0 < j && j <= nx && 0 < k && k <= ny)
+            dense3[i][j][k] = slices[i - 1][j - 1][k - 1];
+          else
+            dense3[i][j][k] = threshold;
+
+    for (int i = 0; i <= nx + 1; i++)
+    {
+      for (int j = 0; j <= ny + 1; j++)
+      {
+        for (int k = 0; k <= nz + 1; k++)
+          Rcpp::Rcout << dense3[i][j][k] << " ";
+        Rcpp::Rcout << "\n";
+      }
+      Rcpp::Rcout << "\n\n";
+    }
+
+    // clean up dynamically allocated memory
+    for (int i = 0; i < nx; i++)
+    {
+      for (int j = 0; j < ny; j++)
+        delete[] slices[i][j];
+      delete[] slices[i];
+    }
+    delete[] slices;
   }
 
   // getters
@@ -1289,8 +1257,60 @@ public:
 };
 
 /*****cubicalripser_3dim*****/
-//PLACEHOLDER - WILL REPLACE
-int main()
+// method = 0 --> link find algo (default)
+// method = 1 --> compute pairs algo
+// [[Rcpp::export]]
+Rcpp::NumericMatrix cubical_3dim(Rcpp::NumericVector& image, double threshold, int method, int nx, int ny, int nz)
 {
-  return 0;
+  bool print = false;
+
+  vector<WritePairs> writepairs; // dim birth death
+  writepairs.clear();
+
+  DenseCubicalGrids* dcg = new DenseCubicalGrids(image, threshold, nx, ny, nz);
+  ColumnsToReduce* ctr = new ColumnsToReduce(dcg);
+
+  switch(method)
+  {
+    case 0:
+    {
+      JointPairs* jp = new JointPairs(dcg, ctr, writepairs, print);
+      jp -> joint_pairs_main(); // dim0
+
+      ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
+      cp -> compute_pairs_main(); // dim1
+      cp -> assemble_columns_to_reduce();
+
+      cp -> compute_pairs_main(); // dim2
+      break;
+    }
+
+    case 1:
+    {
+      ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
+      cp -> compute_pairs_main(); // dim0
+      cp -> assemble_columns_to_reduce();
+
+      cp -> compute_pairs_main(); // dim1
+      cp -> assemble_columns_to_reduce();
+
+      cp -> compute_pairs_main(); // dim2
+      break;
+    }
+  }
+
+  for (int i = 0; i < writepairs.size(); i++)
+  {
+    Rcpp::Rcout << writepairs[i].getDimension() << " " << writepairs[i].getBirth() << " " << writepairs[i].getDeath() << "\n";
+  }
+
+  Rcpp::NumericMatrix ans(writepairs.size(), 3);
+  for (int i = 0; i < ans.nrow(); i++)
+  {
+    ans(i, 0) = writepairs[i].getDimension();
+    ans(i, 1) = writepairs[i].getBirth();
+    ans(i, 2) = writepairs[i].getDeath();
+  }
+
+  return ans;
 }
