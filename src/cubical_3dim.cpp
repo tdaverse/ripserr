@@ -160,6 +160,50 @@ struct BirthdayIndexInverseComparator
 };
 
 /*****coeff*****/
+class Coeff
+{
+  // member vars
+public:
+  int cx, cy, cz, cm;
+
+  // constructor
+  Coeff()
+  {
+    cx = 0;
+    cy = 0;
+    cz = 0;
+    cm = 0;
+  }
+
+  // setters
+  void setXYZ(int _cx, int _cy, int _cz)
+  {
+    cx = _cx;
+    cy = _cy;
+    cz = _cz;
+    cm = 0;
+  }
+  void setXYZM(int _cx, int _cy, int _cz, int _cm)
+  {
+    cx = _cx;
+    cy = _cy;
+    cz = _cz;
+    cm = _cm;
+  }
+  void setIndex(int index)
+  {
+    cx = index & 0x01ff;
+    cy = (index >> 9) & 0x01ff;
+    cz = (index >> 18) & 0x01ff;
+    cm = (index >> 27) & 0xff;
+  }
+
+  // getter
+  int getIndex()
+  {
+    return cx | cy << 9 | cz << 18 | cm << 27;
+  }
+};
 
 /*****write_pairs*****/
 
