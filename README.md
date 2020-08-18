@@ -9,10 +9,24 @@
 
 ## Overview
 
+ripserr ports the [Ripser](https://arxiv.org/1908.02518) and [Cubical Ripser](https://arxiv.org/abs/2005.12692) persistent homology calculation engines from C++ via [Rcpp](https://CRAN.R-project.org/package=Rcpp).
+It can be used as a convenient and rapid calculation tool in topological data analysis pipelines.
+
 ## Installation
+
+```r
+# install development version
+devtools::install_github("rrrlw/ripserr")
+
+# install from CRAN (not available yet)
+# install.packages("ripserr")
+```
 
 ## Sample code
 
 ## Functionality
+
+1. Calculation of persistent homology of Vietoris-Rips complexes using Ripser.
+1. Calculation of persistent homology of cubical complexes using Cubical Ripser.
 
 ## Contribute
