@@ -1259,7 +1259,7 @@ public:
 /*****cubicalripser_3dim*****/
 // method = 0 --> link find algo (default)
 // method = 1 --> compute pairs algo
-// [[Rcpp::export]]
+// 
 Rcpp::NumericMatrix cubical_3dim(Rcpp::NumericVector& image, double threshold, int method, int nx, int ny, int nz)
 {
   bool print = false;
