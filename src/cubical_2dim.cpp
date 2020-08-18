@@ -498,7 +498,7 @@ public:
 };
 
 /*****joint_pairs*****/
-class JointPairs
+class JointPairs2
 {
   int n; // the number of cubes
   int ctr_moi;
@@ -513,7 +513,7 @@ class JointPairs
 
 public:
   // constructor
-  JointPairs(DenseCubicalGrids2* _dcg, ColumnsToReduce2* _ctr, vector<WritePairs2> &_wp, const bool _print)
+  JointPairs2(DenseCubicalGrids2* _dcg, ColumnsToReduce2* _ctr, vector<WritePairs2> &_wp, const bool _print)
   {
     dcg = _dcg;
     ax = dcg -> ax;
@@ -837,7 +837,7 @@ Rcpp::NumericMatrix cubical_2dim(const Rcpp::NumericMatrix& image, double thresh
   {
     case 0:
     {
-      JointPairs* jp = new JointPairs(dcg, ctr, writepairs, print);
+      JointPairs2* jp = new JointPairs2(dcg, ctr, writepairs, print);
       jp->joint_pairs_main(); // dim0
 
       ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
