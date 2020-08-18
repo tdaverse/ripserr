@@ -605,22 +605,22 @@ public:
 };
 
 /*****compute_pairs*****/
-template <class Key, class T> class hash_map : public unordered_map<Key, T> {};
+template <class Key, class T> class hash_map2 : public unordered_map<Key, T> {};
 
-class ComputePairs
+class ComputePairs2
 {
   //member vars
 public:
   DenseCubicalGrids2* dcg;
   ColumnsToReduce2* ctr;
-  hash_map<int, int> pivot_column_index;
+  hash_map2<int, int> pivot_column_index;
   int ax, ay;
   int dim;
   vector<WritePairs2> *wp;
   bool print;
 
   // constructor
-  ComputePairs(DenseCubicalGrids2* _dcg, ColumnsToReduce2* _ctr, vector<WritePairs2> &_wp, const bool _print)
+  ComputePairs2(DenseCubicalGrids2* _dcg, ColumnsToReduce2* _ctr, vector<WritePairs2> &_wp, const bool _print)
   {
     dcg = _dcg;
     ctr = _ctr;
@@ -640,7 +640,7 @@ public:
     SimplexCoboundaryEnumerator2 cofaces;
     unordered_map<int, priority_queue<BirthdayIndex2, vector<BirthdayIndex2>, BirthdayIndex2Comparator>> recorded_wc;
 
-    pivot_column_index = hash_map<int, int>();
+    pivot_column_index = hash_map2<int, int>();
     auto ctl_size = ctr->columns_to_reduce.size();
     pivot_column_index.reserve(ctl_size);
     recorded_wc.reserve(ctl_size);
@@ -840,7 +840,7 @@ Rcpp::NumericMatrix cubical_2dim(const Rcpp::NumericMatrix& image, double thresh
       JointPairs2* jp = new JointPairs2(dcg, ctr, writepairs, print);
       jp->joint_pairs_main(); // dim0
 
-      ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
+      ComputePairs2* cp = new ComputePairs2(dcg, ctr, writepairs, print);
       cp->compute_pairs_main(); // dim1
 
       break;
@@ -848,7 +848,7 @@ Rcpp::NumericMatrix cubical_2dim(const Rcpp::NumericMatrix& image, double thresh
 
     case 1:
     {
-      ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
+      ComputePairs2* cp = new ComputePairs2(dcg, ctr, writepairs, print);
       cp->compute_pairs_main(); // dim0
       cp->assemble_columns_to_reduce();
 
