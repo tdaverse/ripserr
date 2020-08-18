@@ -105,7 +105,7 @@ int BirthdayIndex::getDimension(){
 }
 
 void BirthdayIndex::print(){
-  Rcpp::Rcout << "(dob:" << birthday << "," << index << ")" << std::endl;
+  //Rcpp::Rcout << "(dob:" << birthday << "," << index << ")" << std::endl;
 }
 
 bool BirthdayIndexComparator::operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const{
@@ -192,10 +192,10 @@ public:
 DenseCubicalGrids::DenseCubicalGrids(const Rcpp::NumericVector& image, double threshold, int nx, int ny, int nz, int nt)
 {
   ax = nx; ay = ny; az = nz; aw = nt;
-  Rcpp::Rcout << "HERE4\n";
+  //Rcpp::Rcout << "HERE4\n";
   // convert NumericVector to 4d array
   double ****dat = new double***[nx];
-  Rcpp::Rcout << "HERE5\n";
+  //Rcpp::Rcout << "HERE5\n";
   for (int i = 0; i < nx; i++)
   {
     dat[i] = new double**[ny];
@@ -206,7 +206,7 @@ DenseCubicalGrids::DenseCubicalGrids(const Rcpp::NumericVector& image, double th
         dat[i][j][k] = new double[nt];
     }
   }
-  Rcpp::Rcout << "HERE6\n";
+  //Rcpp::Rcout << "HERE6\n";
   int tempX, tempY, tempZ, tempT;
   for (int i = 0; i < nx * ny * nz * nt; i++)
   {
@@ -217,7 +217,7 @@ DenseCubicalGrids::DenseCubicalGrids(const Rcpp::NumericVector& image, double th
     dat[tempX][tempY][tempZ][tempT] = image(i);
   }
   
-  Rcpp::Rcout << "HERE7\n";
+  //Rcpp::Rcout << "HERE7\n";
   for (int x = 0; x <= nx + 1; x++)
     for (int y = 0; y <= ny + 1; y++)
       for (int z = 0; z <= nz + 1; z++)
@@ -232,7 +232,7 @@ DenseCubicalGrids::DenseCubicalGrids(const Rcpp::NumericVector& image, double th
             dense4[x][y][z][t] = threshold;
           
           // debug
-          Rcpp::Rcout << "(" << x << "," << y << "," << z << "," << t << ") = " << dense4[x][y][z][t] << "\n";
+          //Rcpp::Rcout << "(" << x << "," << y << "," << z << "," << t << ") = " << dense4[x][y][z][t] << "\n";
         }
         
         for (int i = 0; i < nx; i++)
@@ -1099,7 +1099,7 @@ void JointPairs::joint_pairs_main(){
   double min_birth = dcg -> threshold;
   
   if(print == true){
-    cout << "persistence intervals in dim " << 0 << ":" << endl;
+    //cout << "persistence intervals in dim " << 0 << ":" << endl;
   }
   
   for(BirthdayIndex e : dim1_simplex_list){
@@ -1143,7 +1143,7 @@ void JointPairs::joint_pairs_main(){
         dset.link(u, v);
       } else {
         if(print == true){
-          cout << "[" << birth << "," << death << ")" << endl;
+          //cout << "[" << birth << "," << death << ")" << endl;
         }
         
         wp -> push_back(WritePairs(0, birth, death));
@@ -1155,7 +1155,7 @@ void JointPairs::joint_pairs_main(){
   }
   
   if(print == true){
-    cout << "[" << min_birth << ", )" << endl;
+    //cout << "[" << min_birth << ", )" << endl;
   }
   
   wp -> push_back(WritePairs(-1, min_birth, dcg->threshold));
@@ -1201,7 +1201,7 @@ ComputePairs::ComputePairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vecto
 
 void ComputePairs::compute_pairs_main(){
   if(print == true){
-    cout << "persistence intervals in dim " << dim << ":" << endl;
+    //cout << "persistence intervals in dim " << dim << ":" << endl;
   }
   
   vector<BirthdayIndex> coface_entries;
@@ -1291,13 +1291,13 @@ void ComputePairs::outputPP(int _dim, double _birth, double _death){
   if(_birth != _death){
     if(_death != dcg -> threshold){
       if(print == true){
-        cout << "[" <<_birth << "," << _death << ")" << endl;
+        //cout << "[" <<_birth << "," << _death << ")" << endl;
       }
       
       wp -> push_back(WritePairs(_dim, _birth, _death));
     } else {
       if(print == true){
-        cout << "[" << _birth << ", )" << endl;
+        //cout << "[" << _birth << ", )" << endl;
       }
       
       wp -> push_back(WritePairs(-1, _birth, dcg -> threshold));
@@ -1405,7 +1405,7 @@ void ComputePairs::assemble_columns_to_reduce() {
 // [[Rcpp::export]]
 Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, int method, int nx, int ny, int nz, int nt)
 {
-  Rcpp::Rcout << "HERE3\n";
+  //Rcpp::Rcout << "HERE3\n";
   bool print = false;
   
   vector<WritePairs> writepairs; // dim birth death
@@ -1458,7 +1458,7 @@ Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, i
     ans(i, 2) = writepairs[i].getDeath();
     
     // debug
-    Rcpp::Rcout << ans(i, 0) << " " << ans(i, 1) << " " << ans(i, 2) << "\n";
+    //Rcpp::Rcout << ans(i, 0) << " " << ans(i, 1) << " " << ans(i, 2) << "\n";
   }
   
   return ans;
