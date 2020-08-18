@@ -1402,7 +1402,7 @@ void ComputePairs::assemble_columns_to_reduce() {
 /*****cubical_ripser4dim*****/
 // method == 0 --> link find algo
 // method == 1 --> compute pairs algo
-// 
+// [[Rcpp::export]]
 Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, int method, int nx, int ny, int nz, int nt)
 {
   Rcpp::Rcout << "HERE3\n";
@@ -1413,8 +1413,6 @@ Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, i
   
   DenseCubicalGrids* dcg = new DenseCubicalGrids(image, threshold, nx, ny, nz, nt);
   ColumnsToReduce* ctr = new ColumnsToReduce(dcg); 
-  
-  
   
   switch(method)
   {

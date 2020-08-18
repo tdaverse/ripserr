@@ -18,6 +18,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cubical_4dim
+Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, int method, int nx, int ny, int nz, int nt);
+RcppExport SEXP _ripserr_cubical_4dim(SEXP imageSEXP, SEXP thresholdSEXP, SEXP methodSEXP, SEXP nxSEXP, SEXP nySEXP, SEXP nzSEXP, SEXP ntSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type image(imageSEXP);
+    Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
+    Rcpp::traits::input_parameter< int >::type method(methodSEXP);
+    Rcpp::traits::input_parameter< int >::type nx(nxSEXP);
+    Rcpp::traits::input_parameter< int >::type ny(nySEXP);
+    Rcpp::traits::input_parameter< int >::type nz(nzSEXP);
+    Rcpp::traits::input_parameter< int >::type nt(ntSEXP);
+    rcpp_result_gen = Rcpp::wrap(cubical_4dim(image, threshold, method, nx, ny, nz, nt));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ripser_cpp_dist
 NumericVector ripser_cpp_dist(const NumericVector& dist_r, int dim, float thresh, int p);
 RcppExport SEXP _ripserr_ripser_cpp_dist(SEXP dist_rSEXP, SEXP dimSEXP, SEXP threshSEXP, SEXP pSEXP) {
@@ -50,6 +67,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_ripserr_cubical_2dim", (DL_FUNC) &_ripserr_cubical_2dim, 3},
+    {"_ripserr_cubical_4dim", (DL_FUNC) &_ripserr_cubical_4dim, 7},
     {"_ripserr_ripser_cpp_dist", (DL_FUNC) &_ripserr_ripser_cpp_dist, 4},
     {"_ripserr_ripser_cpp", (DL_FUNC) &_ripserr_ripser_cpp, 5},
     {NULL, NULL, 0}

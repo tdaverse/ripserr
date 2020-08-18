@@ -5,6 +5,10 @@ cubical_2dim <- function(image, threshold, method) {
     .Call('_ripserr_cubical_2dim', PACKAGE = 'ripserr', image, threshold, method)
 }
 
+cubical_4dim <- function(image, threshold, method, nx, ny, nz, nt) {
+    .Call('_ripserr_cubical_4dim', PACKAGE = 'ripserr', image, threshold, method, nx, ny, nz, nt)
+}
+
 ripser_cpp_dist <- function(dist_r, dim, thresh, p) {
     .Call('_ripserr_ripser_cpp_dist', PACKAGE = 'ripserr', dist_r, dim, thresh, p)
 }
