@@ -26,8 +26,6 @@
  with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define FILE_OUTPUT
-
 #include <iostream>
 #include <fstream>
 #include <queue>
