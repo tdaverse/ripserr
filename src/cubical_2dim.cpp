@@ -251,7 +251,7 @@ public:
 };
 
 /*****columns_to_reduce*****/
-class ColumnsToReduce
+class ColumnsToReduce2
 {
   // member vars
 public:
@@ -260,7 +260,7 @@ public:
   int max_of_index;
 
   // constructor
-  ColumnsToReduce(DenseCubicalGrids2* _dcg)
+  ColumnsToReduce2(DenseCubicalGrids2* _dcg)
   {
     dim = 0;
     int ax = _dcg->ax;
@@ -504,7 +504,7 @@ class JointPairs
   int ctr_moi;
   int ax, ay;
   DenseCubicalGrids2* dcg;
-  ColumnsToReduce* ctr;
+  ColumnsToReduce2* ctr;
   vector<WritePairs2> *wp;
   bool print;
   double u, v;
@@ -513,7 +513,7 @@ class JointPairs
 
 public:
   // constructor
-  JointPairs(DenseCubicalGrids2* _dcg, ColumnsToReduce* _ctr, vector<WritePairs2> &_wp, const bool _print)
+  JointPairs(DenseCubicalGrids2* _dcg, ColumnsToReduce2* _ctr, vector<WritePairs2> &_wp, const bool _print)
   {
     dcg = _dcg;
     ax = dcg -> ax;
@@ -612,7 +612,7 @@ class ComputePairs
   //member vars
 public:
   DenseCubicalGrids2* dcg;
-  ColumnsToReduce* ctr;
+  ColumnsToReduce2* ctr;
   hash_map<int, int> pivot_column_index;
   int ax, ay;
   int dim;
@@ -620,7 +620,7 @@ public:
   bool print;
 
   // constructor
-  ComputePairs(DenseCubicalGrids2* _dcg, ColumnsToReduce* _ctr, vector<WritePairs2> &_wp, const bool _print)
+  ComputePairs(DenseCubicalGrids2* _dcg, ColumnsToReduce2* _ctr, vector<WritePairs2> &_wp, const bool _print)
   {
     dcg = _dcg;
     ctr = _ctr;
@@ -831,7 +831,7 @@ Rcpp::NumericMatrix cubical_2dim(const Rcpp::NumericMatrix& image, double thresh
   writepairs.clear();
 
   DenseCubicalGrids2* dcg = new DenseCubicalGrids2(image, threshold);
-  ColumnsToReduce* ctr = new ColumnsToReduce(dcg);
+  ColumnsToReduce2* ctr = new ColumnsToReduce2(dcg);
 
   switch(method)
   {
