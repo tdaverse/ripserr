@@ -160,7 +160,7 @@ enum file_format
   PERSEUS
 };
 
-class DenseCubicalGrids // file_read
+class DenseCubicalGrids2 // file_read
 {
 public:
   double threshold;
@@ -170,7 +170,7 @@ public:
   file_format format;
 
   // constructor (w/ file read)
-  DenseCubicalGrids(const Rcpp::NumericMatrix& image, double _threshold)
+  DenseCubicalGrids2(const Rcpp::NumericMatrix& image, double _threshold)
   {
     // set vars
     threshold = _threshold;
@@ -260,7 +260,7 @@ public:
   int max_of_index;
 
   // constructor
-  ColumnsToReduce(DenseCubicalGrids* _dcg)
+  ColumnsToReduce(DenseCubicalGrids2* _dcg)
   {
     dim = 0;
     int ax = _dcg->ax;
@@ -296,7 +296,7 @@ class SimplexCoboundaryEnumerator
   // member vars
 public:
   BirthdayIndex2 simplex;
-  DenseCubicalGrids* dcg;
+  DenseCubicalGrids2* dcg;
   int dim;
   double birthtime;
   int ax, ay;
@@ -312,7 +312,7 @@ public:
   }
 
   // member methods
-  void setSimplexCoboundaryEnumerator(BirthdayIndex2 _s, DenseCubicalGrids* _dcg)
+  void setSimplexCoboundaryEnumerator(BirthdayIndex2 _s, DenseCubicalGrids2* _dcg)
   {
     simplex = _s;
     dcg = _dcg;
@@ -437,10 +437,10 @@ public:
   vector<int> parent;
   vector<double> birthtime;
   vector<double> time_max;
-  DenseCubicalGrids* dcg;
+  DenseCubicalGrids2* dcg;
 
   // constructor
-  UnionFind(int moi, DenseCubicalGrids* _dcg) : parent(moi), birthtime(moi), time_max(moi) // Thie "n" is the number of cubes.
+  UnionFind(int moi, DenseCubicalGrids2* _dcg) : parent(moi), birthtime(moi), time_max(moi) // Thie "n" is the number of cubes.
   {
     dcg = _dcg;
     max_of_index = moi;
@@ -503,7 +503,7 @@ class JointPairs
   int n; // the number of cubes
   int ctr_moi;
   int ax, ay;
-  DenseCubicalGrids* dcg;
+  DenseCubicalGrids2* dcg;
   ColumnsToReduce* ctr;
   vector<WritePairs> *wp;
   bool print;
@@ -513,7 +513,7 @@ class JointPairs
 
 public:
   // constructor
-  JointPairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vector<WritePairs> &_wp, const bool _print)
+  JointPairs(DenseCubicalGrids2* _dcg, ColumnsToReduce* _ctr, vector<WritePairs> &_wp, const bool _print)
   {
     dcg = _dcg;
     ax = dcg -> ax;
@@ -611,7 +611,7 @@ class ComputePairs
 {
   //member vars
 public:
-  DenseCubicalGrids* dcg;
+  DenseCubicalGrids2* dcg;
   ColumnsToReduce* ctr;
   hash_map<int, int> pivot_column_index;
   int ax, ay;
@@ -620,7 +620,7 @@ public:
   bool print;
 
   // constructor
-  ComputePairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vector<WritePairs> &_wp, const bool _print)
+  ComputePairs(DenseCubicalGrids2* _dcg, ColumnsToReduce* _ctr, vector<WritePairs> &_wp, const bool _print)
   {
     dcg = _dcg;
     ctr = _ctr;
@@ -830,7 +830,7 @@ Rcpp::NumericMatrix cubical_2dim(const Rcpp::NumericMatrix& image, double thresh
   vector<WritePairs> writepairs; // dim birth death
   writepairs.clear();
 
-  DenseCubicalGrids* dcg = new DenseCubicalGrids(image, threshold);
+  DenseCubicalGrids2* dcg = new DenseCubicalGrids2(image, threshold);
   ColumnsToReduce* ctr = new ColumnsToReduce(dcg);
 
   switch(method)
