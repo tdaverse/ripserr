@@ -29,3 +29,5 @@ Imports:
     Rcpp (>= 1.0.5),
     stats
 SystemRequirements: C++11
+Suggests: 
+    testthat
