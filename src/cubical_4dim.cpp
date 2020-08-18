@@ -25,3 +25,20 @@
  You should have received a copy of the GNU Lesser General Public License along
  with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <algorithm>
+#include <queue>
+#include <vector>
+#include <unordered_map>
+#include <cassert>
+#include <cstdint>
+
+using namespace std;
+
+int main()
+{
+        return 0;
+}
