@@ -105,7 +105,7 @@ int BirthdayIndex::getDimension(){
 }
 
 void BirthdayIndex::print(){
-  std::cout << "(dob:" << birthday << "," << index << ")" << std::endl;
+  Rcpp::Rcout << "(dob:" << birthday << "," << index << ")" << std::endl;
 }
 
 bool BirthdayIndexComparator::operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const{
