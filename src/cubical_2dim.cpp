@@ -291,7 +291,7 @@ public:
 };
 
 /*****simplex_coboundary_enumerator*****/
-class SimplexCoboundaryEnumerator
+class SimplexCoboundaryEnumerator2
 {
   // member vars
 public:
@@ -306,13 +306,13 @@ public:
   double threshold;
 
   // constructor
-  SimplexCoboundaryEnumerator()
+  SimplexCoboundaryEnumerator2()
   {
     nextCoface = BirthdayIndex2(0, -1, 1);
   }
 
   // member methods
-  void setSimplexCoboundaryEnumerator(BirthdayIndex2 _s, DenseCubicalGrids2* _dcg)
+  void setSimplexCoboundaryEnumerator2(BirthdayIndex2 _s, DenseCubicalGrids2* _dcg)
   {
     simplex = _s;
     dcg = _dcg;
@@ -637,7 +637,7 @@ public:
   void compute_pairs_main()
   {
     vector<BirthdayIndex2> coface_entries;
-    SimplexCoboundaryEnumerator cofaces;
+    SimplexCoboundaryEnumerator2 cofaces;
     unordered_map<int, priority_queue<BirthdayIndex2, vector<BirthdayIndex2>, BirthdayIndex2Comparator>> recorded_wc;
 
     pivot_column_index = hash_map<int, int>();
@@ -659,7 +659,7 @@ public:
       do {
         auto simplex = ctr->columns_to_reduce[j];// get CTR[i]
         coface_entries.clear();
-        cofaces.setSimplexCoboundaryEnumerator(simplex, dcg);// make cofaces data
+        cofaces.setSimplexCoboundaryEnumerator2(simplex, dcg);// make cofaces data
 
         while (cofaces.hasNextCoface() && !goto_found_persistence_pair) // repeat there remains a coface
         {
