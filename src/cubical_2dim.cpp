@@ -220,7 +220,7 @@ public:
 };
 
 /*****write_pairs*****/
-class WritePairs
+class WritePairs2
 {
 public:
   int64_t dim;
@@ -228,7 +228,7 @@ public:
   double death;
 
   // constructor
-  WritePairs(int64_t _dim, double _birth, double _death)
+  WritePairs2(int64_t _dim, double _birth, double _death)
   {
     dim = _dim;
     birth = _birth;
@@ -505,7 +505,7 @@ class JointPairs
   int ax, ay;
   DenseCubicalGrids2* dcg;
   ColumnsToReduce* ctr;
-  vector<WritePairs> *wp;
+  vector<WritePairs2> *wp;
   bool print;
   double u, v;
   vector<int64_t> cubes_edges;
@@ -513,7 +513,7 @@ class JointPairs
 
 public:
   // constructor
-  JointPairs(DenseCubicalGrids2* _dcg, ColumnsToReduce* _ctr, vector<WritePairs> &_wp, const bool _print)
+  JointPairs(DenseCubicalGrids2* _dcg, ColumnsToReduce* _ctr, vector<WritePairs2> &_wp, const bool _print)
   {
     dcg = _dcg;
     ax = dcg -> ax;
@@ -589,7 +589,7 @@ public:
         }
         else
         {
-          wp->push_back(WritePairs(0, birth, death));
+          wp->push_back(WritePairs2(0, birth, death));
           dset.link(u, v);
         }
       }
@@ -599,7 +599,7 @@ public:
       }
     }
 
-    wp->push_back(WritePairs(-1, min_birth, dcg->threshold));
+    wp->push_back(WritePairs2(-1, min_birth, dcg->threshold));
     sort(ctr->columns_to_reduce.begin(), ctr->columns_to_reduce.end(), BirthdayIndex2Comparator());
   }
 };
@@ -616,11 +616,11 @@ public:
   hash_map<int, int> pivot_column_index;
   int ax, ay;
   int dim;
-  vector<WritePairs> *wp;
+  vector<WritePairs2> *wp;
   bool print;
 
   // constructor
-  ComputePairs(DenseCubicalGrids2* _dcg, ColumnsToReduce* _ctr, vector<WritePairs> &_wp, const bool _print)
+  ComputePairs(DenseCubicalGrids2* _dcg, ColumnsToReduce* _ctr, vector<WritePairs2> &_wp, const bool _print)
   {
     dcg = _dcg;
     ctr = _ctr;
@@ -744,11 +744,11 @@ public:
     {
       if (_death != dcg-> threshold)
       {
-        wp->push_back(WritePairs(_dim, _birth, _death));
+        wp->push_back(WritePairs2(_dim, _birth, _death));
       }
       else
       {
-        wp->push_back(WritePairs(-1, _birth, dcg -> threshold));
+        wp->push_back(WritePairs2(-1, _birth, dcg -> threshold));
       }
     }
   }
@@ -827,7 +827,7 @@ Rcpp::NumericMatrix cubical_2dim(const Rcpp::NumericMatrix& image, double thresh
 {
   bool print = false;
 
-  vector<WritePairs> writepairs; // dim birth death
+  vector<WritePairs2> writepairs; // dim birth death
   writepairs.clear();
 
   DenseCubicalGrids2* dcg = new DenseCubicalGrids2(image, threshold);
