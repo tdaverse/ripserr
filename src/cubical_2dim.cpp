@@ -429,7 +429,7 @@ public:
 };
 
 /*****union_find*****/
-class UnionFind
+class UnionFind2
 {
   // member vars
 public:
@@ -440,7 +440,7 @@ public:
   DenseCubicalGrids2* dcg;
 
   // constructor
-  UnionFind(int moi, DenseCubicalGrids2* _dcg) : parent(moi), birthtime(moi), time_max(moi) // Thie "n" is the number of cubes.
+  UnionFind2(int moi, DenseCubicalGrids2* _dcg) : parent(moi), birthtime(moi), time_max(moi) // Thie "n" is the number of cubes.
   {
     dcg = _dcg;
     max_of_index = moi;
@@ -547,7 +547,7 @@ public:
   // member method - workhorse
   void joint_pairs_main()
   {
-    UnionFind dset(ctr_moi, dcg);
+    UnionFind2 dset(ctr_moi, dcg);
     ctr->columns_to_reduce.clear();
     ctr->dim = 1;
     double min_birth = dcg->threshold;
