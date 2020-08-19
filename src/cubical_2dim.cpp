@@ -799,6 +799,7 @@ public:
       ctr->columns_to_reduce.clear();
       for (int y = 1; y <= ay; ++y)
       {
+        Rcpp::checkUserInterrupt();
         for (int x = 1; x <= ax; ++x)
         {
           for (int m = 0; m < typenum; ++m)
