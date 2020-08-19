@@ -47,119 +47,36 @@ public:
   double birthday;
   int index;
   int dim;
-
-  // default constructor
-  BirthdayIndex2()
-  {
-    birthday = 0;
-    index = -1;
-    dim = 1;
-  }
-
-  // individual params constructor
-  BirthdayIndex2(double _b, int _i, int _d)
-  {
-    birthday = _b;
-    index = _i;
-    dim = _d;
-  }
-
-  // copy/clone constructor
-  BirthdayIndex2(const BirthdayIndex2& b)
-  {
-    birthday = b.birthday;
-    index = b.index;
-    dim = b.dim;
-  }
+  
+  // constructors
+  BirthdayIndex2(double _b, int _i, int _d) : birthday(_b), index(_i), dim(_d) {}
+  BirthdayIndex2() : BirthdayIndex2(0, -1, 1) {}
+  BirthdayIndex2(const BirthdayIndex2& b) : BirthdayIndex2(b.birthday, b.index, b.dim) {}
 
   // copy method
-  void copyBirthdayIndex(BirthdayIndex2 v)
-  {
-    birthday = v.birthday;
-    index = v.index;
-    dim = v.dim;
-  }
-
+  void copyBirthdayIndex(BirthdayIndex2 v) { birthday = v.birthday; index = v.index; dim = v.dim; }
+  
   // getters
-  double getBirthday()
-  {
-    return birthday;
-  }
-  long getIndex()
-  {
-    return index;
-  }
-  int getDimension()
-  {
-    return dim;
-  }
+  double getBirthday() { return birthday; }
+  long getIndex() { return index; }
+  int getDimension() { return dim; }
 };
+
+bool cmp(const BirthdayIndex2& o1, const BirthdayIndex2& o2) { return (o1.birthday == o2.birthday ? o1.index < o2.index : o1.birthday > o2.birthday); }
 
 struct BirthdayIndex2Comparator
 {
   bool operator()(const BirthdayIndex2& o1, const BirthdayIndex2& o2) const
-  {
-    if (o1.birthday == o2.birthday)
-    {
-      if (o1.index < o2.index)
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-    else
-    {
-      if (o1.birthday > o2.birthday)
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-  }
+  { return cmp(o1, o2); }
 };
 
 struct BirthdayIndex2InverseComparator
 {
   bool operator()(const BirthdayIndex2& o1, const BirthdayIndex2& o2) const
-  {
-    if (o1.birthday == o2.birthday)
-    {
-      if (o1.index < o2.index)
-      {
-        return false;
-      }
-      else
-      {
-        return true;
-      }
-    }
-    else
-    {
-      if (o1.birthday > o2.birthday)
-      {
-        return false;
-      }
-      else
-      {
-        return true;
-      }
-    }
-  }
+  { return !cmp(o1, o2); }
 };
 
 /*****dense_cubical_grids*****/
-enum file_format
-{
-  DIPHA,
-  PERSEUS
-};
-
 class DenseCubicalGrids2 // file_read
 {
 public:
@@ -167,53 +84,41 @@ public:
   int dim;
   int ax, ay;
   double dense2[2048][1024];
-  file_format format;
 
   // constructor (w/ file read)
-  DenseCubicalGrids2(const Rcpp::NumericMatrix& image, double _threshold)
+  DenseCubicalGrids2(const Rcpp::NumericMatrix& image, double _threshold) : threshold(_threshold), ax(image.nrow()), ay(image.ncol())
   {
-    // set vars
-    threshold = _threshold;
-    ax = image.nrow();
-    ay = image.ncol();
-
     // assert that dimensions are not too big
     assert(0 < ax && ax < 2000 && 0 < ay && ay < 1000);
 
     // copy over data from NumericMatrix into DenseCubicalGrids member var
     for (int y = 0; y < ay + 2; y++)
-    {
       for (int x = 0; x < ax + 2; x++)
-      {
-        if (0 < x && x <= ax && 0 < y && y <= ay)
-          dense2[x][y] = image(x - 1, y - 1);
-        else
-          dense2[x][y] = threshold;
-      }
-    }
+        if (0 < x && x <= ax && 0 < y && y <= ay) dense2[x][y] = image(x - 1, y - 1);
+        else dense2[x][y] = threshold;
   }
 
   // getter
   double getBirthday(int index, int dim)
   {
-    int cx = index & 0x07ff;
-    int cy = (index >> 11) & 0x03ff;
-    int cm = (index >> 21) & 0xff;
+    int cx = index & 0x07ff,
+        cy = (index >> 11) & 0x03ff,
+        cm = (index >> 21) & 0xff;
 
     switch (dim)
     {
-    case 0:
-      return dense2[cx][cy];
-    case 1:
-      switch (cm)
-      {
       case 0:
-        return max(dense2[cx][cy], dense2[cx + 1][cy]);
-      default:
-        return max(dense2[cx][cy], dense2[cx][cy + 1]);
-      }
-    case 2:
-      return max(max(dense2[cx][cy], dense2[cx + 1][cy]), max(dense2[cx][cy + 1], dense2[cx + 1][cy + 1]));
+        return dense2[cx][cy];
+      case 1:
+        switch (cm)
+        {
+          case 0:
+            return max(dense2[cx][cy], dense2[cx + 1][cy]);
+          default:
+            return max(dense2[cx][cy], dense2[cx][cy + 1]);
+        }
+      case 2:
+        return max(max(dense2[cx][cy], dense2[cx + 1][cy]), max(dense2[cx][cy + 1], dense2[cx + 1][cy + 1]));
     }
     return threshold;
   }
@@ -222,32 +127,19 @@ public:
 /*****write_pairs*****/
 class WritePairs2
 {
+  // member vals
 public:
   int64_t dim;
   double birth;
   double death;
 
   // constructor
-  WritePairs2(int64_t _dim, double _birth, double _death)
-  {
-    dim = _dim;
-    birth = _birth;
-    death = _death;
-  }
+  WritePairs2(int64_t _dim, double _birth, double _death) : dim(_dim), birth(_birth), death(_death) {}
 
   // getters
-  int64_t getDimension()
-  {
-    return dim;
-  }
-  double getBirth()
-  {
-    return birth;
-  }
-  double getDeath()
-  {
-    return death;
-  }
+  int64_t getDimension() { return dim; }
+  double getBirth() { return birth; }
+  double getDeath() { return death; }
 };
 
 /*****columns_to_reduce*****/
@@ -260,34 +152,25 @@ public:
   int max_of_index;
 
   // constructor
-  ColumnsToReduce2(DenseCubicalGrids2* _dcg)
+  ColumnsToReduce2(DenseCubicalGrids2* _dcg) : dim(0)
   {
-    dim = 0;
-    int ax = _dcg->ax;
-    int ay = _dcg->ay;
+    int ax = _dcg->ax,
+        ay = _dcg->ay,
+        index;
     max_of_index = 2048 * (ay + 2);
-    int index;
     double birthday;
     for (int y = ay; y > 0; --y)
-    {
       for (int x = ax; x > 0; --x)
       {
         birthday = _dcg->dense2[x][y];
         index = x | (y << 11);
-        if (birthday != _dcg -> threshold)
-        {
-          columns_to_reduce.push_back(BirthdayIndex2(birthday, index, 0));
-        }
+        if (birthday != _dcg -> threshold) columns_to_reduce.push_back(BirthdayIndex2(birthday, index, 0));
       }
-    }
     sort(columns_to_reduce.begin(), columns_to_reduce.end(), BirthdayIndex2Comparator());
   }
 
   // getter (length of member vector)
-  int size()
-  {
-    return columns_to_reduce.size();
-  }
+  int size() { return columns_to_reduce.size(); }
 };
 
 /*****simplex_coboundary_enumerator*****/
@@ -306,10 +189,7 @@ public:
   double threshold;
 
   // constructor
-  SimplexCoboundaryEnumerator2()
-  {
-    nextCoface = BirthdayIndex2(0, -1, 1);
-  }
+  SimplexCoboundaryEnumerator2() : nextCoface(BirthdayIndex2(0, -1, 1)) {}
 
   // member methods
   void setSimplexCoboundaryEnumerator2(BirthdayIndex2 _s, DenseCubicalGrids2* _dcg)
@@ -422,10 +302,7 @@ public:
   }
 
   // getter
-  BirthdayIndex2 getNextCoface()
-  {
-    return nextCoface;
-  }
+  BirthdayIndex2 getNextCoface() { return nextCoface; }
 };
 
 /*****union_find*****/
@@ -440,10 +317,9 @@ public:
   DenseCubicalGrids2* dcg;
 
   // constructor
-  UnionFind2(int moi, DenseCubicalGrids2* _dcg) : parent(moi), birthtime(moi), time_max(moi) // Thie "n" is the number of cubes.
+  UnionFind2(int moi, DenseCubicalGrids2* _dcg) : parent(moi), birthtime(moi), time_max(moi), max_of_index(moi) // Thie "n" is the number of cubes.
   {
     dcg = _dcg;
-    max_of_index = moi;
 
     for (int i = 0; i < moi; ++i)
     {
