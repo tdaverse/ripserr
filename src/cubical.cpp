@@ -26,107 +26,107 @@
  with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
-#include <fstream>
-#include <queue>
-#include <vector>
-#include <unordered_map>
-#include <string>
-#include <algorithm>
-#include <cassert>
-#include <cstdint>
-#include <Rcpp.h>
-
-using namespace std;
-
-/*****birthday_index*****/
-class BirthdayIndex
-{
-  // member vars
-public:
-  double birthday;
-  int index;
-  int dim;
-  
-  // constructors
-  BirthdayIndex(double b, int i, int d) : birthday(b), index(i), dim(d) {}
-  BirthdayIndex() : BirthdayIndex(0, -1, 1) {}
-  BirthdayIndex(const BirthdayIndex& b) : BirthdayIndex(b.birthday, b.index, b.dim) {}
-  
-  // copy
-  void copyBirthdayIndex(BirthdayIndex v)
-  {
-    birthday = v.birthday;
-    index = v.index;
-    dim = v.dim;
-  }
-  
-  // getters
-  double getBirthday() { return birthday; }
-  int getIndex() { return index; }
-  int getDimension() { return dim; }
-};
-
-// utility method
-bool cmpBday(const BirthdayIndex& o1, const BirthdayIndex& o2)
-{
-  return (o1.birthday == o2.birthday ? o1.index < o2.index : o1.birthday < o2.birthday);
-}
-
-struct BirthdayIndexComparator
-{
-  bool operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const
-  {
-    return cmpBday(o1, o2);
-  }
-};
-
-struct BirthdayIndexInverseComparator
-{
-  bool operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const
-  {
-    return !cmpBday(o1, o2);
-  }
-};
-
-/*****write_pairs*****/
-class WritePairs
-{
-  // member vars
-public:
-  int64_t dim;
-  double birth;
-  double death;
-  
-  // constructor
-  WritePairs(int64_t setDim, double setBirth, double setDeath) : dim(setDim), birth(setBirth), death(setDeath) {}
-  
-  // getters
-  int64_t getDimension() { return dim; }
-  double getBirth() { return birth; }
-  double getDeath() { return death; }
-};
-
-/*****dense_cubical_grids*****/
-const int MAX_DIM2_HEIGHT = 2048,
-          MAX_DIM2_WIDTH  = 1024,
-          MAX_DIM3 = 512,
-          MAX_DIM4 = 128;
-class DenseCubicalGrids
-{
-  // member vals
-public:
-  double threshold;
-  int dim;
-  int dataDim;
-  int ax, ay, az, at;
-  double dense2[MAX_DIM2_HEIGHT][MAX_DIM2_WIDTH];
-  double dense3[MAX_DIM3][MAX_DIM3][MAX_DIM3];
-  double dense4[MAX_DIM4][MAX_DIM4][MAX_DIM4][MAX_DIM4];
-  
-  // constructor
-  
-  // methods
-  double getBirthday(int index, int dim);
-  //void getSimplexVertices(int index, int dim, Vertices* v);
-};
+// #include <iostream>
+// #include <fstream>
+// #include <queue>
+// #include <vector>
+// #include <unordered_map>
+// #include <string>
+// #include <algorithm>
+// #include <cassert>
+// #include <cstdint>
+// #include <Rcpp.h>
+// 
+// using namespace std;
+// 
+// /*****birthday_index*****/
+// class BirthdayIndex
+// {
+//   // member vars
+// public:
+//   double birthday;
+//   int index;
+//   int dim;
+//   
+//   // constructors
+//   BirthdayIndex(double b, int i, int d) : birthday(b), index(i), dim(d) {}
+//   BirthdayIndex() : BirthdayIndex(0, -1, 1) {}
+//   BirthdayIndex(const BirthdayIndex& b) : BirthdayIndex(b.birthday, b.index, b.dim) {}
+//   
+//   // copy
+//   void copyBirthdayIndex(BirthdayIndex v)
+//   {
+//     birthday = v.birthday;
+//     index = v.index;
+//     dim = v.dim;
+//   }
+//   
+//   // getters
+//   double getBirthday() { return birthday; }
+//   int getIndex() { return index; }
+//   int getDimension() { return dim; }
+// };
+// 
+// // utility method
+// bool cmpBday(const BirthdayIndex& o1, const BirthdayIndex& o2)
+// {
+//   return (o1.birthday == o2.birthday ? o1.index < o2.index : o1.birthday < o2.birthday);
+// }
+// 
+// struct BirthdayIndexComparator
+// {
+//   bool operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const
+//   {
+//     return cmpBday(o1, o2);
+//   }
+// };
+// 
+// struct BirthdayIndexInverseComparator
+// {
+//   bool operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const
+//   {
+//     return !cmpBday(o1, o2);
+//   }
+// };
+// 
+// /*****write_pairs*****/
+// class WritePairs
+// {
+//   // member vars
+// public:
+//   int64_t dim;
+//   double birth;
+//   double death;
+//   
+//   // constructor
+//   WritePairs(int64_t setDim, double setBirth, double setDeath) : dim(setDim), birth(setBirth), death(setDeath) {}
+//   
+//   // getters
+//   int64_t getDimension() { return dim; }
+//   double getBirth() { return birth; }
+//   double getDeath() { return death; }
+// };
+// 
+// /*****dense_cubical_grids*****/
+// const int MAX_DIM2_HEIGHT = 2048,
+//           MAX_DIM2_WIDTH  = 1024,
+//           MAX_DIM3 = 512,
+//           MAX_DIM4 = 128;
+// class DenseCubicalGrids
+// {
+//   // member vals
+// public:
+//   double threshold;
+//   int dim;
+//   int dataDim;
+//   int ax, ay, az, at;
+//   double dense2[MAX_DIM2_HEIGHT][MAX_DIM2_WIDTH];
+//   double dense3[MAX_DIM3][MAX_DIM3][MAX_DIM3];
+//   double dense4[MAX_DIM4][MAX_DIM4][MAX_DIM4][MAX_DIM4];
+//   
+//   // constructor
+//   
+//   // methods
+//   double getBirthday(int index, int dim);
+//   //void getSimplexVertices(int index, int dim, Vertices* v);
+// };
