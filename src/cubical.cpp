@@ -106,3 +106,27 @@ public:
   double getBirth() { return birth; }
   double getDeath() { return death; }
 };
+
+/*****dense_cubical_grids*****/
+const int MAX_DIM2_HEIGHT = 2048,
+          MAX_DIM2_WIDTH  = 1024,
+          MAX_DIM3 = 512,
+          MAX_DIM4 = 128;
+class DenseCubicalGrids
+{
+  // member vals
+public:
+  double threshold;
+  int dim;
+  int dataDim;
+  int ax, ay, az, at;
+  double dense2[MAX_DIM2_HEIGHT][MAX_DIM2_WIDTH];
+  double dense3[MAX_DIM3][MAX_DIM3][MAX_DIM3];
+  double dense4[MAX_DIM4][MAX_DIM4][MAX_DIM4][MAX_DIM4];
+  
+  // constructor
+  
+  // methods
+  double getBirthday(int index, int dim);
+  //void getSimplexVertices(int index, int dim, Vertices* v);
+};
