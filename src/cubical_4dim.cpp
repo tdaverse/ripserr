@@ -176,7 +176,7 @@ double WritePairs4::getDeath(){
 /*****dense_cubical_grids*****/
 enum file_format { DIPHA, PERSEUS };
 
-class DenseCubicalGrids { // file_read
+class DenseCubicalGrids4 { // file_read
   
 public:
   double threshold;
@@ -185,11 +185,11 @@ public:
   double dense4[128][128][128][128];
   file_format format;
   
-  DenseCubicalGrids(const Rcpp::NumericVector& image, double threshold, int nx, int ny, int nz, int nt) ; 
+  DenseCubicalGrids4(const Rcpp::NumericVector& image, double threshold, int nx, int ny, int nz, int nt) ; 
   double getBirthday(int index, int dim);
 };
 
-DenseCubicalGrids::DenseCubicalGrids(const Rcpp::NumericVector& image, double threshold, int nx, int ny, int nz, int nt)
+DenseCubicalGrids4::DenseCubicalGrids4(const Rcpp::NumericVector& image, double threshold, int nx, int ny, int nz, int nt)
 {
   ax = nx; ay = ny; az = nz; aw = nt;
   //Rcpp::Rcout << "HERE4\n";
@@ -251,7 +251,7 @@ DenseCubicalGrids::DenseCubicalGrids(const Rcpp::NumericVector& image, double th
 }
 
 
-double DenseCubicalGrids::getBirthday(int index, int dim){
+double DenseCubicalGrids4::getBirthday(int index, int dim){
   int cx = index & 0x7f;
   int cy = (index >> 7) & 0x7f;
   int cz = (index >> 14) & 0x7f;
@@ -344,12 +344,12 @@ public:
   int dim;
   int max_of_index;
   
-  ColumnsToReduce(DenseCubicalGrids* _dcg);
+  ColumnsToReduce(DenseCubicalGrids4* _dcg);
   int size() ;
   
 };
 
-ColumnsToReduce::ColumnsToReduce(DenseCubicalGrids* _dcg) {
+ColumnsToReduce::ColumnsToReduce(DenseCubicalGrids4* _dcg) {
   dim = 0;
   int ax = _dcg -> ax;
   int ay = _dcg -> ay;
@@ -384,7 +384,7 @@ class SimplexCoboundaryEnumerator
 {
 public:
   BirthdayIndex4 simplex;
-  DenseCubicalGrids* dcg;
+  DenseCubicalGrids4* dcg;
   int dim;
   double birthtime;
   int ax, ay, az, aw;
@@ -394,7 +394,7 @@ public:
   double threshold; 
   
   SimplexCoboundaryEnumerator();
-  void setSimplexCoboundaryEnumerator(BirthdayIndex4 _s, DenseCubicalGrids* _dcg);
+  void setSimplexCoboundaryEnumerator(BirthdayIndex4 _s, DenseCubicalGrids4* _dcg);
   bool hasNextCoface() ;
   BirthdayIndex4 getNextCoface();
 };
@@ -404,7 +404,7 @@ SimplexCoboundaryEnumerator::SimplexCoboundaryEnumerator(){
 }
 
 
-void SimplexCoboundaryEnumerator::setSimplexCoboundaryEnumerator(BirthdayIndex4 _s, DenseCubicalGrids* _dcg) {
+void SimplexCoboundaryEnumerator::setSimplexCoboundaryEnumerator(BirthdayIndex4 _s, DenseCubicalGrids4* _dcg) {
   simplex = _s;
   dcg = _dcg;
   dim = simplex.dim;
@@ -990,9 +990,9 @@ public:
   vector<int> parent;
   vector<double> birthtime;
   vector<double> time_max;
-  DenseCubicalGrids* dcg;
+  DenseCubicalGrids4* dcg;
   
-  UnionFind(int moi, DenseCubicalGrids* _dcg);
+  UnionFind(int moi, DenseCubicalGrids4* _dcg);
   int find(int x);
   void link(int x, int y);
 };
@@ -1003,7 +1003,7 @@ class JointPairs{
   int n; // the number of cubes
   int ctr_moi;
   int ax, ay, az, aw;
-  DenseCubicalGrids* dcg;
+  DenseCubicalGrids4* dcg;
   ColumnsToReduce* ctr;
   vector<WritePairs4> *wp;
   bool print;
@@ -1012,11 +1012,11 @@ class JointPairs{
   vector<BirthdayIndex4> dim1_simplex_list;
   
 public:
-  JointPairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vector<WritePairs4> &_wp, const bool _print);
+  JointPairs(DenseCubicalGrids4* _dcg, ColumnsToReduce* _ctr, vector<WritePairs4> &_wp, const bool _print);
   void joint_pairs_main();
 };
 
-UnionFind::UnionFind(int moi, DenseCubicalGrids* _dcg) : parent(moi), birthtime(moi), time_max(moi) { // Thie "n" is the number of cubes.
+UnionFind::UnionFind(int moi, DenseCubicalGrids4* _dcg) : parent(moi), birthtime(moi), time_max(moi) { // Thie "n" is the number of cubes.
   dcg = _dcg;
   max_of_index = moi;
   
@@ -1061,7 +1061,7 @@ void UnionFind::link(int x, int y){
 }
 
 
-JointPairs::JointPairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vector<WritePairs4> &_wp, const bool _print){
+JointPairs::JointPairs(DenseCubicalGrids4* _dcg, ColumnsToReduce* _ctr, vector<WritePairs4> &_wp, const bool _print){
   dcg = _dcg;
   ax = dcg -> ax;
   ay = dcg -> ay;
@@ -1170,7 +1170,7 @@ class ComputePairs
 {
   
 public:
-  DenseCubicalGrids* dcg;
+  DenseCubicalGrids4* dcg;
   ColumnsToReduce* ctr;
   hash_map<int, int> pivot_column_index;
   int ax, ay, az, aw;
@@ -1178,7 +1178,7 @@ public:
   vector<WritePairs4> *wp;
   bool print;
   
-  ComputePairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vector<WritePairs4> &_wp, const bool _print);
+  ComputePairs(DenseCubicalGrids4* _dcg, ColumnsToReduce* _ctr, vector<WritePairs4> &_wp, const bool _print);
   void compute_pairs_main();
   void outputPP(int _dim, double _birth, double _death);
   BirthdayIndex4 pop_pivot(priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>& column);
@@ -1186,7 +1186,7 @@ public:
   void assemble_columns_to_reduce();
 };
 
-ComputePairs::ComputePairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vector<WritePairs4> &_wp, const bool _print){
+ComputePairs::ComputePairs(DenseCubicalGrids4* _dcg, ColumnsToReduce* _ctr, vector<WritePairs4> &_wp, const bool _print){
   dcg = _dcg;
   ctr = _ctr;
   dim = _ctr -> dim;
@@ -1411,7 +1411,7 @@ Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, i
   vector<WritePairs4> writepairs; // dim birth death
   writepairs.clear();
   
-  DenseCubicalGrids* dcg = new DenseCubicalGrids(image, threshold, nx, ny, nz, nt);
+  DenseCubicalGrids4* dcg = new DenseCubicalGrids4(image, threshold, nx, ny, nz, nt);
   ColumnsToReduce* ctr = new ColumnsToReduce(dcg); 
   
   switch(method)
