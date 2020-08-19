@@ -90,4 +90,19 @@ struct BirthdayIndexInverseComparator
 };
 
 /*****write_pairs*****/
-
+class WritePairs
+{
+  // member vars
+public:
+  int64_t dim;
+  double birth;
+  double death;
+  
+  // constructor
+  WritePairs(int64_t setDim, double setBirth, double setDeath) : dim(setDim), birth(setBirth), death(setDeath) {}
+  
+  // getters
+  int64_t getDimension() { return dim; }
+  double getBirth() { return birth; }
+  double getDeath() { return death; }
+};
