@@ -1339,6 +1339,7 @@ void ComputePairs4::assemble_columns_to_reduce() {
     ctr -> columns_to_reduce.clear();
     for(int w = 1; w <= aw; ++w){
       for(int z = 1; z <= az; ++z){
+        Rcpp::checkUserInterrupt();
         for (int y = 1; y <= ay; ++y) {
           for (int x = 1; x <= ax; ++x) {
             for (int m = 0; m < 4; ++m) { // the number of type
@@ -1358,6 +1359,7 @@ void ComputePairs4::assemble_columns_to_reduce() {
     ctr -> columns_to_reduce.clear();
     for(int w = 1; w <= aw; ++w){
       for(int z = 1; z <= az; ++z){
+        Rcpp::checkUserInterrupt();
         for (int y = 1; y <= ay; ++y) {
           for (int x = 1; x <= ax; ++x) {
             for (int m = 0; m < 6; ++m) { // the number of type
@@ -1377,6 +1379,7 @@ void ComputePairs4::assemble_columns_to_reduce() {
     ctr -> columns_to_reduce.clear();
     for(int w = 1; w <= aw; ++w){
       for(int z = 1; z <= az; ++z){
+        Rcpp::checkUserInterrupt();
         for (int y = 1; y <= ay; ++y) {
           for (int x = 1; x <= ax; ++x) {
             for (int m = 0; m < 4; ++m) { // the number of type
