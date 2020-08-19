@@ -336,7 +336,7 @@ double DenseCubicalGrids4::getBirthday(int index, int dim){
 }
 
 /*****columns_to_reduce*****/
-class ColumnsToReduce
+class ColumnsToReduce4
 {
   
 public:
@@ -344,12 +344,12 @@ public:
   int dim;
   int max_of_index;
   
-  ColumnsToReduce(DenseCubicalGrids4* _dcg);
+  ColumnsToReduce4(DenseCubicalGrids4* _dcg);
   int size() ;
   
 };
 
-ColumnsToReduce::ColumnsToReduce(DenseCubicalGrids4* _dcg) {
+ColumnsToReduce4::ColumnsToReduce4(DenseCubicalGrids4* _dcg) {
   dim = 0;
   int ax = _dcg -> ax;
   int ay = _dcg -> ay;
@@ -375,12 +375,12 @@ ColumnsToReduce::ColumnsToReduce(DenseCubicalGrids4* _dcg) {
   sort(columns_to_reduce.begin(), columns_to_reduce.end(), BirthdayIndex4Comparator());
 }
 
-int ColumnsToReduce::size() {
+int ColumnsToReduce4::size() {
   return columns_to_reduce.size();
 }
 
 /*****simplex_coboundary_estimator*****/
-class SimplexCoboundaryEnumerator
+class SimplexCoboundaryEnumerator4
 {
 public:
   BirthdayIndex4 simplex;
@@ -393,18 +393,18 @@ public:
   BirthdayIndex4 nextCoface;
   double threshold; 
   
-  SimplexCoboundaryEnumerator();
-  void setSimplexCoboundaryEnumerator(BirthdayIndex4 _s, DenseCubicalGrids4* _dcg);
+  SimplexCoboundaryEnumerator4();
+  void setSimplexCoboundaryEnumerator4(BirthdayIndex4 _s, DenseCubicalGrids4* _dcg);
   bool hasNextCoface() ;
   BirthdayIndex4 getNextCoface();
 };
 
-SimplexCoboundaryEnumerator::SimplexCoboundaryEnumerator(){
+SimplexCoboundaryEnumerator4::SimplexCoboundaryEnumerator4(){
   nextCoface = BirthdayIndex4(0, -1, 1);
 }
 
 
-void SimplexCoboundaryEnumerator::setSimplexCoboundaryEnumerator(BirthdayIndex4 _s, DenseCubicalGrids4* _dcg) {
+void SimplexCoboundaryEnumerator4::setSimplexCoboundaryEnumerator4(BirthdayIndex4 _s, DenseCubicalGrids4* _dcg) {
   simplex = _s;
   dcg = _dcg;
   dim = simplex.dim;
@@ -425,7 +425,7 @@ void SimplexCoboundaryEnumerator::setSimplexCoboundaryEnumerator(BirthdayIndex4 
 }
 
 
-bool SimplexCoboundaryEnumerator::hasNextCoface() {
+bool SimplexCoboundaryEnumerator4::hasNextCoface() {
   int index = 0;
   double birthday = 0;
   switch (dim) {
@@ -979,12 +979,13 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
   return false;
 }
 
-BirthdayIndex4 SimplexCoboundaryEnumerator::getNextCoface() {
+BirthdayIndex4 SimplexCoboundaryEnumerator4::getNextCoface() {
   return nextCoface;
 }
 
 /*****union_find*****/
-class UnionFind{
+class UnionFind4
+{
 public:
   int max_of_index;
   vector<int> parent;
@@ -992,19 +993,19 @@ public:
   vector<double> time_max;
   DenseCubicalGrids4* dcg;
   
-  UnionFind(int moi, DenseCubicalGrids4* _dcg);
+  UnionFind4(int moi, DenseCubicalGrids4* _dcg);
   int find(int x);
   void link(int x, int y);
 };
 
 
-class JointPairs{
+class JointPairs4{
   
   int n; // the number of cubes
   int ctr_moi;
   int ax, ay, az, aw;
   DenseCubicalGrids4* dcg;
-  ColumnsToReduce* ctr;
+  ColumnsToReduce4* ctr;
   vector<WritePairs4> *wp;
   bool print;
   double u, v;
@@ -1012,11 +1013,11 @@ class JointPairs{
   vector<BirthdayIndex4> dim1_simplex_list;
   
 public:
-  JointPairs(DenseCubicalGrids4* _dcg, ColumnsToReduce* _ctr, vector<WritePairs4> &_wp, const bool _print);
+  JointPairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp, const bool _print);
   void joint_pairs_main();
 };
 
-UnionFind::UnionFind(int moi, DenseCubicalGrids4* _dcg) : parent(moi), birthtime(moi), time_max(moi) { // Thie "n" is the number of cubes.
+UnionFind4::UnionFind4(int moi, DenseCubicalGrids4* _dcg) : parent(moi), birthtime(moi), time_max(moi) { // Thie "n" is the number of cubes.
   dcg = _dcg;
   max_of_index = moi;
   
@@ -1027,7 +1028,7 @@ UnionFind::UnionFind(int moi, DenseCubicalGrids4* _dcg) : parent(moi), birthtime
   }
 }
 
-int UnionFind::find(int x){ // Thie "x" is Index.
+int UnionFind4::find(int x){ // Thie "x" is Index.
   int y = x, z = parent[y];
   while (z != y) {
     y = z;
@@ -1042,7 +1043,7 @@ int UnionFind::find(int x){ // Thie "x" is Index.
   return z;
 }
 
-void UnionFind::link(int x, int y){
+void UnionFind4::link(int x, int y){
   x = find(x);
   y = find(y);
   if (x == y) return;
@@ -1061,7 +1062,7 @@ void UnionFind::link(int x, int y){
 }
 
 
-JointPairs::JointPairs(DenseCubicalGrids4* _dcg, ColumnsToReduce* _ctr, vector<WritePairs4> &_wp, const bool _print){
+JointPairs4::JointPairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp, const bool _print){
   dcg = _dcg;
   ax = dcg -> ax;
   ay = dcg -> ay;
@@ -1092,8 +1093,8 @@ JointPairs::JointPairs(DenseCubicalGrids4* _dcg, ColumnsToReduce* _ctr, vector<W
   sort(dim1_simplex_list.rbegin(), dim1_simplex_list.rend(), BirthdayIndex4Comparator());
 }
 
-void JointPairs::joint_pairs_main(){
-  UnionFind dset(ctr_moi, dcg);
+void JointPairs4::joint_pairs_main(){
+  UnionFind4 dset(ctr_moi, dcg);
   ctr -> columns_to_reduce.clear();
   ctr -> dim = 1;
   double min_birth = dcg -> threshold;
@@ -1163,22 +1164,22 @@ void JointPairs::joint_pairs_main(){
 }
 
 /*****compute_pairs*****/
-template <class Key, class T> class hash_map : public std::unordered_map<Key, T> {};
+template <class Key, class T> class hash_map4 : public std::unordered_map<Key, T> {};
 
 
-class ComputePairs
+class ComputePairs4
 {
   
 public:
   DenseCubicalGrids4* dcg;
-  ColumnsToReduce* ctr;
-  hash_map<int, int> pivot_column_index;
+  ColumnsToReduce4* ctr;
+  hash_map4<int, int> pivot_column_index;
   int ax, ay, az, aw;
   int dim;
   vector<WritePairs4> *wp;
   bool print;
   
-  ComputePairs(DenseCubicalGrids4* _dcg, ColumnsToReduce* _ctr, vector<WritePairs4> &_wp, const bool _print);
+  ComputePairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp, const bool _print);
   void compute_pairs_main();
   void outputPP(int _dim, double _birth, double _death);
   BirthdayIndex4 pop_pivot(priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>& column);
@@ -1186,7 +1187,7 @@ public:
   void assemble_columns_to_reduce();
 };
 
-ComputePairs::ComputePairs(DenseCubicalGrids4* _dcg, ColumnsToReduce* _ctr, vector<WritePairs4> &_wp, const bool _print){
+ComputePairs4::ComputePairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp, const bool _print){
   dcg = _dcg;
   ctr = _ctr;
   dim = _ctr -> dim;
@@ -1199,16 +1200,16 @@ ComputePairs::ComputePairs(DenseCubicalGrids4* _dcg, ColumnsToReduce* _ctr, vect
   aw = _dcg -> aw;
 }
 
-void ComputePairs::compute_pairs_main(){
+void ComputePairs4::compute_pairs_main(){
   if(print == true){
     //cout << "persistence intervals in dim " << dim << ":" << endl;
   }
   
   vector<BirthdayIndex4> coface_entries;
-  SimplexCoboundaryEnumerator cofaces;
+  SimplexCoboundaryEnumerator4 cofaces;
   unordered_map<int, priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>> recorded_wc;
   
-  pivot_column_index = hash_map<int, int>();
+  pivot_column_index = hash_map4<int, int>();
   auto ctl_size = ctr -> columns_to_reduce.size();
   pivot_column_index.reserve(ctl_size);
   recorded_wc.reserve(ctl_size);
@@ -1227,7 +1228,7 @@ void ComputePairs::compute_pairs_main(){
     do {
       auto simplex = ctr -> columns_to_reduce[j];
       coface_entries.clear();
-      cofaces.setSimplexCoboundaryEnumerator(simplex, dcg);
+      cofaces.setSimplexCoboundaryEnumerator4(simplex, dcg);
       
       while (cofaces.hasNextCoface() && !goto_found_persistence_pair) {
         BirthdayIndex4 coface = cofaces.getNextCoface();
@@ -1287,7 +1288,7 @@ void ComputePairs::compute_pairs_main(){
   }
 }
 
-void ComputePairs::outputPP(int _dim, double _birth, double _death){
+void ComputePairs4::outputPP(int _dim, double _birth, double _death){
   if(_birth != _death){
     if(_death != dcg -> threshold){
       if(print == true){
@@ -1305,7 +1306,7 @@ void ComputePairs::outputPP(int _dim, double _birth, double _death){
   }
 }
 
-BirthdayIndex4 ComputePairs::pop_pivot(priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>& column){
+BirthdayIndex4 ComputePairs4::pop_pivot(priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>& column){
   if (column.empty()) {
     return BirthdayIndex4(0, -1, 0);
   } else {
@@ -1325,7 +1326,7 @@ BirthdayIndex4 ComputePairs::pop_pivot(priority_queue<BirthdayIndex4, vector<Bir
   }
 }
 
-BirthdayIndex4 ComputePairs::get_pivot(priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>&
+BirthdayIndex4 ComputePairs4::get_pivot(priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>&
   column) {
   BirthdayIndex4 result = pop_pivot(column);
   if (result.getIndex() != -1) {
@@ -1334,7 +1335,7 @@ BirthdayIndex4 ComputePairs::get_pivot(priority_queue<BirthdayIndex4, vector<Bir
   return result;
 }
 
-void ComputePairs::assemble_columns_to_reduce() {
+void ComputePairs4::assemble_columns_to_reduce() {
   ++dim;
   ctr -> dim = dim;
   
@@ -1412,17 +1413,17 @@ Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, i
   writepairs.clear();
   
   DenseCubicalGrids4* dcg = new DenseCubicalGrids4(image, threshold, nx, ny, nz, nt);
-  ColumnsToReduce* ctr = new ColumnsToReduce(dcg); 
+  ColumnsToReduce4* ctr = new ColumnsToReduce4(dcg); 
   
   switch(method)
   {
     // link find algo
   case 0:
   {
-    JointPairs* jp = new JointPairs(dcg, ctr, writepairs, print);
+    JointPairs4* jp = new JointPairs4(dcg, ctr, writepairs, print);
     jp -> joint_pairs_main();
     
-    ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
+    ComputePairs4* cp = new ComputePairs4(dcg, ctr, writepairs, print);
     cp -> compute_pairs_main(); // dim1
     
     cp -> assemble_columns_to_reduce();
@@ -1435,7 +1436,7 @@ Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, i
     // compute pairs algo
   case 1:
   {	
-    ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
+    ComputePairs4* cp = new ComputePairs4(dcg, ctr, writepairs, print);
     cp -> compute_pairs_main(); // dim0
     cp -> assemble_columns_to_reduce();
     
