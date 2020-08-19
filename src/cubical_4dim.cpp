@@ -35,9 +35,16 @@
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
+#include <cmath>
 #include <Rcpp.h>
 
 using namespace std;
+
+// utility functions
+double max(double a, double b) { return a > b ? a : b; }
+double max(double a, double b, double c) { return max(max(a, b), c); }
+double max(double a, double b, double c, double d) { return max(max(a, b), max(c, d)); }
+double max(double a, double b, double c, double d, double e, double f, double g, double h) { return max(max(a, b, c, d), max(e, f, g, h)); }
 
 /*****birthday_index*****/
 class BirthdayIndex4
@@ -276,61 +283,50 @@ double DenseCubicalGrids4::getBirthday(int index, int dim){
   case 2:
     switch(cm){
     case 0: // x - y (fix z, w)
-      return max({dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
-                 dense4[cx + 1][cy + 1][cz][cw], dense4[cx][cy + 1][cz][cw]});
+      return max(dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], dense4[cx + 1][cy + 1][cz][cw], dense4[cx][cy + 1][cz][cw]);
     case 1: // z - x (fix y, w)
-      return max({dense4[cx][cy][cz][cw], dense4[cx][cy][cz + 1][cw], 
-                 dense4[cx + 1][cy][cz + 1][cw], dense4[cx + 1][cy][cz][cw]});
+      return max(dense4[cx][cy][cz][cw], dense4[cx][cy][cz + 1][cw], dense4[cx + 1][cy][cz + 1][cw], dense4[cx + 1][cy][cz][cw]);
     case 2: // y - z (fix x, w)
-      return max({dense4[cx][cy][cz][cw], dense4[cx][cy + 1][cz][cw], 
-                 dense4[cx][cy + 1][cz + 1][cw], dense4[cx][cy][cz + 1][cw]});
+      return max(dense4[cx][cy][cz][cw], dense4[cx][cy + 1][cz][cw], dense4[cx][cy + 1][cz + 1][cw], dense4[cx][cy][cz + 1][cw]);
     case 3: // x - w
-      return max({dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
-                 dense4[cx + 1][cy][cz][cw + 1], dense4[cx][cy][cz][cw + 1]});
+      return max(dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], dense4[cx + 1][cy][cz][cw + 1], dense4[cx][cy][cz][cw + 1]);
     case 4: // y - w
-      return max({dense4[cx][cy][cz][cw], dense4[cx][cy + 1][cz][cw], 
-                 dense4[cx][cy + 1][cz][cw + 1], dense4[cx][cy][cz][cw + 1]});
+      return max(dense4[cx][cy][cz][cw], dense4[cx][cy + 1][cz][cw], dense4[cx][cy + 1][cz][cw + 1], dense4[cx][cy][cz][cw + 1]);
     case 5: // z - w
-      return max({dense4[cx][cy][cz][cw], dense4[cx][cy][cz + 1][cw], 
-                 dense4[cx][cy][cz + 1][cw + 1], dense4[cx][cy][cz][cw + 1]});
+      return max(dense4[cx][cy][cz][cw], dense4[cx][cy][cz + 1][cw], dense4[cx][cy][cz + 1][cw + 1], dense4[cx][cy][cz][cw + 1]);
     }
   case 3:
     switch(cm){
     case 0: // x - y - z
-      return max({dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
+      return max(dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw],
                  dense4[cx + 1][cy + 1][cz][cw], dense4[cx][cy + 1][cz][cw],
-                                                                       dense4[cx][cy][cz + 1][cw], dense4[cx + 1][cy][cz + 1][cw], 
-                                                                                                                             dense4[cx + 1][cy + 1][cz + 1][cw], dense4[cx][cy + 1][cz + 1][cw]
-      });
+                 dense4[cx][cy][cz + 1][cw], dense4[cx + 1][cy][cz + 1][cw],
+                 dense4[cx + 1][cy + 1][cz + 1][cw], dense4[cx][cy + 1][cz + 1][cw]);
     case 1: // x - y - w
-      return max({dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
+      return max(dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
                  dense4[cx + 1][cy + 1][cz][cw], dense4[cx][cy + 1][cz][cw],
-                                                                       dense4[cx][cy][cz][cw + 1], dense4[cx + 1][cy][cz][cw + 1], 
-                                                                                                                         dense4[cx + 1][cy + 1][cz][cw + 1], dense4[cx][cy + 1][cz][cw + 1]
-      });
+                 dense4[cx][cy][cz][cw + 1], dense4[cx + 1][cy][cz][cw + 1], 
+                 dense4[cx + 1][cy + 1][cz][cw + 1], dense4[cx][cy + 1][cz][cw + 1]);
     case 2: // x - z - w
-      return max({dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
+      return max(dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
                  dense4[cx + 1][cy][cz][cw + 1], dense4[cx][cy][cz][cw + 1],
-                                                                   dense4[cx][cy][cz + 1][cw], dense4[cx + 1][cy][cz + 1][cw], 
-                                                                                                                         dense4[cx + 1][cy][cz + 1][cw + 1], dense4[cx][cy][cz + 1][cw + 1]
-      });
+                 dense4[cx][cy][cz + 1][cw], dense4[cx + 1][cy][cz + 1][cw], 
+                 dense4[cx + 1][cy][cz + 1][cw + 1], dense4[cx][cy][cz + 1][cw + 1]);
     case 3: // y - z - w
-      return max({dense4[cx][cy][cz][cw], dense4[cx][cy][cz][cw + 1], 
+      return max(dense4[cx][cy][cz][cw], dense4[cx][cy][cz][cw + 1], 
                  dense4[cx][cy + 1][cz][cw + 1], dense4[cx][cy + 1][cz][cw],
-                                                                       dense4[cx][cy][cz + 1][cw], dense4[cx][cy][cz + 1][cw + 1], 
-                                                                                                                         dense4[cx][cy + 1][cz + 1][cw + 1], dense4[cx][cy + 1][cz + 1][cw]
-      });
+                 dense4[cx][cy][cz + 1][cw], dense4[cx][cy][cz + 1][cw + 1], 
+                 dense4[cx][cy + 1][cz + 1][cw + 1], dense4[cx][cy + 1][cz + 1][cw]);
     }
   case 4:
-    return max({dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
-               dense4[cx + 1][cy + 1][cz][cw], dense4[cx][cy + 1][cz][cw],
-                                                                     dense4[cx][cy][cz + 1][cw], dense4[cx + 1][cy][cz + 1][cw], 
-                                                                                                                           dense4[cx + 1][cy + 1][cz + 1][cw], dense4[cx][cy + 1][cz + 1][cw],
-                                                                                                                                                                                         dense4[cx][cy][cz][cw + 1], dense4[cx + 1][cy][cz][cw + 1], 
-                                                                                                                                                                                                                                           dense4[cx + 1][cy + 1][cz][cw + 1], dense4[cx][cy + 1][cz][cw + 1],
-                                                                                                                                                                                                                                                                                                     dense4[cx][cy][cz + 1][cw + 1], dense4[cx + 1][cy][cz + 1][cw + 1], 
-                                                                                                                                                                                                                                                                                                                                                               dense4[cx + 1][cy + 1][cz + 1][cw + 1], dense4[cx][cy + 1][cz + 1][cw + 1]
-    });
+    return max(max(dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
+                   dense4[cx + 1][cy + 1][cz][cw], dense4[cx][cy + 1][cz][cw],
+                   dense4[cx][cy][cz + 1][cw], dense4[cx + 1][cy][cz + 1][cw], 
+                   dense4[cx + 1][cy + 1][cz + 1][cw], dense4[cx][cy + 1][cz + 1][cw]),
+               max(dense4[cx][cy][cz][cw + 1], dense4[cx + 1][cy][cz][cw + 1], 
+                   dense4[cx + 1][cy + 1][cz][cw + 1], dense4[cx][cy + 1][cz][cw + 1],
+                   dense4[cx][cy][cz + 1][cw + 1], dense4[cx + 1][cy][cz + 1][cw + 1], 
+                   dense4[cx + 1][cy + 1][cz + 1][cw + 1], dense4[cx][cy + 1][cz + 1][cw + 1]));
   }
   return threshold;
 }
@@ -486,32 +482,32 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
         switch(i){
         case 0: // x - w +
           index = (3 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
-          birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw + 1], dcg -> dense4[cx + 1][cy][cz][cw + 1]});
+          birthday = max(birthtime, dcg -> dense4[cx][cy][cz][cw + 1], dcg -> dense4[cx + 1][cy][cz][cw + 1]);
           break;
           
         case 1: // x - w -
           index = (3 << 28) | ((cw - 1) << 21) | (cz << 14) | (cy << 7) | cx;
-          birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw - 1], dcg -> dense4[cx + 1][cy][cz][cw - 1]});
+          birthday = max(birthtime, dcg -> dense4[cx][cy][cz][cw - 1], dcg -> dense4[cx + 1][cy][cz][cw - 1]);
           break;
           
         case 2: // x - z +
           index = (1 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
-          birthday = max({birthtime, dcg -> dense4[cx][cy][cz + 1][cw], dcg -> dense4[cx + 1][cy][cz + 1][cw]});
+          birthday = max(birthtime, dcg -> dense4[cx][cy][cz + 1][cw], dcg -> dense4[cx + 1][cy][cz + 1][cw]);
           break;
           
         case 3: // x - z -
           index = (1 << 28) | (cw << 21) |((cz - 1) << 14) | (cy << 7) | cx;
-          birthday = max({birthtime, dcg -> dense4[cx][cy][cz - 1][cw], dcg -> dense4[cx + 1][cy][cz - 1][cw]});
+          birthday = max(birthtime, dcg -> dense4[cx][cy][cz - 1][cw], dcg -> dense4[cx + 1][cy][cz - 1][cw]);
           break;
           
         case 4: // x - y +
           index = (0 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
-          birthday = max({birthtime, dcg -> dense4[cx][cy + 1][cz][cw], dcg -> dense4[cx + 1][cy + 1][cz][cw]});
+          birthday = max(birthtime, dcg -> dense4[cx][cy + 1][cz][cw], dcg -> dense4[cx + 1][cy + 1][cz][cw]);
           break;
           
         case 5: // x - y -
           index = (0 << 28) | (cw << 21) |(cz << 14) | ((cy - 1) << 7) | cx;
-          birthday = max({birthtime, dcg -> dense4[cx][cy - 1][cz][cw], dcg -> dense4[cx + 1][cy - 1][cz][cw]});
+          birthday = max(birthtime, dcg -> dense4[cx][cy - 1][cz][cw], dcg -> dense4[cx + 1][cy - 1][cz][cw]);
           break;
         }
         
