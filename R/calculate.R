@@ -132,13 +132,20 @@ calculate_homology <- function(mat, dim = 1, threshold = -1, p = 2L, format = "c
 #' @return 3-column matrix with each row representing a TDA feature
 #' @export
 cubical <- function(mat, threshold = 9999, method = 0) {
+  # temp var to store before formatting at end
+  ans <- NULL
   if (length(dim(mat)) == 2) {
-    return(cubical_2dim(mat, threshold, method))
+    ans <- cubical_2dim(mat, threshold, method)
   } else if (length(dim(mat)) == 4) {
-    return(cubical_4dim(mat, threshold, method,
+    ans <- cubical_4dim(mat, threshold, method,
                         dim(mat)[1],
                         dim(mat)[2],
                         dim(mat)[3],
-                        dim(mat)[4]))
+                        dim(mat)[4])
   }
+  
+  ans <- as.data.frame(ans)
+  colnames(ans) <- c("dimension", "birth", "death")
+  
+  return(ans)
 }

@@ -27,6 +27,25 @@ test_that("basic 2-dim cubical works", {
   expect_equal(0, sum(cub_comp[, 2] > cub_comp[, 3]))
 })
 
+# these tests use example data + original code from Github: CubicalRipser/Cubical_2dim
+#   to validate accuracy
+test_that("2-dim calculation returns same values as validated tests", {
+  # read validated input and output data
+  input_data <- readRDS("input_2dim.rds")
+  output_data <- readRDS("output_2dim.rds")
+  
+  # re-calculate output w/ ripserr
+  THRESH <- 9999
+  test_output <- ripserr::cubical(input_data, threshold = THRESH)
+  
+  # filter out threshold value features to avoid spurious differences in equality
+  output_data <- subset(output_data, death < THRESH)
+  test_output <- subset(test_output, death < THRESH)
+  
+  # test
+  expect_equal(test_output, output_data)
+})
+
 # test_that("basic 4-dim cubical works", {
 #   # reproducibility
 #   set.seed(42)
