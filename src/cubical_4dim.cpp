@@ -176,7 +176,8 @@ double WritePairs::getDeath(){
 /*****dense_cubical_grids*****/
 enum file_format { DIPHA, PERSEUS };
 
-const int MAX_SIZE = 128;
+const int MAX_SIZE = 64;
+const int EXPONENT = 6;
 
 class DenseCubicalGrids { // file_read
   
@@ -209,11 +210,11 @@ DenseCubicalGrids::DenseCubicalGrids(const Rcpp::NumericVector& image, double _t
 }
 
 double DenseCubicalGrids::getBirthday(int index, int dim){
-  int cx = index & 0x7f;
-  int cy = (index >> 7) & 0x7f;
-  int cz = (index >> 14) & 0x7f;
-  int cw = (index >> 21) & 0x7f;
-  int cm = (index >> 28) & 0x0f;
+  int cx = index & (MAX_SIZE - 1);
+  int cy = (index >> EXPONENT) & (MAX_SIZE - 1);
+  int cz = (index >> (2 * EXPONENT)) & (MAX_SIZE - 1);
+  int cw = (index >> (3 * EXPONENT)) & (MAX_SIZE - 1);
+  int cm = (index >> (4 * EXPONENT)) & 0x0f;
   
   switch(dim){
   case 0:
@@ -321,7 +322,7 @@ ColumnsToReduce::ColumnsToReduce(DenseCubicalGrids* _dcg) {
       for (int y = ay; y > 0; --y) {
         for (int x = ax; x > 0; --x) {
           birthday = _dcg -> dense4[x][y][z][w];
-          index = x | (y << 7) | (z << 14) | (w << 21);
+          index = x | (y << EXPONENT) | (z << (2 * EXPONENT)) | (w << (3 * EXPONENT));
           if (birthday != _dcg -> threshold) {
             columns_to_reduce.push_back(BirthdayIndex(birthday, index, 0));
           }
@@ -370,11 +371,11 @@ void SimplexCoboundaryEnumerator::setSimplexCoboundaryEnumerator(BirthdayIndex _
   az = _dcg -> az;
   aw = _dcg -> aw;
   
-  cx = simplex.index & 0x7f;
-  cy = (simplex.index >> 7) & 0x7f;
-  cz = (simplex.index >> 14) & 0x7f;
-  cw = (simplex.index >> 21) & 0x7f;
-  cm = (simplex.index >> 28) & 0x0f;
+  cx = simplex.index & (MAX_SIZE - 1);
+  cy = (simplex.index >> EXPONENT) & (MAX_SIZE - 1);
+  cz = (simplex.index >> (2 * EXPONENT)) & (MAX_SIZE - 1);
+  cw = (simplex.index >> (3 * EXPONENT)) & (MAX_SIZE - 1);
+  cm = (simplex.index >> (4 * EXPONENT)) & 0x0f;
   
   threshold = _dcg->threshold;
   count = 0;
@@ -388,42 +389,42 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
     for (int i = count; i < 8; ++i) {
       switch (i){
       case 0: // w +
-        index = (3 << 28) | (cw << 21) | (cz << 14) | (cy << 7) | cx;
+        index = (3 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
         birthday = max(birthtime, dcg -> dense4[cx][cy][cz][cw + 1]);
         break;
         
       case 1: // w -
-        index = (3 << 28) | ((cw - 1) << 21) | (cz << 14) | (cy << 7) | cx;
+        index = (3 << (4 * EXPONENT)) | ((cw - 1) << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
         birthday = max(birthtime, dcg -> dense4[cx][cy][cz][cw - 1]);
         break;
         
       case 2: // z +
-        index = (2 << 28) | (cw << 21) | (cz << 14) | (cy << 7) | cx;
+        index = (2 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
         birthday = max(birthtime, dcg -> dense4[cx][cy][cz + 1][cw]);
         break;
         
       case 3: // z -
-        index = (2 << 28) | (cw << 21) | ((cz - 1) << 14) | (cy << 7) | cx;
+        index = (2 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) | ((cz - 1) << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
         birthday = max(birthtime, dcg -> dense4[cx][cy][cz - 1][cw]);
         break;
         
       case 4: // y +
-        index = (1 << 28) | (cw << 21) | (cz << 14) | (cy << 7) | cx;
+        index = (1 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
         birthday = max(birthtime, dcg -> dense4[cx][cy + 1][cz][cw]);
         break;
         
       case 5: // y -
-        index = (1 << 28) | (cw << 21) | (cz << 14) | ((cy - 1) << 7) | cx;
+        index = (1 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | ((cy - 1) << EXPONENT) | cx;
         birthday = max(birthtime, dcg -> dense4[cx][cy - 1][cz][cw]);
         break;
         
       case 6: // x +
-        index = (0 << 28) | (cw << 21) | (cz << 14) | (cy << 7) | cx;
+        index = (0 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
         birthday = max(birthtime, dcg -> dense4[cx + 1][cy][cz][cw]);
         break;
         
       case 7: // x -
-        index = (0 << 28) | (cw << 21) | (cz << 14) | (cy << 7) | (cx - 1);
+        index = (0 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | (cx - 1);
         birthday = max(birthtime, dcg -> dense4[cx - 1][cy][cz][cw]);
         break;
       }
@@ -440,32 +441,32 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
       for(int i = count; i < 6; ++i){
         switch(i){
         case 0: // x - w +
-          index = (3 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
+          index = (3 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw + 1], dcg -> dense4[cx + 1][cy][cz][cw + 1]});
           break;
           
         case 1: // x - w -
-          index = (3 << 28) | ((cw - 1) << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (3 << (4 * EXPONENT)) | ((cw - 1) << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw - 1], dcg -> dense4[cx + 1][cy][cz][cw - 1]});
           break;
           
         case 2: // x - z +
-          index = (1 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
+          index = (1 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz + 1][cw], dcg -> dense4[cx + 1][cy][cz + 1][cw]});
           break;
           
         case 3: // x - z -
-          index = (1 << 28) | (cw << 21) |((cz - 1) << 14) | (cy << 7) | cx;
+          index = (1 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |((cz - 1) << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz - 1][cw], dcg -> dense4[cx + 1][cy][cz - 1][cw]});
           break;
           
         case 4: // x - y +
-          index = (0 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
+          index = (0 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy + 1][cz][cw], dcg -> dense4[cx + 1][cy + 1][cz][cw]});
           break;
           
         case 5: // x - y -
-          index = (0 << 28) | (cw << 21) |(cz << 14) | ((cy - 1) << 7) | cx;
+          index = (0 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | ((cy - 1) << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy - 1][cz][cw], dcg -> dense4[cx + 1][cy - 1][cz][cw]});
           break;
         }
@@ -482,32 +483,32 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
       for(int i = count; i < 6; ++i){
         switch(i){
         case 0: // y - w +
-          index = (4 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
+          index = (4 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw + 1], dcg -> dense4[cx][cy + 1][cz][cw + 1]});
           break;
           
         case 1: // y - w -
-          index = (4 << 28) | ((cw - 1) << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (4 << (4 * EXPONENT)) | ((cw - 1) << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw - 1], dcg -> dense4[cx][cy + 1][cz][cw - 1]});
           break;
           
         case 2: // y - z +
-          index = (2 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
+          index = (2 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz + 1][cw], dcg -> dense4[cx][cy + 1][cz + 1][cw]});
           break;
           
         case 3: // y - z -
-          index = (2 << 28) | (cw << 21) |((cz - 1) << 14) | (cy << 7) | cx;
+          index = (2 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |((cz - 1) << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz - 1][cw], dcg -> dense4[cx][cy + 1][cz - 1][cw]});
           break;
           
         case 4: // y - x +
-          index = (0 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
+          index = (0 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx + 1][cy][cz][cw], dcg -> dense4[cx + 1][cy + 1][cz][cw]});
           break;
           
         case 5: // y - x -
-          index = (0 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | (cx - 1);
+          index = (0 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | (cy << EXPONENT) | (cx - 1);
           birthday = max({birthtime, dcg -> dense4[cx - 1][cy][cz][cw], dcg -> dense4[cx - 1][cy + 1][cz][cw]});
           break;
         }
@@ -523,32 +524,32 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
       for(int i = count; i < 6; ++i){
         switch(i){
         case 0: // z - w +
-          index = (5 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
+          index = (5 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw + 1], dcg -> dense4[cx][cy][cz + 1][cw + 1]});
           break;
           
         case 1: // z - w -
-          index = (5 << 28) | ((cw - 1) << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (5 << (4 * EXPONENT)) | ((cw - 1) << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw - 1], dcg -> dense4[cx][cy][cz + 1][cw - 1]});
           break;
           
         case 2: // z - y +
-          index = (2 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
+          index = (2 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy + 1][cz][cw], dcg -> dense4[cx][cy + 1][cz + 1][cw]});
           break;
           
         case 3: // z - y -
-          index = (2 << 28) | (cw << 21) |(cz << 14) | ((cy - 1) << 7) | cx;
+          index = (2 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | ((cy - 1) << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy - 1][cz][cw], dcg -> dense4[cx][cy - 1][cz + 1][cw]});
           break;
           
         case 4: // z - x +
-          index = (1 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
+          index = (1 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx + 1][cy][cz][cw], dcg -> dense4[cx + 1][cy][cz + 1][cw]});
           break;
           
         case 5: // z - x -
-          index = (1 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | (cx - 1);
+          index = (1 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | (cy << EXPONENT) | (cx - 1);
           birthday = max({birthtime, dcg -> dense4[cx - 1][cy][cz][cw], dcg -> dense4[cx - 1][cy][cz + 1][cw]});
           break;
         }
@@ -564,32 +565,32 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
       for(int i = count; i < 6; ++i){
         switch(i){
         case 0: // w - z +
-          index = (5 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
+          index = (5 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz + 1][cw], dcg -> dense4[cx][cy][cz + 1][cw + 1]});
           break;
           
         case 1: // w - z -
-          index = (5 << 28) | (cw << 21) | ((cz - 1) << 14) | (cy << 7) | cx;
+          index = (5 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) | ((cz - 1) << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz - 1][cw], dcg -> dense4[cx][cy][cz - 1][cw + 1]});
           break;
           
         case 2: // w - y +
-          index = (4 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
+          index = (4 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy + 1][cz][cw], dcg -> dense4[cx][cy + 1][cz][cw + 1]});
           break;
           
         case 3: // w - y -
-          index = (4 << 28) | (cw << 21) |(cz << 14) | ((cy - 1) << 7) | cx;
+          index = (4 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | ((cy - 1) << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy - 1][cz][cw], dcg -> dense4[cx][cy - 1][cz][cw + 1]});
           break;
           
         case 4: // w - x +
-          index = (3 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
+          index = (3 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx + 1][cy][cz][cw], dcg -> dense4[cx + 1][cy][cz][cw + 1]});
           break;
           
         case 5: // w - x -
-          index = (3 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | (cx - 1);
+          index = (3 << (4 * EXPONENT)) | (cw << (3 * EXPONENT)) |(cz << (2 * EXPONENT)) | (cy << EXPONENT) | (cx - 1);
           birthday = max({birthtime, dcg -> dense4[cx - 1][cy][cz][cw], dcg -> dense4[cx - 1][cy][cz][cw + 1]});
           break;
         }
@@ -608,25 +609,25 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
       for(int i = count; i < 4; ++i){
         switch(i){
         case 0: // w +
-          index = (1 << 28)| (cw << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (1 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw + 1], dcg -> dense4[cx + 1][cy][cz][cw + 1], 
                          dcg -> dense4[cx][cy + 1][cz][cw + 1],dcg -> dense4[cx + 1][cy + 1][cz][cw + 1]});
           break;
           
         case 1: // w -
-          index = (1 << 28)| ((cw - 1) << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (1 << (4 * EXPONENT))| ((cw - 1) << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw - 1], dcg -> dense4[cx + 1][cy][cz][cw - 1], 
                          dcg -> dense4[cx][cy + 1][cz][cw - 1],dcg -> dense4[cx + 1][cy + 1][cz][cw - 1]});
           break;
           
         case 2: // z +
-          index = (0 << 28)| (cw << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (0 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz + 1][cw], dcg -> dense4[cx + 1][cy][cz + 1][cw], 
                          dcg -> dense4[cx][cy + 1][cz + 1][cw],dcg -> dense4[cx + 1][cy + 1][cz + 1][cw]});
           break;
           
         case 3: // z -
-          index = (0 << 28)| (cw << 21) | ((cz - 1) << 14) | (cy << 7) | cx;
+          index = (0 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | ((cz - 1) << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz - 1][cw], dcg -> dense4[cx + 1][cy][cz - 1][cw], 
                          dcg -> dense4[cx][cy + 1][cz - 1][cw],dcg -> dense4[cx + 1][cy + 1][cz - 1][cw]});
           break;
@@ -645,25 +646,25 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
       for(int i = count; i < 4; ++i){
         switch(i){
         case 0: // w +
-          index = (2 << 28)| (cw << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (2 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw + 1], dcg -> dense4[cx + 1][cy][cz][cw + 1], 
                          dcg -> dense4[cx][cy][cz + 1][cw + 1],dcg -> dense4[cx + 1][cy][cz + 1][cw + 1]});
           break;
           
         case 1: // w -
-          index = (2 << 28)| ((cw - 1) << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (2 << (4 * EXPONENT))| ((cw - 1) << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw - 1], dcg -> dense4[cx + 1][cy][cz][cw - 1], 
                          dcg -> dense4[cx][cy][cz + 1][cw - 1],dcg -> dense4[cx + 1][cy][cz + 1][cw - 1]});
           break;
           
         case 2: // y +
-          index = (0 << 28)| (cw << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (0 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy + 1][cz][cw], dcg -> dense4[cx + 1][cy + 1][cz][cw], 
                          dcg -> dense4[cx][cy + 1][cz + 1][cw],dcg -> dense4[cx + 1][cy + 1][cz + 1][cw]});
           break;
           
         case 3: // y -
-          index = (0 << 28)| (cw << 21) | (cz << 14) | ((cy - 1) << 7) | cx;
+          index = (0 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | ((cy - 1) << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy - 1][cz][cw], dcg -> dense4[cx + 1][cy - 1][cz][cw], 
                          dcg -> dense4[cx][cy - 1][cz + 1][cw],dcg -> dense4[cx + 1][cy - 1][cz + 1][cw]});
           break;
@@ -681,25 +682,25 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
       for(int i = count; i < 4; ++i){
         switch(i){
         case 0: // w +
-          index = (3 << 28)| (cw << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (3 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw + 1], dcg -> dense4[cx][cy + 1][cz][cw + 1], 
                          dcg -> dense4[cx][cy][cz + 1][cw + 1],dcg -> dense4[cx][cy + 1][cz + 1][cw + 1]});
           break;
           
         case 1: // w -
-          index = (3 << 28)| ((cw - 1) << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (3 << (4 * EXPONENT))| ((cw - 1) << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw - 1], dcg -> dense4[cx][cy + 1][cz][cw - 1], 
                          dcg -> dense4[cx][cy][cz + 1][cw - 1],dcg -> dense4[cx][cy + 1][cz + 1][cw - 1]});
           break;
           
         case 2: // x +
-          index = (0 << 28)| (cw << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (0 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx + 1][cy][cz][cw], dcg -> dense4[cx + 1][cy + 1][cz][cw], 
                          dcg -> dense4[cx + 1][cy][cz + 1][cw],dcg -> dense4[cx + 1][cy + 1][cz + 1][cw]});
           break;
           
         case 3: // x -
-          index = (0 << 28)| (cw << 21) | (cz << 14) | (cy << 7) | (cx - 1);
+          index = (0 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | (cx - 1);
           birthday = max({birthtime, dcg -> dense4[cx - 1][cy][cz][cw], dcg -> dense4[cx - 1][cy + 1][cz][cw], 
                          dcg -> dense4[cx - 1][cy][cz + 1][cw],dcg -> dense4[cx - 1][cy + 1][cz + 1][cw]});
           break;
@@ -716,25 +717,25 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
       for(int i = count; i < 4; ++i){
         switch(i){
         case 0: // z +
-          index = (2 << 28)| (cw << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (2 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz + 1][cw], dcg -> dense4[cx + 1][cy][cz + 1][cw], 
                          dcg -> dense4[cx][cy][cz + 1][cw + 1],dcg -> dense4[cx + 1][cy][cz + 1][cw + 1]});
           break;
           
         case 1: // z -
-          index = (2 << 28)| (cw << 21) | ((cz - 1) << 14) | (cy << 7) | cx;
+          index = (2 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | ((cz - 1) << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz - 1][cw], dcg -> dense4[cx + 1][cy][cz - 1][cw], 
                          dcg -> dense4[cx][cy][cz - 1][cw + 1],dcg -> dense4[cx + 1][cy][cz - 1][cw + 1]});
           break;
           
         case 2: // y +
-          index = (1 << 28)| (cw << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (1 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy + 1][cz][cw], dcg -> dense4[cx + 1][cy + 1][cz][cw], 
                          dcg -> dense4[cx][cy + 1][cz][cw + 1],dcg -> dense4[cx + 1][cy + 1][cz][cw + 1]});
           break;
           
         case 3: // y -
-          index = (1 << 28)| (cw << 21) | (cz << 14) | ((cy - 1) << 7) | cx;
+          index = (1 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | ((cy - 1) << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy - 1][cz][cw], dcg -> dense4[cx + 1][cy - 1][cz][cw], 
                          dcg -> dense4[cx][cy - 1][cz][cw + 1],dcg -> dense4[cx + 1][cy - 1][cz][cw + 1]});
           break;
@@ -752,25 +753,25 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
       for(int i = count; i < 4; ++i){
         switch(i){
         case 0: // z +
-          index = (3 << 28)| (cw << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (3 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz + 1][cw], dcg -> dense4[cx][cy + 1][cz + 1][cw], 
                          dcg -> dense4[cx][cy][cz + 1][cw + 1],dcg -> dense4[cx][cy + 1][cz + 1][cw + 1]});
           break;
           
         case 1: // z -
-          index = (3 << 28)| (cw << 21) | ((cz - 1) << 14) | (cy << 7) | cx;
+          index = (3 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | ((cz - 1) << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz - 1][cw], dcg -> dense4[cx][cy + 1][cz - 1][cw], 
                          dcg -> dense4[cx][cy][cz - 1][cw + 1],dcg -> dense4[cx][cy + 1][cz - 1][cw + 1]});
           break;
           
         case 2: // x +
-          index = (1 << 28)| (cw << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (1 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx + 1][cy][cz][cw], dcg -> dense4[cx + 1][cy + 1][cz][cw], 
                          dcg -> dense4[cx + 1][cy][cz][cw + 1],dcg -> dense4[cx + 1][cy + 1][cz][cw + 1]});
           break;
           
         case 3: // x -
-          index = (1 << 28)| (cw << 21) | (cz << 14) | (cy << 7) | (cx - 1);
+          index = (1 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | (cx - 1);
           birthday = max({birthtime, dcg -> dense4[cx - 1][cy][cz][cw], dcg -> dense4[cx - 1][cy + 1][cz][cw], 
                          dcg -> dense4[cx - 1][cy][cz][cw + 1],dcg -> dense4[cx - 1][cy + 1][cz][cw + 1]});
           break;
@@ -787,25 +788,25 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
       for(int i = count; i < 4; ++i){
         switch(i){
         case 0: // y +
-          index = (3 << 28)| (cw << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (3 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy + 1][cz][cw], dcg -> dense4[cx][cy + 1][cz + 1][cw], 
                          dcg -> dense4[cx][cy + 1][cz][cw + 1],dcg -> dense4[cx][cy + 1][cz + 1][cw + 1]});
           break;
           
         case 1: // y -
-          index = (3 << 28)| (cw << 21) | (cz << 14) | ((cy - 1) << 7) | cx;
+          index = (3 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | ((cy - 1) << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy - 1][cz][cw], dcg -> dense4[cx][cy - 1][cz + 1][cw], 
                          dcg -> dense4[cx][cy - 1][cz][cw + 1],dcg -> dense4[cx][cy - 1][cz + 1][cw + 1]});
           break;
           
         case 2: // x +
-          index = (2 << 28)| (cw << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (2 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx + 1][cy][cz][cw], dcg -> dense4[cx + 1][cy][cz + 1][cw], 
                          dcg -> dense4[cx + 1][cy][cz][cw + 1],dcg -> dense4[cx + 1][cy][cz + 1][cw + 1]});
           break;
           
         case 3: // x -
-          index = (2 << 28)| (cw << 21) | (cz << 14) | (cy << 7) | (cx - 1);
+          index = (2 << (4 * EXPONENT))| (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | (cx - 1);
           birthday = max({birthtime, dcg -> dense4[cx - 1][cy][cz][cw], dcg -> dense4[cx - 1][cy][cz + 1][cw], 
                          dcg -> dense4[cx - 1][cy][cz][cw + 1],dcg -> dense4[cx - 1][cy][cz + 1][cw + 1]});
           break;
@@ -825,7 +826,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
       for(int i = count; i < 2; ++i){
         switch(i){
         case 0: // w +
-          index = (cw << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw + 1], dcg -> dense4[cx + 1][cy][cz][cw + 1], 
                          dcg -> dense4[cx][cy + 1][cz][cw + 1],dcg -> dense4[cx + 1][cy + 1][cz][cw + 1],
                                                                                                 dcg -> dense4[cx][cy][cz + 1][cw + 1],dcg -> dense4[cx + 1][cy][cz + 1][cw + 1],
@@ -833,7 +834,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
           break;
           
         case 1: // w -
-          index = ((cw - 1) << 21) | (cz << 14) | (cy << 7) | cx;
+          index = ((cw - 1) << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw - 1], dcg -> dense4[cx + 1][cy][cz][cw - 1], 
                          dcg -> dense4[cx][cy + 1][cz][cw - 1],dcg -> dense4[cx + 1][cy + 1][cz][cw - 1],
                                                                                                 dcg -> dense4[cx][cy][cz + 1][cw - 1],dcg -> dense4[cx + 1][cy][cz + 1][cw - 1],
@@ -852,7 +853,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
       for(int i = count; i < 2; ++i){
         switch(i){
         case 0: // z +
-          index = (cw << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz + 1][cw], dcg -> dense4[cx + 1][cy][cz + 1][cw], 
                          dcg -> dense4[cx][cy + 1][cz + 1][cw],dcg -> dense4[cx + 1][cy + 1][cz + 1][cw],
                                                                                                     dcg -> dense4[cx][cy][cz + 1][cw + 1],dcg -> dense4[cx + 1][cy][cz + 1][cw + 1],
@@ -860,7 +861,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
           break;
           
         case 1: // z -
-          index = (cw << 21) | ((cz - 1) << 14) | (cy << 7) | cx;
+          index = (cw << (3 * EXPONENT)) | ((cz - 1) << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy][cz - 1][cw], dcg -> dense4[cx + 1][cy][cz - 1][cw], 
                          dcg -> dense4[cx][cy + 1][cz - 1][cw],dcg -> dense4[cx + 1][cy + 1][cz - 1][cw],
                                                                                                     dcg -> dense4[cx][cy][cz - 1][cw + 1],dcg -> dense4[cx + 1][cy][cz - 1][cw + 1],
@@ -879,7 +880,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
       for(int i = count; i < 2; ++i){
         switch(i){
         case 0: // y +
-          index = (cw << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy + 1][cz][cw], dcg -> dense4[cx + 1][cy + 1][cz][cw], 
                          dcg -> dense4[cx][cy + 1][cz + 1][cw],dcg -> dense4[cx + 1][cy + 1][cz + 1][cw],
                                                                                                     dcg -> dense4[cx][cy + 1][cz][cw + 1],dcg -> dense4[cx + 1][cy + 1][cz][cw + 1],
@@ -887,7 +888,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
           break;
           
         case 1: // y -
-          index = (cw << 21) | (cz << 14) | ((cy - 1) << 7) | cx;
+          index = (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | ((cy - 1) << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx][cy - 1][cz][cw], dcg -> dense4[cx + 1][cy - 1][cz][cw], 
                          dcg -> dense4[cx][cy - 1][cz + 1][cw],dcg -> dense4[cx + 1][cy - 1][cz + 1][cw],
                                                                                                     dcg -> dense4[cx][cy - 1][cz][cw + 1],dcg -> dense4[cx + 1][cy - 1][cz][cw + 1],
@@ -906,7 +907,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
       for(int i = count; i < 2; ++i){
         switch(i){
         case 0: // x +
-          index = (cw << 21) | (cz << 14) | (cy << 7) | cx;
+          index = (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | cx;
           birthday = max({birthtime, dcg -> dense4[cx + 1][cy][cz][cw], dcg -> dense4[cx + 1][cy + 1][cz][cw], 
                          dcg -> dense4[cx + 1][cy][cz + 1][cw],dcg -> dense4[cx + 1][cy + 1][cz + 1][cw],
                                                                                                     dcg -> dense4[cx + 1][cy][cz][cw + 1],dcg -> dense4[cx + 1][cy + 1][cz][cw + 1],
@@ -914,7 +915,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
           break;
           
         case 1: // x -
-          index = (cw << 21) | (cz << 14) | (cy << 7) | (cx - 1);
+          index = (cw << (3 * EXPONENT)) | (cz << (2 * EXPONENT)) | (cy << EXPONENT) | (cx - 1);
           birthday = max({birthtime, dcg -> dense4[cx - 1][cy][cz][cw], dcg -> dense4[cx - 1][cy + 1][cz][cw], 
                          dcg -> dense4[cx - 1][cy][cz + 1][cw],dcg -> dense4[cx - 1][cy + 1][cz + 1][cw],
                                                                                                     dcg -> dense4[cx - 1][cy][cz][cw + 1],dcg -> dense4[cx - 1][cy + 1][cz][cw + 1],
@@ -1032,7 +1033,7 @@ JointPairs::JointPairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vector<Wr
       for(int z = 1; z <= az; ++z){
         for(int w = 1; w <= aw; ++w){
           for(int type = 0; type < 4; ++type){ // change
-            int index = x | (y << 7) | (z << 14) | (w << 21) | (type << 28);
+            int index = x | (y << EXPONENT) | (z << (2 * EXPONENT)) | (w << (3 * EXPONENT)) | (type << (4 * EXPONENT));
             double birthday = dcg -> getBirthday(index, 1);
             if(birthday < dcg -> threshold){
               dim1_simplex_list.push_back(BirthdayIndex(birthday, index, 1));
@@ -1053,29 +1054,29 @@ void JointPairs::joint_pairs_main(){
   
   for(BirthdayIndex e : dim1_simplex_list){
     int index = e.getIndex();
-    int cx = index & 0x7f;
-    int cy = (index >> 7) & 0x7f;
-    int cz = (index >> 14) & 0x7f;
-    int cw = (index >> 21) & 0x7f;
-    int cm = (index >> 28) & 0x0f;
+    int cx = index & (MAX_SIZE - 1);
+    int cy = (index >> EXPONENT) & (MAX_SIZE - 1);
+    int cz = (index >> (2 * EXPONENT)) & (MAX_SIZE - 1);
+    int cw = (index >> (3 * EXPONENT)) & (MAX_SIZE - 1);
+    int cm = (index >> (4 * EXPONENT)) & 0x0f;
     
     int ce0=0, ce1 =0;
     switch(cm){
     case 0:
-      ce0 =  cx | (cy << 7) | (cz << 14) | (cw << 21);
-      ce1 =  (cx + 1) | (cy << 7) | (cz << 14) | (cw << 21);
+      ce0 =  cx | (cy << EXPONENT) | (cz << (2 * EXPONENT)) | (cw << (3 * EXPONENT));
+      ce1 =  (cx + 1) | (cy << EXPONENT) | (cz << (2 * EXPONENT)) | (cw << (3 * EXPONENT));
       break;
     case 1:
-      ce0 =  cx | (cy << 7) | (cz << 14) | (cw << 21);
-      ce1 =  cx | ((cy + 1) << 7) | (cz << 14) | (cw << 21);
+      ce0 =  cx | (cy << EXPONENT) | (cz << (2 * EXPONENT)) | (cw << (3 * EXPONENT));
+      ce1 =  cx | ((cy + 1) << EXPONENT) | (cz << (2 * EXPONENT)) | (cw << (3 * EXPONENT));
       break;
     case 2:
-      ce0 =  cx | (cy << 7) | (cz << 14) | (cw << 21);
-      ce1 =  cx | (cy << 7) | ((cz + 1) << 14) | (cw << 21);
+      ce0 =  cx | (cy << EXPONENT) | (cz << (2 * EXPONENT)) | (cw << (3 * EXPONENT));
+      ce1 =  cx | (cy << EXPONENT) | ((cz + 1) << (2 * EXPONENT)) | (cw << (3 * EXPONENT));
       break;
     case 3:
-      ce0 =  cx | (cy << 7) | (cz << 14) | (cw << 21);
-      ce1 =  cx | (cy << 7) | (cz << 14) | ((cw + 1) << 21);
+      ce0 =  cx | (cy << EXPONENT) | (cz << (2 * EXPONENT)) | (cw << (3 * EXPONENT));
+      ce1 =  cx | (cy << EXPONENT) | (cz << (2 * EXPONENT)) | ((cw + 1) << (3 * EXPONENT));
       break;
     }
     u = dset.find(ce0);
@@ -1279,7 +1280,7 @@ void ComputePairs::assemble_columns_to_reduce() {
         for (int y = 1; y <= ay; ++y) {
           for (int x = 1; x <= ax; ++x) {
             for (int m = 0; m < 4; ++m) { // the number of type
-              double index = x | (y << 7) | (z << 14) | (w << 21) | (m << 28);
+              double index = x | (y << EXPONENT) | (z << (2 * EXPONENT)) | (w << (3 * EXPONENT)) | (m << (4 * EXPONENT));
               if (pivot_column_index.find(index) == pivot_column_index.end()) {
                 double birthday = dcg -> getBirthday(index, 1);
                 if (birthday != dcg -> threshold) {
@@ -1298,7 +1299,7 @@ void ComputePairs::assemble_columns_to_reduce() {
         for (int y = 1; y <= ay; ++y) {
           for (int x = 1; x <= ax; ++x) {
             for (int m = 0; m < 6; ++m) { // the number of type
-              double index = x | (y << 7) | (z << 14) | (w << 21) | (m << 28);
+              double index = x | (y << EXPONENT) | (z << (2 * EXPONENT)) | (w << (3 * EXPONENT)) | (m << (4 * EXPONENT));
               if (pivot_column_index.find(index) == pivot_column_index.end()) {
                 double birthday = dcg -> getBirthday(index, 2);
                 if (birthday != dcg -> threshold) {
@@ -1317,7 +1318,7 @@ void ComputePairs::assemble_columns_to_reduce() {
         for (int y = 1; y <= ay; ++y) {
           for (int x = 1; x <= ax; ++x) {
             for (int m = 0; m < 4; ++m) { // the number of type
-              double index = x | (y << 7) | (z << 14) | (w << 21) | (m << 28);
+              double index = x | (y << EXPONENT) | (z << (2 * EXPONENT)) | (w << (3 * EXPONENT)) | (m << (4 * EXPONENT));
               if (pivot_column_index.find(index) == pivot_column_index.end()) {
                 double birthday = dcg -> getBirthday(index, 3);
                 if (birthday != dcg -> threshold) {
