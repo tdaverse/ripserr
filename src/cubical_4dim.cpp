@@ -176,7 +176,7 @@ double WritePairs::getDeath(){
 /*****dense_cubical_grids*****/
 enum file_format { DIPHA, PERSEUS };
 
-const int MAX_SIZE = 100;
+const int MAX_SIZE = 128;
 
 class DenseCubicalGrids { // file_read
   
