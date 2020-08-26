@@ -176,13 +176,15 @@ double WritePairs::getDeath(){
 /*****dense_cubical_grids*****/
 enum file_format { DIPHA, PERSEUS };
 
+const int MAX_SIZE = 100;
+
 class DenseCubicalGrids { // file_read
   
 public:
   double threshold;
   int dim;
   int ax, ay, az, aw;
-  double dense4[128][128][128][128];
+  double dense4[MAX_SIZE][MAX_SIZE][MAX_SIZE][MAX_SIZE];
   
   DenseCubicalGrids(const Rcpp::NumericVector& image, double _threshold, int nx, int ny, int nz, int nt); 
   double getBirthday(int index, int dim);
@@ -195,10 +197,10 @@ DenseCubicalGrids::DenseCubicalGrids(const Rcpp::NumericVector& image, double _t
   dim = 4;
   
   // set everything to threshold
-  for (int i = 0; i < 128; i++)
-    for (int j = 0; j < 128; j++)
-      for (int k = 0; k < 128; k++)
-        for (int l = 0; l < 128; l++)
+  for (int i = 0; i < MAX_SIZE; i++)
+    for (int j = 0; j < MAX_SIZE; j++)
+      for (int k = 0; k < MAX_SIZE; k++)
+        for (int l = 0; l < MAX_SIZE; l++)
           dense4[i][j][k][l] = threshold;
   
   // set values based on image
@@ -310,7 +312,7 @@ ColumnsToReduce::ColumnsToReduce(DenseCubicalGrids* _dcg) {
   int ay = _dcg -> ay;
   int az = _dcg -> az;
   int aw = _dcg -> aw;
-  max_of_index = 128*128*128*(aw + 2);
+  max_of_index = MAX_SIZE*MAX_SIZE*MAX_SIZE*(aw + 2);
   int index;
   double birthday;
   
