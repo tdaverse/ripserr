@@ -1,53 +1,46 @@
 /*
- This file is an altered form of the Cubical Ripser software created by
- Takeki Sudo and Kazushi Ahara. Details of the original software are below the
- dashed line.
- -Raoul Wadhwa
- -------------------------------------------------------------------------------
  Copyright 2017-2018 Takeki Sudo and Kazushi Ahara.
- This file is part of CubicalRipser_2dim.
+ 
+ This file is part of CubicalRipser_4dim.
+ 
  CubicalRipser: C++ system for computation of Cubical persistence pairs
  Copyright 2017-2018 Takeki Sudo and Kazushi Ahara.
  CubicalRipser is free software: you can redistribute it and/or modify it under
  the terms of the GNU Lesser General Public License as published by the
  Free Software Foundation, either version 3 of the License, or (at your option)
  any later version.
- CubicalRipser is deeply depending on 'Ripser', software for Vietoris-Rips
+ 
+ CubicalRipser is deeply depending on 'Ripser', software for Vietoris-Rips 
  persitence pairs by Ulrich Bauer, 2015-2016.  We appreciate Ulrich very much.
- We rearrange his codes of Ripser and add some new ideas for optimization on it
+ We rearrange his codes of Ripser and add some new ideas for optimization on it 
  and modify it for calculation of a Cubical filtration.
- This part of CubicalRiper is a calculator of cubical persistence pairs for
- 2 dimensional pixel data. The input data format conforms to that of DIPHA.
+ 
+ This part of CubicalRiper is a calculator of cubical persistence pairs for 
+ 4 dimensional voxel data. The input data format conforms to that of DIPHA or of PERSEUS.
  See more descriptions in README.
+ 
  This program is distributed in the hope that it will be useful, but WITHOUT ANY
  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
  You should have received a copy of the GNU Lesser General Public License along
  with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 
 #include <iostream>
 #include <fstream>
-#include <queue>
-#include <vector>
-#include <unordered_map>
-#include <string>
-#include <algorithm>
 #include <cassert>
 #include <cstdint>
-#include <cmath>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <unordered_map>
+#include <queue>
 #include <Rcpp.h>
 
 using namespace std;
 
-// utility functions
-double max(double a, double b) { return a > b ? a : b; }
-double max(double a, double b, double c) { return max(max(a, b), c); }
-double max(double a, double b, double c, double d) { return max(max(a, b), max(c, d)); }
-double max(double a, double b, double c, double d, double e, double f, double g, double h) { return max(max(a, b, c, d), max(e, f, g, h)); }
-
 /*****birthday_index*****/
-class BirthdayIndex4
+class BirthdayIndex
 {
   
 public:
@@ -55,67 +48,67 @@ public:
   int index;
   int dim;
   
-  BirthdayIndex4();
-  BirthdayIndex4(const BirthdayIndex4& b);
-  BirthdayIndex4(double _b, int _i, int _d);
-  void copyBirthdayIndex(BirthdayIndex4 v);
+  BirthdayIndex();
+  BirthdayIndex(const BirthdayIndex& b);
+  BirthdayIndex(double _b, int _i, int _d);
+  void copyBirthdayIndex(BirthdayIndex v);
   double getBirthday();
   long getIndex();
   int getDimension();
   void print();
 };
 
-struct BirthdayIndex4Comparator
+struct BirthdayIndexComparator
 {
-  bool operator()(const BirthdayIndex4& o1, const BirthdayIndex4& o2) const;
+  bool operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const;
 };
 
-struct BirthdayIndex4InverseComparator
+struct BirthdayIndexInverseComparator
 {
-  bool operator()(const BirthdayIndex4& o1, const BirthdayIndex4& o2) const;
+  bool operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const;
 };
 
-BirthdayIndex4::BirthdayIndex4(){
+BirthdayIndex::BirthdayIndex(){
   birthday = 0;
   index = -1;
   dim = 1;
 }
 
-BirthdayIndex4::BirthdayIndex4(const BirthdayIndex4& b){
+BirthdayIndex::BirthdayIndex(const BirthdayIndex& b){
   birthday = b.birthday;
   index = b.index;
   dim = b.dim;
 }
 
-BirthdayIndex4::BirthdayIndex4(double _b, int _i, int _d){
+BirthdayIndex::BirthdayIndex(double _b, int _i, int _d){
   birthday = _b;
   index = _i;
   dim = _d;
 }
 
-void BirthdayIndex4::copyBirthdayIndex(BirthdayIndex4 v){
+void BirthdayIndex::copyBirthdayIndex(BirthdayIndex v){
   birthday = v.birthday;
   index = v.index;
   dim = v.dim;
 }
 
-double BirthdayIndex4::getBirthday(){
+double BirthdayIndex::getBirthday(){
   return birthday;
 }
 
-long BirthdayIndex4::getIndex(){
+long BirthdayIndex::getIndex(){
   return index;
 }
 
-int BirthdayIndex4::getDimension(){
+int BirthdayIndex::getDimension(){
   return dim;
 }
 
-void BirthdayIndex4::print(){
-  //Rcpp::Rcout << "(dob:" << birthday << "," << index << ")" << std::endl;
+void BirthdayIndex::print(){
+  std::cout << "(dob:" << birthday << "," << index << ")" << std::endl;
 }
 
-bool BirthdayIndex4Comparator::operator()(const BirthdayIndex4& o1, const BirthdayIndex4& o2) const{
+bool BirthdayIndexComparator::operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const{
   if(o1.birthday == o2.birthday){
     if(o1.index < o2.index){
       return true;
@@ -131,7 +124,7 @@ bool BirthdayIndex4Comparator::operator()(const BirthdayIndex4& o1, const Birthd
   }
 }
 
-bool BirthdayIndex4InverseComparator::operator()(const BirthdayIndex4& o1, const BirthdayIndex4& o2) const{
+bool BirthdayIndexInverseComparator::operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const{
   if(o1.birthday == o2.birthday){
     if(o1.index < o2.index){
       return false;
@@ -148,7 +141,7 @@ bool BirthdayIndex4InverseComparator::operator()(const BirthdayIndex4& o1, const
 }
 
 /*****write_pairs*****/
-class WritePairs4
+class WritePairs
 {
   
 public:
@@ -156,109 +149,64 @@ public:
   double birth;
   double death;
   
-  WritePairs4(int64_t _dim, double _birth, double _death);
+  WritePairs(int64_t _dim, double _birth, double _death);
   int64_t getDimension();
   double getBirth();
   double getDeath();
 };
 
-WritePairs4::WritePairs4(int64_t _dim, double _birth, double _death){
+WritePairs::WritePairs(int64_t _dim, double _birth, double _death){
   dim = _dim;
   birth = _birth;
   death = _death;
 }
 
-int64_t WritePairs4::getDimension(){
+int64_t WritePairs::getDimension(){
   return dim;
 }
 
-double WritePairs4::getBirth(){
+double WritePairs::getBirth(){
   return birth;
 }
 
-double WritePairs4::getDeath(){
+double WritePairs::getDeath(){
   return death;
 }
 
 /*****dense_cubical_grids*****/
 enum file_format { DIPHA, PERSEUS };
 
-class DenseCubicalGrids4 { // file_read
+class DenseCubicalGrids { // file_read
   
 public:
   double threshold;
   int dim;
   int ax, ay, az, aw;
   double dense4[128][128][128][128];
-  file_format format;
   
-  DenseCubicalGrids4(const Rcpp::NumericVector& image, double threshold, int nx, int ny, int nz, int nt) ; 
+  DenseCubicalGrids(const Rcpp::NumericVector& image, double _threshold, int nx, int ny, int nz, int nt); 
   double getBirthday(int index, int dim);
 };
 
-DenseCubicalGrids4::DenseCubicalGrids4(const Rcpp::NumericVector& image, double threshold, int nx, int ny, int nz, int nt)
+DenseCubicalGrids::DenseCubicalGrids(const Rcpp::NumericVector& image, double _threshold, int nx, int ny, int nz, int nt)
 {
+  threshold = _threshold;
   ax = nx; ay = ny; az = nz; aw = nt;
-  //Rcpp::Rcout << "HERE4\n";
-  // convert NumericVector to 4d array
-  double ****dat = new double***[nx];
-  //Rcpp::Rcout << "HERE5\n";
-  for (int i = 0; i < nx; i++)
-  {
-    dat[i] = new double**[ny];
-    for (int j = 0; j < ny; j++)
-    {
-      dat[i][j] = new double*[nz];
-      for (int k = 0; k < nz; k++)
-        dat[i][j][k] = new double[nt];
-    }
-  }
-  //Rcpp::Rcout << "HERE6\n";
-  int tempX, tempY, tempZ, tempT;
-  for (int i = 0; i < nx * ny * nz * nt; i++)
-  {
-    tempX = i % nx;
-    tempY = i / nx % ny;
-    tempZ = i / (nx * ny) % nz;
-    tempT = i / (nx * ny * nz) % nt;
-    dat[tempX][tempY][tempZ][tempT] = image(i);
-  }
+  dim = 4;
   
-  //Rcpp::Rcout << "HERE7\n";
-  for (int x = 0; x <= nx + 1; x++)
-    for (int y = 0; y <= ny + 1; y++)
-      for (int z = 0; z <= nz + 1; z++)
-        for (int t = 0; t <= nt + 1; t++)
-        {
-          if (0 < x && x <= nx &&
-              0 < y && y <= ny &&
-              0 < z && z <= nz &&
-              0 < t && t <= nt)
-            dense4[x][y][z][t] = dat[x - 1][y - 1][z - 1][t - 1];
-          else
-            dense4[x][y][z][t] = threshold;
-          
-          // debug
-          //Rcpp::Rcout << "(" << x << "," << y << "," << z << "," << t << ") = " << dense4[x][y][z][t] << "\n";
-        }
-        
-        for (int i = 0; i < nx; i++)
-        {
-          for (int j = 0; j < ny; j++)
-          {
-            for (int k = 0; k < nz; k++)
-            {
-              delete[] dat[i][j][k];
-            }
-            delete[] dat[i][j];
-          }
-          delete[] dat[i];
-        }
-        delete[] dat;
+  // set everything to threshold
+  for (int i = 0; i < 128; i++)
+    for (int j = 0; j < 128; j++)
+      for (int k = 0; k < 128; k++)
+        for (int l = 0; l < 128; l++)
+          dense4[i][j][k][l] = threshold;
+  
+  // set values based on image
+  for (int i = 0; i < ax * ay * az * aw; i++)
+    dense4[i % ax + 1][i / ax % ay + 1][i / (ax * ay) % az + 1][i / (ax * ay * az) % aw + 1] = image(i);
 }
 
-
-double DenseCubicalGrids4::getBirthday(int index, int dim){
+double DenseCubicalGrids::getBirthday(int index, int dim){
   int cx = index & 0x7f;
   int cy = (index >> 7) & 0x7f;
   int cz = (index >> 14) & 0x7f;
@@ -283,69 +231,80 @@ double DenseCubicalGrids4::getBirthday(int index, int dim){
   case 2:
     switch(cm){
     case 0: // x - y (fix z, w)
-      return max(dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], dense4[cx + 1][cy + 1][cz][cw], dense4[cx][cy + 1][cz][cw]);
+      return max({dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
+                 dense4[cx + 1][cy + 1][cz][cw], dense4[cx][cy + 1][cz][cw]});
     case 1: // z - x (fix y, w)
-      return max(dense4[cx][cy][cz][cw], dense4[cx][cy][cz + 1][cw], dense4[cx + 1][cy][cz + 1][cw], dense4[cx + 1][cy][cz][cw]);
+      return max({dense4[cx][cy][cz][cw], dense4[cx][cy][cz + 1][cw], 
+                 dense4[cx + 1][cy][cz + 1][cw], dense4[cx + 1][cy][cz][cw]});
     case 2: // y - z (fix x, w)
-      return max(dense4[cx][cy][cz][cw], dense4[cx][cy + 1][cz][cw], dense4[cx][cy + 1][cz + 1][cw], dense4[cx][cy][cz + 1][cw]);
+      return max({dense4[cx][cy][cz][cw], dense4[cx][cy + 1][cz][cw], 
+                 dense4[cx][cy + 1][cz + 1][cw], dense4[cx][cy][cz + 1][cw]});
     case 3: // x - w
-      return max(dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], dense4[cx + 1][cy][cz][cw + 1], dense4[cx][cy][cz][cw + 1]);
+      return max({dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
+                 dense4[cx + 1][cy][cz][cw + 1], dense4[cx][cy][cz][cw + 1]});
     case 4: // y - w
-      return max(dense4[cx][cy][cz][cw], dense4[cx][cy + 1][cz][cw], dense4[cx][cy + 1][cz][cw + 1], dense4[cx][cy][cz][cw + 1]);
+      return max({dense4[cx][cy][cz][cw], dense4[cx][cy + 1][cz][cw], 
+                 dense4[cx][cy + 1][cz][cw + 1], dense4[cx][cy][cz][cw + 1]});
     case 5: // z - w
-      return max(dense4[cx][cy][cz][cw], dense4[cx][cy][cz + 1][cw], dense4[cx][cy][cz + 1][cw + 1], dense4[cx][cy][cz][cw + 1]);
+      return max({dense4[cx][cy][cz][cw], dense4[cx][cy][cz + 1][cw], 
+                 dense4[cx][cy][cz + 1][cw + 1], dense4[cx][cy][cz][cw + 1]});
     }
   case 3:
     switch(cm){
     case 0: // x - y - z
-      return max(dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw],
+      return max({dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
                  dense4[cx + 1][cy + 1][cz][cw], dense4[cx][cy + 1][cz][cw],
-                 dense4[cx][cy][cz + 1][cw], dense4[cx + 1][cy][cz + 1][cw],
-                 dense4[cx + 1][cy + 1][cz + 1][cw], dense4[cx][cy + 1][cz + 1][cw]);
+                                                                       dense4[cx][cy][cz + 1][cw], dense4[cx + 1][cy][cz + 1][cw], 
+                                                                                                                             dense4[cx + 1][cy + 1][cz + 1][cw], dense4[cx][cy + 1][cz + 1][cw]
+      });
     case 1: // x - y - w
-      return max(dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
+      return max({dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
                  dense4[cx + 1][cy + 1][cz][cw], dense4[cx][cy + 1][cz][cw],
-                 dense4[cx][cy][cz][cw + 1], dense4[cx + 1][cy][cz][cw + 1], 
-                 dense4[cx + 1][cy + 1][cz][cw + 1], dense4[cx][cy + 1][cz][cw + 1]);
+                                                                       dense4[cx][cy][cz][cw + 1], dense4[cx + 1][cy][cz][cw + 1], 
+                                                                                                                         dense4[cx + 1][cy + 1][cz][cw + 1], dense4[cx][cy + 1][cz][cw + 1]
+      });
     case 2: // x - z - w
-      return max(dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
+      return max({dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
                  dense4[cx + 1][cy][cz][cw + 1], dense4[cx][cy][cz][cw + 1],
-                 dense4[cx][cy][cz + 1][cw], dense4[cx + 1][cy][cz + 1][cw], 
-                 dense4[cx + 1][cy][cz + 1][cw + 1], dense4[cx][cy][cz + 1][cw + 1]);
+                                                                   dense4[cx][cy][cz + 1][cw], dense4[cx + 1][cy][cz + 1][cw], 
+                                                                                                                         dense4[cx + 1][cy][cz + 1][cw + 1], dense4[cx][cy][cz + 1][cw + 1]
+      });
     case 3: // y - z - w
-      return max(dense4[cx][cy][cz][cw], dense4[cx][cy][cz][cw + 1], 
+      return max({dense4[cx][cy][cz][cw], dense4[cx][cy][cz][cw + 1], 
                  dense4[cx][cy + 1][cz][cw + 1], dense4[cx][cy + 1][cz][cw],
-                 dense4[cx][cy][cz + 1][cw], dense4[cx][cy][cz + 1][cw + 1], 
-                 dense4[cx][cy + 1][cz + 1][cw + 1], dense4[cx][cy + 1][cz + 1][cw]);
+                                                                       dense4[cx][cy][cz + 1][cw], dense4[cx][cy][cz + 1][cw + 1], 
+                                                                                                                         dense4[cx][cy + 1][cz + 1][cw + 1], dense4[cx][cy + 1][cz + 1][cw]
+      });
     }
   case 4:
-    return max(max(dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
-                   dense4[cx + 1][cy + 1][cz][cw], dense4[cx][cy + 1][cz][cw],
-                   dense4[cx][cy][cz + 1][cw], dense4[cx + 1][cy][cz + 1][cw], 
-                   dense4[cx + 1][cy + 1][cz + 1][cw], dense4[cx][cy + 1][cz + 1][cw]),
-               max(dense4[cx][cy][cz][cw + 1], dense4[cx + 1][cy][cz][cw + 1], 
-                   dense4[cx + 1][cy + 1][cz][cw + 1], dense4[cx][cy + 1][cz][cw + 1],
-                   dense4[cx][cy][cz + 1][cw + 1], dense4[cx + 1][cy][cz + 1][cw + 1], 
-                   dense4[cx + 1][cy + 1][cz + 1][cw + 1], dense4[cx][cy + 1][cz + 1][cw + 1]));
+    return max({dense4[cx][cy][cz][cw], dense4[cx + 1][cy][cz][cw], 
+               dense4[cx + 1][cy + 1][cz][cw], dense4[cx][cy + 1][cz][cw],
+                                                                     dense4[cx][cy][cz + 1][cw], dense4[cx + 1][cy][cz + 1][cw], 
+                                                                                                                           dense4[cx + 1][cy + 1][cz + 1][cw], dense4[cx][cy + 1][cz + 1][cw],
+                                                                                                                                                                                         dense4[cx][cy][cz][cw + 1], dense4[cx + 1][cy][cz][cw + 1], 
+                                                                                                                                                                                                                                           dense4[cx + 1][cy + 1][cz][cw + 1], dense4[cx][cy + 1][cz][cw + 1],
+                                                                                                                                                                                                                                                                                                     dense4[cx][cy][cz + 1][cw + 1], dense4[cx + 1][cy][cz + 1][cw + 1], 
+                                                                                                                                                                                                                                                                                                                                                               dense4[cx + 1][cy + 1][cz + 1][cw + 1], dense4[cx][cy + 1][cz + 1][cw + 1]
+    });
   }
   return threshold;
 }
 
 /*****columns_to_reduce*****/
-class ColumnsToReduce4
+class ColumnsToReduce
 {
   
 public:
-  vector<BirthdayIndex4> columns_to_reduce;
+  vector<BirthdayIndex> columns_to_reduce;
   int dim;
   int max_of_index;
   
-  ColumnsToReduce4(DenseCubicalGrids4* _dcg);
+  ColumnsToReduce(DenseCubicalGrids* _dcg);
   int size() ;
   
 };
 
-ColumnsToReduce4::ColumnsToReduce4(DenseCubicalGrids4* _dcg) {
+ColumnsToReduce::ColumnsToReduce(DenseCubicalGrids* _dcg) {
   dim = 0;
   int ax = _dcg -> ax;
   int ay = _dcg -> ay;
@@ -362,45 +321,44 @@ ColumnsToReduce4::ColumnsToReduce4(DenseCubicalGrids4* _dcg) {
           birthday = _dcg -> dense4[x][y][z][w];
           index = x | (y << 7) | (z << 14) | (w << 21);
           if (birthday != _dcg -> threshold) {
-            columns_to_reduce.push_back(BirthdayIndex4(birthday, index, 0));
+            columns_to_reduce.push_back(BirthdayIndex(birthday, index, 0));
           }
         }
       }
     }
   }
-  sort(columns_to_reduce.begin(), columns_to_reduce.end(), BirthdayIndex4Comparator());
+  sort(columns_to_reduce.begin(), columns_to_reduce.end(), BirthdayIndexComparator());
 }
 
-int ColumnsToReduce4::size() {
+int ColumnsToReduce::size() {
   return columns_to_reduce.size();
 }
 
 /*****simplex_coboundary_estimator*****/
-class SimplexCoboundaryEnumerator4
+class SimplexCoboundaryEnumerator
 {
 public:
-  BirthdayIndex4 simplex;
-  DenseCubicalGrids4* dcg;
+  BirthdayIndex simplex;
+  DenseCubicalGrids* dcg;
   int dim;
   double birthtime;
   int ax, ay, az, aw;
   int cx, cy, cz, cw, cm;
   int count;
-  BirthdayIndex4 nextCoface;
+  BirthdayIndex nextCoface;
   double threshold; 
   
-  SimplexCoboundaryEnumerator4();
-  void setSimplexCoboundaryEnumerator4(BirthdayIndex4 _s, DenseCubicalGrids4* _dcg);
+  SimplexCoboundaryEnumerator();
+  void setSimplexCoboundaryEnumerator(BirthdayIndex _s, DenseCubicalGrids* _dcg);
   bool hasNextCoface() ;
-  BirthdayIndex4 getNextCoface();
+  BirthdayIndex getNextCoface();
 };
 
-SimplexCoboundaryEnumerator4::SimplexCoboundaryEnumerator4(){
-  nextCoface = BirthdayIndex4(0, -1, 1);
+SimplexCoboundaryEnumerator::SimplexCoboundaryEnumerator(){
+  nextCoface = BirthdayIndex(0, -1, 1);
 }
 
-
-void SimplexCoboundaryEnumerator4::setSimplexCoboundaryEnumerator4(BirthdayIndex4 _s, DenseCubicalGrids4* _dcg) {
+void SimplexCoboundaryEnumerator::setSimplexCoboundaryEnumerator(BirthdayIndex _s, DenseCubicalGrids* _dcg) {
   simplex = _s;
   dcg = _dcg;
   dim = simplex.dim;
@@ -420,8 +378,7 @@ void SimplexCoboundaryEnumerator4::setSimplexCoboundaryEnumerator4(BirthdayIndex
   count = 0;
 }
 
-
-bool SimplexCoboundaryEnumerator4::hasNextCoface() {
+bool SimplexCoboundaryEnumerator::hasNextCoface() {
   int index = 0;
   double birthday = 0;
   switch (dim) {
@@ -470,7 +427,7 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
       }
       if (birthday != threshold) {
         count = i + 1;
-        nextCoface = BirthdayIndex4(birthday, index, 1);
+        nextCoface = BirthdayIndex(birthday, index, 1);
         return true;
       }
     }
@@ -482,38 +439,38 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
         switch(i){
         case 0: // x - w +
           index = (3 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
-          birthday = max(birthtime, dcg -> dense4[cx][cy][cz][cw + 1], dcg -> dense4[cx + 1][cy][cz][cw + 1]);
+          birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw + 1], dcg -> dense4[cx + 1][cy][cz][cw + 1]});
           break;
           
         case 1: // x - w -
           index = (3 << 28) | ((cw - 1) << 21) | (cz << 14) | (cy << 7) | cx;
-          birthday = max(birthtime, dcg -> dense4[cx][cy][cz][cw - 1], dcg -> dense4[cx + 1][cy][cz][cw - 1]);
+          birthday = max({birthtime, dcg -> dense4[cx][cy][cz][cw - 1], dcg -> dense4[cx + 1][cy][cz][cw - 1]});
           break;
           
         case 2: // x - z +
           index = (1 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
-          birthday = max(birthtime, dcg -> dense4[cx][cy][cz + 1][cw], dcg -> dense4[cx + 1][cy][cz + 1][cw]);
+          birthday = max({birthtime, dcg -> dense4[cx][cy][cz + 1][cw], dcg -> dense4[cx + 1][cy][cz + 1][cw]});
           break;
           
         case 3: // x - z -
           index = (1 << 28) | (cw << 21) |((cz - 1) << 14) | (cy << 7) | cx;
-          birthday = max(birthtime, dcg -> dense4[cx][cy][cz - 1][cw], dcg -> dense4[cx + 1][cy][cz - 1][cw]);
+          birthday = max({birthtime, dcg -> dense4[cx][cy][cz - 1][cw], dcg -> dense4[cx + 1][cy][cz - 1][cw]});
           break;
           
         case 4: // x - y +
           index = (0 << 28) | (cw << 21) |(cz << 14) | (cy << 7) | cx;
-          birthday = max(birthtime, dcg -> dense4[cx][cy + 1][cz][cw], dcg -> dense4[cx + 1][cy + 1][cz][cw]);
+          birthday = max({birthtime, dcg -> dense4[cx][cy + 1][cz][cw], dcg -> dense4[cx + 1][cy + 1][cz][cw]});
           break;
           
         case 5: // x - y -
           index = (0 << 28) | (cw << 21) |(cz << 14) | ((cy - 1) << 7) | cx;
-          birthday = max(birthtime, dcg -> dense4[cx][cy - 1][cz][cw], dcg -> dense4[cx + 1][cy - 1][cz][cw]);
+          birthday = max({birthtime, dcg -> dense4[cx][cy - 1][cz][cw], dcg -> dense4[cx + 1][cy - 1][cz][cw]});
           break;
         }
         
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex4(birthday, index, 2);
+          nextCoface = BirthdayIndex(birthday, index, 2);
           return true;
         }
       }
@@ -554,7 +511,7 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex4(birthday, index, 2);
+          nextCoface = BirthdayIndex(birthday, index, 2);
           return true;
         }
       }
@@ -595,7 +552,7 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex4(birthday, index, 2);
+          nextCoface = BirthdayIndex(birthday, index, 2);
           return true;
         }
       }
@@ -636,7 +593,7 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex4(birthday, index, 2);
+          nextCoface = BirthdayIndex(birthday, index, 2);
           return true;
         }
       }
@@ -676,7 +633,7 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
         
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex4(birthday, index, 3);
+          nextCoface = BirthdayIndex(birthday, index, 3);
           return true;
         }
       }
@@ -712,7 +669,7 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex4(birthday, index, 3);
+          nextCoface = BirthdayIndex(birthday, index, 3);
           return true;
         }
       }
@@ -747,7 +704,7 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex4(birthday, index, 3);
+          nextCoface = BirthdayIndex(birthday, index, 3);
           return true;
         }
       }
@@ -783,7 +740,7 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex4(birthday, index, 3);
+          nextCoface = BirthdayIndex(birthday, index, 3);
           return true;
         }
       }
@@ -818,7 +775,7 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex4(birthday, index, 3);
+          nextCoface = BirthdayIndex(birthday, index, 3);
           return true;
         }
       }
@@ -853,7 +810,7 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex4(birthday, index, 3);
+          nextCoface = BirthdayIndex(birthday, index, 3);
           return true;
         }
       }
@@ -883,7 +840,7 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex4(birthday, index, 4);
+          nextCoface = BirthdayIndex(birthday, index, 4);
           return true;
         }
       }
@@ -910,7 +867,7 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex4(birthday, index, 4);
+          nextCoface = BirthdayIndex(birthday, index, 4);
           return true;
         }
       }
@@ -937,7 +894,7 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex4(birthday, index, 4);
+          nextCoface = BirthdayIndex(birthday, index, 4);
           return true;
         }
       }
@@ -964,7 +921,7 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex4(birthday, index, 4);
+          nextCoface = BirthdayIndex(birthday, index, 4);
           return true;
         }
       }
@@ -975,45 +932,43 @@ bool SimplexCoboundaryEnumerator4::hasNextCoface() {
   return false;
 }
 
-BirthdayIndex4 SimplexCoboundaryEnumerator4::getNextCoface() {
+BirthdayIndex SimplexCoboundaryEnumerator::getNextCoface() {
   return nextCoface;
 }
 
 /*****union_find*****/
-class UnionFind4
-{
+class UnionFind{
 public:
   int max_of_index;
   vector<int> parent;
   vector<double> birthtime;
   vector<double> time_max;
-  DenseCubicalGrids4* dcg;
+  DenseCubicalGrids* dcg;
   
-  UnionFind4(int moi, DenseCubicalGrids4* _dcg);
+  UnionFind(int moi, DenseCubicalGrids* _dcg);
   int find(int x);
   void link(int x, int y);
 };
 
-
-class JointPairs4{
+class JointPairs{
   
   int n; // the number of cubes
   int ctr_moi;
   int ax, ay, az, aw;
-  DenseCubicalGrids4* dcg;
-  ColumnsToReduce4* ctr;
-  vector<WritePairs4> *wp;
+  DenseCubicalGrids* dcg;
+  ColumnsToReduce* ctr;
+  vector<WritePairs> *wp;
   bool print;
   double u, v;
   vector<int64_t> cubes_edges;
-  vector<BirthdayIndex4> dim1_simplex_list;
+  vector<BirthdayIndex> dim1_simplex_list;
   
 public:
-  JointPairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp, const bool _print);
+  JointPairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vector<WritePairs> &_wp, const bool _print);
   void joint_pairs_main();
 };
 
-UnionFind4::UnionFind4(int moi, DenseCubicalGrids4* _dcg) : parent(moi), birthtime(moi), time_max(moi) { // Thie "n" is the number of cubes.
+UnionFind::UnionFind(int moi, DenseCubicalGrids* _dcg) : parent(moi), birthtime(moi), time_max(moi) { // Thie "n" is the number of cubes.
   dcg = _dcg;
   max_of_index = moi;
   
@@ -1024,7 +979,7 @@ UnionFind4::UnionFind4(int moi, DenseCubicalGrids4* _dcg) : parent(moi), birthti
   }
 }
 
-int UnionFind4::find(int x){ // Thie "x" is Index.
+int UnionFind::find(int x){ // Thie "x" is Index.
   int y = x, z = parent[y];
   while (z != y) {
     y = z;
@@ -1039,7 +994,7 @@ int UnionFind4::find(int x){ // Thie "x" is Index.
   return z;
 }
 
-void UnionFind4::link(int x, int y){
+void UnionFind::link(int x, int y){
   x = find(x);
   y = find(y);
   if (x == y) return;
@@ -1057,8 +1012,7 @@ void UnionFind4::link(int x, int y){
   }
 }
 
-
-JointPairs4::JointPairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp, const bool _print){
+JointPairs::JointPairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vector<WritePairs> &_wp, const bool _print){
   dcg = _dcg;
   ax = dcg -> ax;
   ay = dcg -> ay;
@@ -1079,27 +1033,27 @@ JointPairs4::JointPairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vecto
             int index = x | (y << 7) | (z << 14) | (w << 21) | (type << 28);
             double birthday = dcg -> getBirthday(index, 1);
             if(birthday < dcg -> threshold){
-              dim1_simplex_list.push_back(BirthdayIndex4(birthday, index, 1));
+              dim1_simplex_list.push_back(BirthdayIndex(birthday, index, 1));
             }
           }
         }
       }
     }
   }
-  sort(dim1_simplex_list.rbegin(), dim1_simplex_list.rend(), BirthdayIndex4Comparator());
+  sort(dim1_simplex_list.rbegin(), dim1_simplex_list.rend(), BirthdayIndexComparator());
 }
 
-void JointPairs4::joint_pairs_main(){
-  UnionFind4 dset(ctr_moi, dcg);
+void JointPairs::joint_pairs_main(){
+  UnionFind dset(ctr_moi, dcg);
   ctr -> columns_to_reduce.clear();
   ctr -> dim = 1;
   double min_birth = dcg -> threshold;
   
   if(print == true){
-    //cout << "persistence intervals in dim " << 0 << ":" << endl;
+    cout << "persistence intervals in dim " << 0 << ":" << endl;
   }
   
-  for(BirthdayIndex4 e : dim1_simplex_list){
+  for(BirthdayIndex e : dim1_simplex_list){
     int index = e.getIndex();
     int cx = index & 0x7f;
     int cy = (index >> 7) & 0x7f;
@@ -1140,10 +1094,10 @@ void JointPairs4::joint_pairs_main(){
         dset.link(u, v);
       } else {
         if(print == true){
-          //cout << "[" << birth << "," << death << ")" << endl;
+          cout << "[" << birth << "," << death << ")" << endl;
         }
         
-        wp -> push_back(WritePairs4(0, birth, death));
+        wp -> push_back(WritePairs(0, birth, death));
         dset.link(u, v);
       }
     } else { // If two values have same "parent", these are potential edges which make a 2-simplex.
@@ -1152,38 +1106,37 @@ void JointPairs4::joint_pairs_main(){
   }
   
   if(print == true){
-    //cout << "[" << min_birth << ", )" << endl;
+    cout << "[" << min_birth << ", )" << endl;
   }
   
-  wp -> push_back(WritePairs4(-1, min_birth, dcg->threshold));
-  sort(ctr -> columns_to_reduce.begin(), ctr -> columns_to_reduce.end(), BirthdayIndex4Comparator());
+  wp -> push_back(WritePairs(-1, min_birth, dcg->threshold));
+  sort(ctr -> columns_to_reduce.begin(), ctr -> columns_to_reduce.end(), BirthdayIndexComparator());
 }
 
 /*****compute_pairs*****/
-template <class Key, class T> class hash_map4 : public std::unordered_map<Key, T> {};
+template <class Key, class T> class hash_map : public std::unordered_map<Key, T> {};
 
-
-class ComputePairs4
+class ComputePairs
 {
   
 public:
-  DenseCubicalGrids4* dcg;
-  ColumnsToReduce4* ctr;
-  hash_map4<int, int> pivot_column_index;
+  DenseCubicalGrids* dcg;
+  ColumnsToReduce* ctr;
+  hash_map<int, int> pivot_column_index;
   int ax, ay, az, aw;
   int dim;
-  vector<WritePairs4> *wp;
+  vector<WritePairs> *wp;
   bool print;
   
-  ComputePairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp, const bool _print);
+  ComputePairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vector<WritePairs> &_wp, const bool _print);
   void compute_pairs_main();
   void outputPP(int _dim, double _birth, double _death);
-  BirthdayIndex4 pop_pivot(priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>& column);
-  BirthdayIndex4 get_pivot(priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>& column);
+  BirthdayIndex pop_pivot(priority_queue<BirthdayIndex, vector<BirthdayIndex>, BirthdayIndexComparator>& column);
+  BirthdayIndex get_pivot(priority_queue<BirthdayIndex, vector<BirthdayIndex>, BirthdayIndexComparator>& column);
   void assemble_columns_to_reduce();
 };
 
-ComputePairs4::ComputePairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp, const bool _print){
+ComputePairs::ComputePairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vector<WritePairs> &_wp, const bool _print){
   dcg = _dcg;
   ctr = _ctr;
   dim = _ctr -> dim;
@@ -1196,16 +1149,16 @@ ComputePairs4::ComputePairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, v
   aw = _dcg -> aw;
 }
 
-void ComputePairs4::compute_pairs_main(){
+void ComputePairs::compute_pairs_main(){
   if(print == true){
-    //cout << "persistence intervals in dim " << dim << ":" << endl;
+    cout << "persistence intervals in dim " << dim << ":" << endl;
   }
   
-  vector<BirthdayIndex4> coface_entries;
-  SimplexCoboundaryEnumerator4 cofaces;
-  unordered_map<int, priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>> recorded_wc;
+  vector<BirthdayIndex> coface_entries;
+  SimplexCoboundaryEnumerator cofaces;
+  unordered_map<int, priority_queue<BirthdayIndex, vector<BirthdayIndex>, BirthdayIndexComparator>> recorded_wc;
   
-  pivot_column_index = hash_map4<int, int>();
+  pivot_column_index = hash_map<int, int>();
   auto ctl_size = ctr -> columns_to_reduce.size();
   pivot_column_index.reserve(ctl_size);
   recorded_wc.reserve(ctl_size);
@@ -1213,21 +1166,24 @@ void ComputePairs4::compute_pairs_main(){
   
   for(int i = 0; i < ctl_size; ++i){ 
     auto column_to_reduce = ctr -> columns_to_reduce[i]; 
-    priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator> working_coboundary;
+    priority_queue<BirthdayIndex, vector<BirthdayIndex>, BirthdayIndexComparator> working_coboundary;
     double birth = column_to_reduce.getBirthday();
     
+    // allow R user to quit/interrupt
+    Rcpp::checkUserInterrupt();
+    
     int j = i;
-    BirthdayIndex4 pivot(0, -1, 0);
+    BirthdayIndex pivot(0, -1, 0);
     bool might_be_apparent_pair = true;
     bool goto_found_persistence_pair = false;
     
     do {
       auto simplex = ctr -> columns_to_reduce[j];
       coface_entries.clear();
-      cofaces.setSimplexCoboundaryEnumerator4(simplex, dcg);
+      cofaces.setSimplexCoboundaryEnumerator(simplex, dcg);
       
       while (cofaces.hasNextCoface() && !goto_found_persistence_pair) {
-        BirthdayIndex4 coface = cofaces.getNextCoface();
+        BirthdayIndex coface = cofaces.getNextCoface();
         coface_entries.push_back(coface);
         if (might_be_apparent_pair && (simplex.getBirthday() == coface.getBirthday())) {
           if (pivot_column_index.find(coface.getIndex()) == pivot_column_index.end()) {
@@ -1284,27 +1240,27 @@ void ComputePairs4::compute_pairs_main(){
   }
 }
 
-void ComputePairs4::outputPP(int _dim, double _birth, double _death){
+void ComputePairs::outputPP(int _dim, double _birth, double _death){
   if(_birth != _death){
     if(_death != dcg -> threshold){
       if(print == true){
-        //cout << "[" <<_birth << "," << _death << ")" << endl;
+        cout << "[" <<_birth << "," << _death << ")" << endl;
       }
       
-      wp -> push_back(WritePairs4(_dim, _birth, _death));
+      wp -> push_back(WritePairs(_dim, _birth, _death));
     } else {
       if(print == true){
-        //cout << "[" << _birth << ", )" << endl;
+        cout << "[" << _birth << ", )" << endl;
       }
       
-      wp -> push_back(WritePairs4(-1, _birth, dcg -> threshold));
+      wp -> push_back(WritePairs(-1, _birth, dcg -> threshold));
     }
   }
 }
 
-BirthdayIndex4 ComputePairs4::pop_pivot(priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>& column){
+BirthdayIndex ComputePairs::pop_pivot(priority_queue<BirthdayIndex, vector<BirthdayIndex>, BirthdayIndexComparator>& column){
   if (column.empty()) {
-    return BirthdayIndex4(0, -1, 0);
+    return BirthdayIndex(0, -1, 0);
   } else {
     auto pivot = column.top();
     column.pop();
@@ -1312,7 +1268,7 @@ BirthdayIndex4 ComputePairs4::pop_pivot(priority_queue<BirthdayIndex4, vector<Bi
     while (!column.empty() && column.top().index == pivot.getIndex()) {
       column.pop();
       if (column.empty())
-        return BirthdayIndex4(0, -1, 0);
+        return BirthdayIndex(0, -1, 0);
       else {
         pivot = column.top();
         column.pop();
@@ -1322,16 +1278,16 @@ BirthdayIndex4 ComputePairs4::pop_pivot(priority_queue<BirthdayIndex4, vector<Bi
   }
 }
 
-BirthdayIndex4 ComputePairs4::get_pivot(priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>&
+BirthdayIndex ComputePairs::get_pivot(priority_queue<BirthdayIndex, vector<BirthdayIndex>, BirthdayIndexComparator>&
   column) {
-  BirthdayIndex4 result = pop_pivot(column);
+  BirthdayIndex result = pop_pivot(column);
   if (result.getIndex() != -1) {
     column.push(result);
   }
   return result;
 }
 
-void ComputePairs4::assemble_columns_to_reduce() {
+void ComputePairs::assemble_columns_to_reduce() {
   ++dim;
   ctr -> dim = dim;
   
@@ -1339,7 +1295,6 @@ void ComputePairs4::assemble_columns_to_reduce() {
     ctr -> columns_to_reduce.clear();
     for(int w = 1; w <= aw; ++w){
       for(int z = 1; z <= az; ++z){
-        Rcpp::checkUserInterrupt();
         for (int y = 1; y <= ay; ++y) {
           for (int x = 1; x <= ax; ++x) {
             for (int m = 0; m < 4; ++m) { // the number of type
@@ -1347,7 +1302,7 @@ void ComputePairs4::assemble_columns_to_reduce() {
               if (pivot_column_index.find(index) == pivot_column_index.end()) {
                 double birthday = dcg -> getBirthday(index, 1);
                 if (birthday != dcg -> threshold) {
-                  ctr->columns_to_reduce.push_back(BirthdayIndex4(birthday, index, 1));
+                  ctr->columns_to_reduce.push_back(BirthdayIndex(birthday, index, 1));
                 }
               }
             }
@@ -1359,7 +1314,6 @@ void ComputePairs4::assemble_columns_to_reduce() {
     ctr -> columns_to_reduce.clear();
     for(int w = 1; w <= aw; ++w){
       for(int z = 1; z <= az; ++z){
-        Rcpp::checkUserInterrupt();
         for (int y = 1; y <= ay; ++y) {
           for (int x = 1; x <= ax; ++x) {
             for (int m = 0; m < 6; ++m) { // the number of type
@@ -1367,7 +1321,7 @@ void ComputePairs4::assemble_columns_to_reduce() {
               if (pivot_column_index.find(index) == pivot_column_index.end()) {
                 double birthday = dcg -> getBirthday(index, 2);
                 if (birthday != dcg -> threshold) {
-                  ctr->columns_to_reduce.push_back(BirthdayIndex4(birthday, index, 2));
+                  ctr->columns_to_reduce.push_back(BirthdayIndex(birthday, index, 2));
                 }
               }
             }
@@ -1379,7 +1333,6 @@ void ComputePairs4::assemble_columns_to_reduce() {
     ctr -> columns_to_reduce.clear();
     for(int w = 1; w <= aw; ++w){
       for(int z = 1; z <= az; ++z){
-        Rcpp::checkUserInterrupt();
         for (int y = 1; y <= ay; ++y) {
           for (int x = 1; x <= ax; ++x) {
             for (int m = 0; m < 4; ++m) { // the number of type
@@ -1387,7 +1340,7 @@ void ComputePairs4::assemble_columns_to_reduce() {
               if (pivot_column_index.find(index) == pivot_column_index.end()) {
                 double birthday = dcg -> getBirthday(index, 3);
                 if (birthday != dcg -> threshold) {
-                  ctr -> columns_to_reduce.push_back(BirthdayIndex4(birthday, index, 3));
+                  ctr -> columns_to_reduce.push_back(BirthdayIndex(birthday, index, 3));
                 }
               }
             }
@@ -1396,33 +1349,32 @@ void ComputePairs4::assemble_columns_to_reduce() {
       }
     }
   }
-  sort(ctr -> columns_to_reduce.begin(), ctr -> columns_to_reduce.end(), BirthdayIndex4Comparator());
+  sort(ctr -> columns_to_reduce.begin(), ctr -> columns_to_reduce.end(), BirthdayIndexComparator());
 }
 
-/*****cubical_ripser4dim*****/
-// method == 0 --> link find algo
-// method == 1 --> compute pairs algo
+enum calculation_method { LINKFIND, COMPUTEPAIRS};
+
+// method == 0 --> LINKFIND algorithm
+// method == 1 --> COMPUTEPAIRS algorithm
 // [[Rcpp::export]]
 Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, int method, int nx, int ny, int nz, int nt)
 {
-  //Rcpp::Rcout << "HERE3\n";
+  // Rcpp::Rcout << "HERE AT START\n";
   bool print = false;
   
-  vector<WritePairs4> writepairs; // dim birth death
+  vector<WritePairs> writepairs; // dim birth death
   writepairs.clear();
   
-  DenseCubicalGrids4* dcg = new DenseCubicalGrids4(image, threshold, nx, ny, nz, nt);
-  ColumnsToReduce4* ctr = new ColumnsToReduce4(dcg); 
+  DenseCubicalGrids* dcg = new DenseCubicalGrids(image, threshold, nx, ny, nz, nt);
+  ColumnsToReduce* ctr = new ColumnsToReduce(dcg); 
   
-  switch(method)
-  {
-    // link find algo
+  switch(method){
   case 0:
   {
-    JointPairs4* jp = new JointPairs4(dcg, ctr, writepairs, print);
+    JointPairs* jp = new JointPairs(dcg, ctr, writepairs, print);
     jp -> joint_pairs_main();
     
-    ComputePairs4* cp = new ComputePairs4(dcg, ctr, writepairs, print);
+    ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
     cp -> compute_pairs_main(); // dim1
     
     cp -> assemble_columns_to_reduce();
@@ -1432,10 +1384,9 @@ Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, i
     cp -> compute_pairs_main(); // dim3
     break;		
   }
-    // compute pairs algo
   case 1:
   {	
-    ComputePairs4* cp = new ComputePairs4(dcg, ctr, writepairs, print);
+    ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
     cp -> compute_pairs_main(); // dim0
     cp -> assemble_columns_to_reduce();
     
@@ -1456,10 +1407,7 @@ Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, i
     ans(i, 0) = writepairs[i].getDimension();
     ans(i, 1) = writepairs[i].getBirth();
     ans(i, 2) = writepairs[i].getDeath();
-    
-    // debug
-    //Rcpp::Rcout << ans(i, 0) << " " << ans(i, 1) << " " << ans(i, 2) << "\n";
   }
-  
+  // Rcpp::Rcout << "HERE BEFORE RETURN\n";
   return ans;
 }
