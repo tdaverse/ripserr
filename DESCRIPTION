@@ -16,9 +16,9 @@ Authors@R:
              role = "aut",
              comment = c(ORCID = "0000-0003-2971-7673")))
 Description: Ports the Ripser <arXiv:1908.02518> and Cubical Ripser
-    <arXiv:2005.12692> persistent homology calculation engines from C++ via
-    Rcpp <doi:10.18637/jss.v040.i08>. Can be used as a rapid calculation
-    tool in topological data analysis pipelines.
+    <arXiv:2005.12692> persistent homology calculation engines from C++. Can
+    be used as a rapid calculation tool in topological data analysis
+    pipelines.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
