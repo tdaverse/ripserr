@@ -105,7 +105,7 @@ int BirthdayIndex::getDimension(){
 }
 
 void BirthdayIndex::print(){
-  std::cout << "(dob:" << birthday << "," << index << ")" << std::endl;
+  
 }
 
 bool BirthdayIndexComparator::operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const{
@@ -1049,10 +1049,6 @@ void JointPairs::joint_pairs_main(){
   ctr -> dim = 1;
   double min_birth = dcg -> threshold;
   
-  if(print == true){
-    cout << "persistence intervals in dim " << 0 << ":" << endl;
-  }
-  
   for(BirthdayIndex e : dim1_simplex_list){
     int index = e.getIndex();
     int cx = index & 0x7f;
@@ -1093,9 +1089,6 @@ void JointPairs::joint_pairs_main(){
       if(birth == death){
         dset.link(u, v);
       } else {
-        if(print == true){
-          cout << "[" << birth << "," << death << ")" << endl;
-        }
         
         wp -> push_back(WritePairs(0, birth, death));
         dset.link(u, v);
@@ -1103,10 +1096,6 @@ void JointPairs::joint_pairs_main(){
     } else { // If two values have same "parent", these are potential edges which make a 2-simplex.
       ctr -> columns_to_reduce.push_back(e);
     }
-  }
-  
-  if(print == true){
-    cout << "[" << min_birth << ", )" << endl;
   }
   
   wp -> push_back(WritePairs(-1, min_birth, dcg->threshold));
@@ -1150,10 +1139,6 @@ ComputePairs::ComputePairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vecto
 }
 
 void ComputePairs::compute_pairs_main(){
-  if(print == true){
-    cout << "persistence intervals in dim " << dim << ":" << endl;
-  }
-  
   vector<BirthdayIndex> coface_entries;
   SimplexCoboundaryEnumerator cofaces;
   unordered_map<int, priority_queue<BirthdayIndex, vector<BirthdayIndex>, BirthdayIndexComparator>> recorded_wc;
@@ -1243,15 +1228,9 @@ void ComputePairs::compute_pairs_main(){
 void ComputePairs::outputPP(int _dim, double _birth, double _death){
   if(_birth != _death){
     if(_death != dcg -> threshold){
-      if(print == true){
-        cout << "[" <<_birth << "," << _death << ")" << endl;
-      }
       
       wp -> push_back(WritePairs(_dim, _birth, _death));
     } else {
-      if(print == true){
-        cout << "[" << _birth << ", )" << endl;
-      }
       
       wp -> push_back(WritePairs(-1, _birth, dcg -> threshold));
     }
