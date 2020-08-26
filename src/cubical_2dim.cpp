@@ -317,8 +317,12 @@ public:
   DenseCubicalGrids2* dcg;
 
   // constructor
-  UnionFind2(int moi, DenseCubicalGrids2* _dcg) : parent(moi), birthtime(moi), time_max(moi), max_of_index(moi) // Thie "n" is the number of cubes.
+  UnionFind2(int moi, DenseCubicalGrids2* _dcg) : max_of_index(moi) // Thie "n" is the number of cubes.
   {
+    parent = vector<int>(moi);
+    birthtime = vector<double>(moi);
+    time_max = vector<double>(moi);
+    
     dcg = _dcg;
 
     for (int i = 0; i < moi; ++i)
