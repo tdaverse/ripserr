@@ -55,7 +55,6 @@ public:
   double getBirthday();
   long getIndex();
   int getDimension();
-  void print();
 };
 
 struct BirthdayIndex4Comparator
@@ -102,10 +101,6 @@ long BirthdayIndex4::getIndex(){
 
 int BirthdayIndex4::getDimension(){
   return dim;
-}
-
-void BirthdayIndex4::print(){
-  
 }
 
 bool BirthdayIndex4Comparator::operator()(const BirthdayIndex4& o1, const BirthdayIndex4& o2) const{
@@ -174,8 +169,6 @@ double WritePairs4::getDeath(){
 }
 
 /*****dense_cubical_grids*****/
-enum file_format { DIPHA, PERSEUS };
-
 const int MAX_SIZE = 64;
 const int EXPONENT = 6;
 
@@ -303,8 +296,7 @@ public:
   int max_of_index;
   
   ColumnsToReduce4(DenseCubicalGrids4* _dcg);
-  int size() ;
-  
+  int size();
 };
 
 ColumnsToReduce4::ColumnsToReduce4(DenseCubicalGrids4* _dcg) {
@@ -961,13 +953,12 @@ class JointPairs4{
   DenseCubicalGrids4* dcg;
   ColumnsToReduce4* ctr;
   vector<WritePairs4> *wp;
-  bool print;
   double u, v;
   vector<int64_t> cubes_edges;
   vector<BirthdayIndex4> dim1_simplex_list;
   
 public:
-  JointPairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp, const bool _print);
+  JointPairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp);
   void joint_pairs_main();
 };
 
@@ -1015,7 +1006,7 @@ void UnionFind4::link(int x, int y){
   }
 }
 
-JointPairs4::JointPairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp, const bool _print){
+JointPairs4::JointPairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp){
   dcg = _dcg;
   ax = dcg -> ax;
   ay = dcg -> ay;
@@ -1024,7 +1015,6 @@ JointPairs4::JointPairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vecto
   ctr = _ctr; // ctr is "dim0"simplex list.
   ctr_moi = ctr -> max_of_index;
   n = ctr -> columns_to_reduce.size();
-  print = _print;
   
   wp = &_wp;
   
@@ -1118,9 +1108,8 @@ public:
   int ax, ay, az, aw;
   int dim;
   vector<WritePairs4> *wp;
-  bool print;
   
-  ComputePairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp, const bool _print);
+  ComputePairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp);
   void compute_pairs_main();
   void outputPP(int _dim, double _birth, double _death);
   BirthdayIndex4 pop_pivot(priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>& column);
@@ -1128,12 +1117,11 @@ public:
   void assemble_columns_to_reduce();
 };
 
-ComputePairs4::ComputePairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp, const bool _print){
+ComputePairs4::ComputePairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp){
   dcg = _dcg;
   ctr = _ctr;
   dim = _ctr -> dim;
   wp = &_wp;
-  print = _print;
   
   ax = _dcg -> ax;
   ay = _dcg -> ay;
@@ -1341,9 +1329,6 @@ enum calculation_method { LINKFIND, COMPUTEPAIRS};
 // [[Rcpp::export]]
 Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, int method, int nx, int ny, int nz, int nt)
 {
-  // Rcpp::Rcout << "HERE AT START\n";
-  bool print = false;
-  
   vector<WritePairs4> writepairs; // dim birth death
   writepairs.clear();
   
@@ -1353,10 +1338,10 @@ Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, i
   switch(method){
   case 0:
   {
-    JointPairs4* jp = new JointPairs4(dcg, ctr, writepairs, print);
+    JointPairs4* jp = new JointPairs4(dcg, ctr, writepairs);
     jp -> joint_pairs_main();
     
-    ComputePairs4* cp = new ComputePairs4(dcg, ctr, writepairs, print);
+    ComputePairs4* cp = new ComputePairs4(dcg, ctr, writepairs);
     cp -> compute_pairs_main(); // dim1
     
     cp -> assemble_columns_to_reduce();
@@ -1368,7 +1353,7 @@ Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, i
   }
   case 1:
   {	
-    ComputePairs4* cp = new ComputePairs4(dcg, ctr, writepairs, print);
+    ComputePairs4* cp = new ComputePairs4(dcg, ctr, writepairs);
     cp -> compute_pairs_main(); // dim0
     cp -> assemble_columns_to_reduce();
     
@@ -1390,6 +1375,6 @@ Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, i
     ans(i, 1) = writepairs[i].getBirth();
     ans(i, 2) = writepairs[i].getDeath();
   }
-  // Rcpp::Rcout << "HERE BEFORE RETURN\n";
+  
   return ans;
 }
