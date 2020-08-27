@@ -138,10 +138,21 @@ cubical <- function(mat, threshold = 9999, method = 0) {
   # dim = 2
   if (length(dim(mat)) == 2) {
     ans <- cubical_2dim(mat, threshold, method)
-     
+  
+  # dim = 3
+  } else if (length(dim(mat)) == 3) {
+    temp_mat <- mat
+    dim(temp_mat) <- prod(dim(mat))
+    ans <- cubical_3dim(temp_mat, threshold, method,
+                        dim(mat)[1],
+                        dim(mat)[2],
+                        dim(mat)[3])
+    
   # dim = 4
   } else if (length(dim(mat)) == 4) {
-    ans <- cubical_4dim(mat, threshold, method,
+    temp_mat <- mat
+    dim(temp_mat) <- prod(dim(mat))
+    ans <- cubical_4dim(temp_mat, threshold, method,
                         dim(mat)[1],
                         dim(mat)[2],
                         dim(mat)[3],

@@ -26,8 +26,6 @@
  with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define FILE_OUTPUT
-
 #include <iostream>
 #include <cstdint>
 #include <cassert>
@@ -37,6 +35,7 @@
 #include <vector>
 #include <unordered_map>
 #include <queue>
+#include <Rcpp.h>
 
 using namespace std;
 
@@ -342,7 +341,7 @@ public:
   double dense3[512][512][512];
   file_format format;
   
-  DenseCubicalGrids(const std::string& filename, double _threshold, file_format _format);
+  DenseCubicalGrids(const Rcpp::NumericVector& image, double _threshold, int nx, int ny, int nz);
   
   double getBirthday(int index, int dim);
   
@@ -350,97 +349,19 @@ public:
   
 };
 
-DenseCubicalGrids::DenseCubicalGrids(const string& filename, double _threshold, file_format _format)  {
+DenseCubicalGrids::DenseCubicalGrids(const Rcpp::NumericVector& image, double _threshold, int nx, int ny, int nz) : threshold(_threshold), ax(nx), ay(ny), az(nz)
+{
+  dim = 3;
   
-  threshold = _threshold;
-  format = _format;
+  // set everything to threshold
+  for (int i = 0; i < 512; i++)
+    for (int j = 0; j < 512; j++)
+      for (int k = 0; k < 512; k++)
+        dense3[i][j][k] = threshold;
   
-  switch(format){
-  case DIPHA:
-  {
-    ifstream reading_file; 
-    
-    ifstream fin( filename, ios::in | ios::binary );
-    cout << filename << endl;
-    
-    int64_t d;
-    fin.read( ( char * ) &d, sizeof( int64_t ) ); // magic number
-    assert(d == 8067171840);
-    fin.read( ( char * ) &d, sizeof( int64_t ) ); // type number
-    assert(d == 1);
-    fin.read( ( char * ) &d, sizeof( int64_t ) ); //data num
-    fin.read( ( char * ) &d, sizeof( int64_t ) ); // dim 
-    dim = d;
-    assert(dim == 3);
-    fin.read( ( char * ) &d, sizeof( int64_t ) );
-    ax = d;
-    fin.read( ( char * ) &d, sizeof( int64_t ) );
-    ay = d;
-    fin.read( ( char * ) &d, sizeof( int64_t ) );
-    az = d;
-    assert(0 < ax && ax < 510 && 0 < ay && ay < 510 && 0 < az && az < 510);
-    cout << "ax : ay : az = " << ax << " : " << ay << " : " << az << endl;
-    
-    double dou;
-    for(int z = 0; z < az + 2; ++z){
-      for (int y = 0; y < ay + 2; ++y) {
-        for (int x = 0; x < ax + 2; ++x) {
-          if(0 < x && x <= ax && 0 < y && y <= ay && 0 < z && z <= az){
-            if (!fin.eof()) {
-              fin.read( ( char * ) &dou, sizeof( double ) );
-              dense3[x][y][z] = dou;
-            } else {
-              cerr << "file endof error " << endl;
-            }
-          }
-          else {
-            dense3[x][y][z] = threshold;
-          }
-        }
-      }
-    }
-    fin.close();
-    break;
-  }
-    
-  case PERSEUS:
-  {
-    ifstream reading_file; 
-    reading_file.open(filename.c_str(), ios::in); 
-    
-    string reading_line_buffer; 
-    getline(reading_file, reading_line_buffer); 
-    dim = atoi(reading_line_buffer.c_str());
-    getline(reading_file, reading_line_buffer); 
-    ax = atoi(reading_line_buffer.c_str()); 
-    getline(reading_file, reading_line_buffer); 
-    ay = atoi(reading_line_buffer.c_str()); 
-    getline(reading_file, reading_line_buffer); 
-    az = atoi(reading_line_buffer.c_str());
-    assert(0 < ax && ax < 510 && 0 < ay && ay < 510 && 0 < az && az < 510);
-    cout << "ax : ay : az = " << ax << " : " << ay << " : " << az << endl;
-    
-    for(int z = 0; z < az + 2; ++z){
-      for (int y = 0; y <ay + 2; ++y) { 
-        for (int x = 0; x < ax + 2; ++x) { 
-          if(0 < x && x <= ax && 0 < y && y <= ay && 0 < z && z <= az){ 
-            if (!reading_file.eof()) { 
-              getline(reading_file, reading_line_buffer); 
-              dense3[x][y][z] = atoi(reading_line_buffer.c_str()); 
-              if (dense3[x][y][z] == -1) { 
-                dense3[x][y][z] = threshold; 
-              } 
-            } 
-          }
-          else { 
-            dense3[x][y][z] = threshold; 
-          } 
-        } 
-      }
-    }
-    break;
-  }
-  }
+  // set values based on image
+  for (int i = 0; i < ax * ay * az; i++)
+    dense3[i % ax + 1][i / ax % ay + 1][i / (ax * ay) % az + 1] = image(i);
 }
 
 
@@ -1181,90 +1102,20 @@ void ComputePairs::assemble_columns_to_reduce() {
   sort(ctr -> columns_to_reduce.begin(), ctr -> columns_to_reduce.end(), BirthdayIndexComparator());
 }
 
-enum calculation_method { LINKFIND, COMPUTEPAIRS};
-
-void print_usage_and_exit(int exit_code) {
-  cerr << "Usage: "
-       << "CR3 "
-       << "[options] [input_filename]" << endl
-       << endl
-       << "Options:" << endl
-       << endl
-       << "  --help           print this screen" << endl
-       << "  --format         use the specified file format for the input. Options are:" << endl
-       << "                     dipha          (voxel matrix in DIPHA file format; default)" << endl
-       << "                     perseus        (voxel matrix in Perseus file format)" << endl
-       << "  --threshold <t>  compute cubical complexes up to birth time <t>" << endl
-       << "  --method         method to compute the persistent homology of the cubical complexes. Options are" << endl
-       << "                     link_find      (calculating the 0-dim PP, use 'link_find' algorithm; default)" << endl
-       << "                     compute_pairs  (calculating the 0-dim PP, use 'compute_pairs' algorithm)" << endl
-       << "  --output         name of file that will contain the persistence diagram " << endl
-       << "  --print          print persistence pairs on your console" << endl
-       << endl;
-  
-  exit(exit_code);
-}
-
-int main(int argc, char** argv){
-  
-  const char* filename = nullptr;
-  string output_filename = "answer_3dim.diagram"; //default name
-  file_format format = PERSEUS;
-  calculation_method method = LINKFIND;
-  double threshold = 99999;
+// method == 0 --> LINKFIND
+// method == 1 --> COMPUTEPAIRS
+// [[Rcpp::export]]
+Rcpp::NumericMatrix cubical_3dim(Rcpp::NumericVector& image, double threshold, int method, int nx, int ny, int nz)
+{
   bool print = false;
-  
-  for (int i = 1; i < argc; ++i) {
-    const string arg(argv[i]);
-    if (arg == "--help") {
-      print_usage_and_exit(0);
-    } else if (arg == "--threshold") {
-      string parameter = string(argv[++i]);
-      size_t next_pos;
-      threshold = stod(parameter, &next_pos);
-      if (next_pos != parameter.size()) print_usage_and_exit(-1);
-    } else if (arg == "--format") {
-      string parameter = string(argv[++i]);
-      if (parameter == "dipha") {
-        format = DIPHA;
-      } else if (parameter == "perseus") {
-        format = PERSEUS;
-      } else {
-        print_usage_and_exit(-1);
-      }
-    } else if(arg == "--method") {
-      string parameter = string(argv[++i]);
-      if (parameter == "link_find") {
-        method = LINKFIND;
-      } else if (parameter == "compute_pairs") {
-        method = COMPUTEPAIRS;
-      } else {
-        print_usage_and_exit(-1);
-      }
-    } else if (arg == "--output") {
-      output_filename = string(argv[++i]);
-    } else if (arg == "--print"){
-      print = true;
-    } else {
-      if (filename) { print_usage_and_exit(-1); }
-      filename = argv[i];
-    }
-  }
-  
-  ifstream file_stream(filename);
-  if (filename && file_stream.fail()) {
-    cerr << "couldn't open file " << filename << endl;
-    exit(-1);
-  }
-  
   vector<WritePairs> writepairs; // dim birth death
   writepairs.clear();
   
-  DenseCubicalGrids* dcg = new DenseCubicalGrids(filename, threshold, format);
+  DenseCubicalGrids* dcg = new DenseCubicalGrids(image, threshold, nx, ny, nz);
   ColumnsToReduce* ctr = new ColumnsToReduce(dcg);
   
   switch(method){
-  case LINKFIND:
+  case 0:
   {
     JointPairs* jp = new JointPairs(dcg, ctr, writepairs, print);
     jp -> joint_pairs_main(); // dim0
@@ -1277,7 +1128,7 @@ int main(int argc, char** argv){
     break;
   }
     
-  case COMPUTEPAIRS:
+  case 1:
   {
     ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
     cp -> compute_pairs_main(); // dim0
@@ -1291,54 +1142,13 @@ int main(int argc, char** argv){
   }
   }
   
-#ifdef FILE_OUTPUT
-  ofstream writing_file;
-  
-  string extension = ".csv";
-  if(equal(extension.rbegin(), extension.rend(), output_filename.rbegin()) == true){
-    
-    string outname = output_filename;// .csv file
-    writing_file.open(outname, ios::out);
-    if(!writing_file.is_open()){
-      cerr << " error: open file for output failed! " << endl;
-    }
-    
-    int64_t p = writepairs.size();
-    for(int64_t i = 0; i < p; ++i){
-      writing_file << writepairs[i].getDimension() << ",";
-      
-      writing_file << writepairs[i].getBirth() << ",";
-      writing_file << writepairs[i].getDeath() << endl;
-    }
-    writing_file.close();
-  } else {
-    
-    writing_file.open(output_filename, ios::out | ios::binary);
-    
-    if(!writing_file.is_open()){
-      cerr << " error: open file for output failed! " << endl;
-    }
-    
-    int64_t mn = 8067171840;
-    writing_file.write((char *) &mn, sizeof( int64_t )); // magic number
-    int64_t type = 2;
-    writing_file.write((char *) &type, sizeof( int64_t )); // type number of PERSISTENCE_DIAGRAM
-    int64_t p = writepairs.size();
-    cout << "the number of pairs : " << p << endl;
-    writing_file.write((char *) &p, sizeof( int64_t )); // number of points in the diagram p
-    for(int64_t i = 0; i < p; ++i){
-      int64_t writedim = writepairs[i].getDimension();
-      writing_file.write((char *) &writedim, sizeof( int64_t )); // dim
-      
-      double writebirth = writepairs[i].getBirth();
-      writing_file.write((char *) &writebirth, sizeof( double )); // birth
-      
-      double writedeath = writepairs[i].getDeath();
-      writing_file.write((char *) &writedeath, sizeof( double )); // death
-    }
-    writing_file.close();
+  Rcpp::NumericMatrix ans(writepairs.size(), 3);
+  for (int i = 0; i < ans.nrow(); i++)
+  {
+    ans(i, 0) = writepairs[i].getDimension();
+    ans(i, 1) = writepairs[i].getBirth();
+    ans(i, 2) = writepairs[i].getDeath();
   }
-#endif
   
-  return 0;
+  return ans;
 }

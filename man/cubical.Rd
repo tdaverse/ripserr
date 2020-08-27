@@ -7,7 +7,7 @@
 cubical(mat, threshold = 9999, method = 0)
 }
 \arguments{
-\item{mat}{numeric matrix containing pixel data}
+\item{mat}{numeric matrix containing pixel/voxel data}
 
 \item{threshold}{maximum diameter for computation of Cubical complex}
 
