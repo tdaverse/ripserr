@@ -114,7 +114,7 @@ int BirthdayIndex::getDimension(){
 }
 
 void BirthdayIndex::print(){
-  std::cout << "(dob:" << birthday << "," << index << ")" << std::endl;
+  // std::cout << "(dob:" << birthday << "," << index << ")" << std::endl;
 }
 
 void BirthdayIndex::VertexPrint(){
@@ -123,7 +123,7 @@ void BirthdayIndex::VertexPrint(){
   int pz = (index >> 18) & 0x01ff;
   int pm = (index >> 27) & 0xff;
   
-  cout << "birthday : (m, z, y, x) = " << birthday << " : (" << pm << ", " << pz << ", " << py << ", " << px << ")" << endl; 
+  // cout << "birthday : (m, z, y, x) = " << birthday << " : (" << pm << ", " << pz << ", " << py << ", " << px << ")" << endl; 
 }
 
 bool BirthdayIndexComparator::operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const{
@@ -841,7 +841,7 @@ void JointPairs::joint_pairs_main(){
   double min_birth = dcg -> threshold;
   
   if(print == true){
-    cout << "persistence intervals in dim " << 0 << ":" << endl;
+    // cout << "persistence intervals in dim " << 0 << ":" << endl;
   }
   
   for(auto e : dim1_simplex_list){
@@ -866,7 +866,7 @@ void JointPairs::joint_pairs_main(){
         dset.link(u, v);
       } else {
         if(print == true){
-          cout << "[" << birth << "," << death << ")" << endl;
+          // cout << "[" << birth << "," << death << ")" << endl;
         }
         wp -> push_back(WritePairs(0, birth, death));
         dset.link(u, v);
@@ -877,7 +877,7 @@ void JointPairs::joint_pairs_main(){
   }
   
   if(print == true){
-    cout << "[" << min_birth << ", )" << endl;
+    // cout << "[" << min_birth << ", )" << endl;
   }
   
   wp -> push_back(WritePairs(-1, min_birth, dcg -> threshold));
@@ -927,7 +927,7 @@ ComputePairs::ComputePairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vecto
 
 void ComputePairs::compute_pairs_main(){
   if(print == true){
-    cout << "persistence intervals in dim " << dim << ":" << endl;
+    // cout << "persistence intervals in dim " << dim << ":" << endl;
   }
   
   pivot_column_index = hash_map<int, int>();
@@ -1018,12 +1018,12 @@ void ComputePairs::outputPP(int _dim, double _birth, double _death){
   if(_birth != _death){
     if(_death != dcg -> threshold){
       if(print == true){
-        cout << "[" <<_birth << "," << _death << ")" << endl;
+        // cout << "[" <<_birth << "," << _death << ")" << endl;
       }
       wp -> push_back(WritePairs(_dim, _birth, _death));
     } else {
       if(print == true){
-        cout << "[" << _birth << ", )" << endl;
+        // cout << "[" << _birth << ", )" << endl;
       }
       wp -> push_back(WritePairs(-1, _birth, dcg -> threshold));
     }
