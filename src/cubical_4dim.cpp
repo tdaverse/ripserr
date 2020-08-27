@@ -40,7 +40,7 @@
 using namespace std;
 
 /*****birthday_index*****/
-class BirthdayIndex
+class BirthdayIndex4
 {
   
 public:
@@ -48,67 +48,67 @@ public:
   int index;
   int dim;
   
-  BirthdayIndex();
-  BirthdayIndex(const BirthdayIndex& b);
-  BirthdayIndex(double _b, int _i, int _d);
-  void copyBirthdayIndex(BirthdayIndex v);
+  BirthdayIndex4();
+  BirthdayIndex4(const BirthdayIndex4& b);
+  BirthdayIndex4(double _b, int _i, int _d);
+  void copyBirthdayIndex4(BirthdayIndex4 v);
   double getBirthday();
   long getIndex();
   int getDimension();
   void print();
 };
 
-struct BirthdayIndexComparator
+struct BirthdayIndex4Comparator
 {
-  bool operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const;
+  bool operator()(const BirthdayIndex4& o1, const BirthdayIndex4& o2) const;
 };
 
-struct BirthdayIndexInverseComparator
+struct BirthdayIndex4InverseComparator
 {
-  bool operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const;
+  bool operator()(const BirthdayIndex4& o1, const BirthdayIndex4& o2) const;
 };
 
-BirthdayIndex::BirthdayIndex(){
+BirthdayIndex4::BirthdayIndex4(){
   birthday = 0;
   index = -1;
   dim = 1;
 }
 
-BirthdayIndex::BirthdayIndex(const BirthdayIndex& b){
+BirthdayIndex4::BirthdayIndex4(const BirthdayIndex4& b){
   birthday = b.birthday;
   index = b.index;
   dim = b.dim;
 }
 
-BirthdayIndex::BirthdayIndex(double _b, int _i, int _d){
+BirthdayIndex4::BirthdayIndex4(double _b, int _i, int _d){
   birthday = _b;
   index = _i;
   dim = _d;
 }
 
-void BirthdayIndex::copyBirthdayIndex(BirthdayIndex v){
+void BirthdayIndex4::copyBirthdayIndex4(BirthdayIndex4 v){
   birthday = v.birthday;
   index = v.index;
   dim = v.dim;
 }
 
-double BirthdayIndex::getBirthday(){
+double BirthdayIndex4::getBirthday(){
   return birthday;
 }
 
-long BirthdayIndex::getIndex(){
+long BirthdayIndex4::getIndex(){
   return index;
 }
 
-int BirthdayIndex::getDimension(){
+int BirthdayIndex4::getDimension(){
   return dim;
 }
 
-void BirthdayIndex::print(){
+void BirthdayIndex4::print(){
   
 }
 
-bool BirthdayIndexComparator::operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const{
+bool BirthdayIndex4Comparator::operator()(const BirthdayIndex4& o1, const BirthdayIndex4& o2) const{
   if(o1.birthday == o2.birthday){
     if(o1.index < o2.index){
       return true;
@@ -124,7 +124,7 @@ bool BirthdayIndexComparator::operator()(const BirthdayIndex& o1, const Birthday
   }
 }
 
-bool BirthdayIndexInverseComparator::operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const{
+bool BirthdayIndex4InverseComparator::operator()(const BirthdayIndex4& o1, const BirthdayIndex4& o2) const{
   if(o1.birthday == o2.birthday){
     if(o1.index < o2.index){
       return false;
@@ -141,7 +141,7 @@ bool BirthdayIndexInverseComparator::operator()(const BirthdayIndex& o1, const B
 }
 
 /*****write_pairs*****/
-class WritePairs
+class WritePairs4
 {
   
 public:
@@ -149,27 +149,27 @@ public:
   double birth;
   double death;
   
-  WritePairs(int64_t _dim, double _birth, double _death);
+  WritePairs4(int64_t _dim, double _birth, double _death);
   int64_t getDimension();
   double getBirth();
   double getDeath();
 };
 
-WritePairs::WritePairs(int64_t _dim, double _birth, double _death){
+WritePairs4::WritePairs4(int64_t _dim, double _birth, double _death){
   dim = _dim;
   birth = _birth;
   death = _death;
 }
 
-int64_t WritePairs::getDimension(){
+int64_t WritePairs4::getDimension(){
   return dim;
 }
 
-double WritePairs::getBirth(){
+double WritePairs4::getBirth(){
   return birth;
 }
 
-double WritePairs::getDeath(){
+double WritePairs4::getDeath(){
   return death;
 }
 
@@ -179,7 +179,7 @@ enum file_format { DIPHA, PERSEUS };
 const int MAX_SIZE = 64;
 const int EXPONENT = 6;
 
-class DenseCubicalGrids { // file_read
+class DenseCubicalGrids4 { // file_read
   
 public:
   double threshold;
@@ -187,11 +187,11 @@ public:
   int ax, ay, az, aw;
   double dense4[MAX_SIZE][MAX_SIZE][MAX_SIZE][MAX_SIZE];
   
-  DenseCubicalGrids(const Rcpp::NumericVector& image, double _threshold, int nx, int ny, int nz, int nt); 
+  DenseCubicalGrids4(const Rcpp::NumericVector& image, double _threshold, int nx, int ny, int nz, int nt); 
   double getBirthday(int index, int dim);
 };
 
-DenseCubicalGrids::DenseCubicalGrids(const Rcpp::NumericVector& image, double _threshold, int nx, int ny, int nz, int nt)
+DenseCubicalGrids4::DenseCubicalGrids4(const Rcpp::NumericVector& image, double _threshold, int nx, int ny, int nz, int nt)
 {
   threshold = _threshold;
   ax = nx; ay = ny; az = nz; aw = nt;
@@ -209,7 +209,7 @@ DenseCubicalGrids::DenseCubicalGrids(const Rcpp::NumericVector& image, double _t
     dense4[i % ax + 1][i / ax % ay + 1][i / (ax * ay) % az + 1][i / (ax * ay * az) % aw + 1] = image(i);
 }
 
-double DenseCubicalGrids::getBirthday(int index, int dim){
+double DenseCubicalGrids4::getBirthday(int index, int dim){
   int cx = index & (MAX_SIZE - 1);
   int cy = (index >> EXPONENT) & (MAX_SIZE - 1);
   int cz = (index >> (2 * EXPONENT)) & (MAX_SIZE - 1);
@@ -294,20 +294,20 @@ double DenseCubicalGrids::getBirthday(int index, int dim){
 }
 
 /*****columns_to_reduce*****/
-class ColumnsToReduce
+class ColumnsToReduce4
 {
   
 public:
-  vector<BirthdayIndex> columns_to_reduce;
+  vector<BirthdayIndex4> columns_to_reduce;
   int dim;
   int max_of_index;
   
-  ColumnsToReduce(DenseCubicalGrids* _dcg);
+  ColumnsToReduce4(DenseCubicalGrids4* _dcg);
   int size() ;
   
 };
 
-ColumnsToReduce::ColumnsToReduce(DenseCubicalGrids* _dcg) {
+ColumnsToReduce4::ColumnsToReduce4(DenseCubicalGrids4* _dcg) {
   dim = 0;
   int ax = _dcg -> ax;
   int ay = _dcg -> ay;
@@ -324,44 +324,44 @@ ColumnsToReduce::ColumnsToReduce(DenseCubicalGrids* _dcg) {
           birthday = _dcg -> dense4[x][y][z][w];
           index = x | (y << EXPONENT) | (z << (2 * EXPONENT)) | (w << (3 * EXPONENT));
           if (birthday != _dcg -> threshold) {
-            columns_to_reduce.push_back(BirthdayIndex(birthday, index, 0));
+            columns_to_reduce.push_back(BirthdayIndex4(birthday, index, 0));
           }
         }
       }
     }
   }
-  sort(columns_to_reduce.begin(), columns_to_reduce.end(), BirthdayIndexComparator());
+  sort(columns_to_reduce.begin(), columns_to_reduce.end(), BirthdayIndex4Comparator());
 }
 
-int ColumnsToReduce::size() {
+int ColumnsToReduce4::size() {
   return columns_to_reduce.size();
 }
 
 /*****simplex_coboundary_estimator*****/
-class SimplexCoboundaryEnumerator
+class SimplexCoboundaryEnumerator4
 {
 public:
-  BirthdayIndex simplex;
-  DenseCubicalGrids* dcg;
+  BirthdayIndex4 simplex;
+  DenseCubicalGrids4* dcg;
   int dim;
   double birthtime;
   int ax, ay, az, aw;
   int cx, cy, cz, cw, cm;
   int count;
-  BirthdayIndex nextCoface;
+  BirthdayIndex4 nextCoface;
   double threshold; 
   
-  SimplexCoboundaryEnumerator();
-  void setSimplexCoboundaryEnumerator(BirthdayIndex _s, DenseCubicalGrids* _dcg);
+  SimplexCoboundaryEnumerator4();
+  void setSimplexCoboundaryEnumerator4(BirthdayIndex4 _s, DenseCubicalGrids4* _dcg);
   bool hasNextCoface() ;
-  BirthdayIndex getNextCoface();
+  BirthdayIndex4 getNextCoface();
 };
 
-SimplexCoboundaryEnumerator::SimplexCoboundaryEnumerator(){
-  nextCoface = BirthdayIndex(0, -1, 1);
+SimplexCoboundaryEnumerator4::SimplexCoboundaryEnumerator4(){
+  nextCoface = BirthdayIndex4(0, -1, 1);
 }
 
-void SimplexCoboundaryEnumerator::setSimplexCoboundaryEnumerator(BirthdayIndex _s, DenseCubicalGrids* _dcg) {
+void SimplexCoboundaryEnumerator4::setSimplexCoboundaryEnumerator4(BirthdayIndex4 _s, DenseCubicalGrids4* _dcg) {
   simplex = _s;
   dcg = _dcg;
   dim = simplex.dim;
@@ -381,7 +381,7 @@ void SimplexCoboundaryEnumerator::setSimplexCoboundaryEnumerator(BirthdayIndex _
   count = 0;
 }
 
-bool SimplexCoboundaryEnumerator::hasNextCoface() {
+bool SimplexCoboundaryEnumerator4::hasNextCoface() {
   int index = 0;
   double birthday = 0;
   switch (dim) {
@@ -430,7 +430,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
       }
       if (birthday != threshold) {
         count = i + 1;
-        nextCoface = BirthdayIndex(birthday, index, 1);
+        nextCoface = BirthdayIndex4(birthday, index, 1);
         return true;
       }
     }
@@ -473,7 +473,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
         
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex(birthday, index, 2);
+          nextCoface = BirthdayIndex4(birthday, index, 2);
           return true;
         }
       }
@@ -514,7 +514,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex(birthday, index, 2);
+          nextCoface = BirthdayIndex4(birthday, index, 2);
           return true;
         }
       }
@@ -555,7 +555,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex(birthday, index, 2);
+          nextCoface = BirthdayIndex4(birthday, index, 2);
           return true;
         }
       }
@@ -596,7 +596,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex(birthday, index, 2);
+          nextCoface = BirthdayIndex4(birthday, index, 2);
           return true;
         }
       }
@@ -636,7 +636,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
         
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex(birthday, index, 3);
+          nextCoface = BirthdayIndex4(birthday, index, 3);
           return true;
         }
       }
@@ -672,7 +672,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex(birthday, index, 3);
+          nextCoface = BirthdayIndex4(birthday, index, 3);
           return true;
         }
       }
@@ -707,7 +707,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex(birthday, index, 3);
+          nextCoface = BirthdayIndex4(birthday, index, 3);
           return true;
         }
       }
@@ -743,7 +743,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex(birthday, index, 3);
+          nextCoface = BirthdayIndex4(birthday, index, 3);
           return true;
         }
       }
@@ -778,7 +778,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex(birthday, index, 3);
+          nextCoface = BirthdayIndex4(birthday, index, 3);
           return true;
         }
       }
@@ -813,7 +813,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex(birthday, index, 3);
+          nextCoface = BirthdayIndex4(birthday, index, 3);
           return true;
         }
       }
@@ -843,7 +843,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex(birthday, index, 4);
+          nextCoface = BirthdayIndex4(birthday, index, 4);
           return true;
         }
       }
@@ -870,7 +870,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex(birthday, index, 4);
+          nextCoface = BirthdayIndex4(birthday, index, 4);
           return true;
         }
       }
@@ -897,7 +897,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex(birthday, index, 4);
+          nextCoface = BirthdayIndex4(birthday, index, 4);
           return true;
         }
       }
@@ -924,7 +924,7 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
         }
         if (birthday != threshold) {
           count = i + 1;
-          nextCoface = BirthdayIndex(birthday, index, 4);
+          nextCoface = BirthdayIndex4(birthday, index, 4);
           return true;
         }
       }
@@ -935,43 +935,43 @@ bool SimplexCoboundaryEnumerator::hasNextCoface() {
   return false;
 }
 
-BirthdayIndex SimplexCoboundaryEnumerator::getNextCoface() {
+BirthdayIndex4 SimplexCoboundaryEnumerator4::getNextCoface() {
   return nextCoface;
 }
 
 /*****union_find*****/
-class UnionFind{
+class UnionFind4{
 public:
   int max_of_index;
   vector<int> parent;
   vector<double> birthtime;
   vector<double> time_max;
-  DenseCubicalGrids* dcg;
+  DenseCubicalGrids4* dcg;
   
-  UnionFind(int moi, DenseCubicalGrids* _dcg);
+  UnionFind4(int moi, DenseCubicalGrids4* _dcg);
   int find(int x);
   void link(int x, int y);
 };
 
-class JointPairs{
+class JointPairs4{
   
   int n; // the number of cubes
   int ctr_moi;
   int ax, ay, az, aw;
-  DenseCubicalGrids* dcg;
-  ColumnsToReduce* ctr;
-  vector<WritePairs> *wp;
+  DenseCubicalGrids4* dcg;
+  ColumnsToReduce4* ctr;
+  vector<WritePairs4> *wp;
   bool print;
   double u, v;
   vector<int64_t> cubes_edges;
-  vector<BirthdayIndex> dim1_simplex_list;
+  vector<BirthdayIndex4> dim1_simplex_list;
   
 public:
-  JointPairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vector<WritePairs> &_wp, const bool _print);
+  JointPairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp, const bool _print);
   void joint_pairs_main();
 };
 
-UnionFind::UnionFind(int moi, DenseCubicalGrids* _dcg) : parent(moi), birthtime(moi), time_max(moi) { // Thie "n" is the number of cubes.
+UnionFind4::UnionFind4(int moi, DenseCubicalGrids4* _dcg) : parent(moi), birthtime(moi), time_max(moi) { // Thie "n" is the number of cubes.
   dcg = _dcg;
   max_of_index = moi;
   
@@ -982,7 +982,7 @@ UnionFind::UnionFind(int moi, DenseCubicalGrids* _dcg) : parent(moi), birthtime(
   }
 }
 
-int UnionFind::find(int x){ // Thie "x" is Index.
+int UnionFind4::find(int x){ // Thie "x" is Index.
   int y = x, z = parent[y];
   while (z != y) {
     y = z;
@@ -997,7 +997,7 @@ int UnionFind::find(int x){ // Thie "x" is Index.
   return z;
 }
 
-void UnionFind::link(int x, int y){
+void UnionFind4::link(int x, int y){
   x = find(x);
   y = find(y);
   if (x == y) return;
@@ -1015,7 +1015,7 @@ void UnionFind::link(int x, int y){
   }
 }
 
-JointPairs::JointPairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vector<WritePairs> &_wp, const bool _print){
+JointPairs4::JointPairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp, const bool _print){
   dcg = _dcg;
   ax = dcg -> ax;
   ay = dcg -> ay;
@@ -1036,23 +1036,23 @@ JointPairs::JointPairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vector<Wr
             int index = x | (y << EXPONENT) | (z << (2 * EXPONENT)) | (w << (3 * EXPONENT)) | (type << (4 * EXPONENT));
             double birthday = dcg -> getBirthday(index, 1);
             if(birthday < dcg -> threshold){
-              dim1_simplex_list.push_back(BirthdayIndex(birthday, index, 1));
+              dim1_simplex_list.push_back(BirthdayIndex4(birthday, index, 1));
             }
           }
         }
       }
     }
   }
-  sort(dim1_simplex_list.rbegin(), dim1_simplex_list.rend(), BirthdayIndexComparator());
+  sort(dim1_simplex_list.rbegin(), dim1_simplex_list.rend(), BirthdayIndex4Comparator());
 }
 
-void JointPairs::joint_pairs_main(){
-  UnionFind dset(ctr_moi, dcg);
+void JointPairs4::joint_pairs_main(){
+  UnionFind4 dset(ctr_moi, dcg);
   ctr -> columns_to_reduce.clear();
   ctr -> dim = 1;
   double min_birth = dcg -> threshold;
   
-  for(BirthdayIndex e : dim1_simplex_list){
+  for(BirthdayIndex4 e : dim1_simplex_list){
     int index = e.getIndex();
     int cx = index & (MAX_SIZE - 1);
     int cy = (index >> EXPONENT) & (MAX_SIZE - 1);
@@ -1093,7 +1093,7 @@ void JointPairs::joint_pairs_main(){
         dset.link(u, v);
       } else {
         
-        wp -> push_back(WritePairs(0, birth, death));
+        wp -> push_back(WritePairs4(0, birth, death));
         dset.link(u, v);
       }
     } else { // If two values have same "parent", these are potential edges which make a 2-simplex.
@@ -1101,34 +1101,34 @@ void JointPairs::joint_pairs_main(){
     }
   }
   
-  wp -> push_back(WritePairs(-1, min_birth, dcg->threshold));
-  sort(ctr -> columns_to_reduce.begin(), ctr -> columns_to_reduce.end(), BirthdayIndexComparator());
+  wp -> push_back(WritePairs4(-1, min_birth, dcg->threshold));
+  sort(ctr -> columns_to_reduce.begin(), ctr -> columns_to_reduce.end(), BirthdayIndex4Comparator());
 }
 
 /*****compute_pairs*****/
-template <class Key, class T> class hash_map : public std::unordered_map<Key, T> {};
+template <class Key, class T> class hash_map4 : public std::unordered_map<Key, T> {};
 
-class ComputePairs
+class ComputePairs4
 {
   
 public:
-  DenseCubicalGrids* dcg;
-  ColumnsToReduce* ctr;
-  hash_map<int, int> pivot_column_index;
+  DenseCubicalGrids4* dcg;
+  ColumnsToReduce4* ctr;
+  hash_map4<int, int> pivot_column_index;
   int ax, ay, az, aw;
   int dim;
-  vector<WritePairs> *wp;
+  vector<WritePairs4> *wp;
   bool print;
   
-  ComputePairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vector<WritePairs> &_wp, const bool _print);
+  ComputePairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp, const bool _print);
   void compute_pairs_main();
   void outputPP(int _dim, double _birth, double _death);
-  BirthdayIndex pop_pivot(priority_queue<BirthdayIndex, vector<BirthdayIndex>, BirthdayIndexComparator>& column);
-  BirthdayIndex get_pivot(priority_queue<BirthdayIndex, vector<BirthdayIndex>, BirthdayIndexComparator>& column);
+  BirthdayIndex4 pop_pivot(priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>& column);
+  BirthdayIndex4 get_pivot(priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>& column);
   void assemble_columns_to_reduce();
 };
 
-ComputePairs::ComputePairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vector<WritePairs> &_wp, const bool _print){
+ComputePairs4::ComputePairs4(DenseCubicalGrids4* _dcg, ColumnsToReduce4* _ctr, vector<WritePairs4> &_wp, const bool _print){
   dcg = _dcg;
   ctr = _ctr;
   dim = _ctr -> dim;
@@ -1141,12 +1141,12 @@ ComputePairs::ComputePairs(DenseCubicalGrids* _dcg, ColumnsToReduce* _ctr, vecto
   aw = _dcg -> aw;
 }
 
-void ComputePairs::compute_pairs_main(){
-  vector<BirthdayIndex> coface_entries;
-  SimplexCoboundaryEnumerator cofaces;
-  unordered_map<int, priority_queue<BirthdayIndex, vector<BirthdayIndex>, BirthdayIndexComparator>> recorded_wc;
+void ComputePairs4::compute_pairs_main(){
+  vector<BirthdayIndex4> coface_entries;
+  SimplexCoboundaryEnumerator4 cofaces;
+  unordered_map<int, priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>> recorded_wc;
   
-  pivot_column_index = hash_map<int, int>();
+  pivot_column_index = hash_map4<int, int>();
   auto ctl_size = ctr -> columns_to_reduce.size();
   pivot_column_index.reserve(ctl_size);
   recorded_wc.reserve(ctl_size);
@@ -1154,28 +1154,28 @@ void ComputePairs::compute_pairs_main(){
   
   for(int i = 0; i < ctl_size; ++i){ 
     auto column_to_reduce = ctr -> columns_to_reduce[i]; 
-    priority_queue<BirthdayIndex, vector<BirthdayIndex>, BirthdayIndexComparator> working_coboundary;
+    priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator> working_coboundary;
     double birth = column_to_reduce.getBirthday();
     
     // allow R user to quit/interrupt
     Rcpp::checkUserInterrupt();
     
     int j = i;
-    BirthdayIndex pivot(0, -1, 0);
+    BirthdayIndex4 pivot(0, -1, 0);
     bool might_be_apparent_pair = true;
     bool goto_found_persistence_pair = false;
     
     do {
       auto simplex = ctr -> columns_to_reduce[j];
       coface_entries.clear();
-      cofaces.setSimplexCoboundaryEnumerator(simplex, dcg);
+      cofaces.setSimplexCoboundaryEnumerator4(simplex, dcg);
       
       while (cofaces.hasNextCoface() && !goto_found_persistence_pair) {
-        BirthdayIndex coface = cofaces.getNextCoface();
+        BirthdayIndex4 coface = cofaces.getNextCoface();
         coface_entries.push_back(coface);
         if (might_be_apparent_pair && (simplex.getBirthday() == coface.getBirthday())) {
           if (pivot_column_index.find(coface.getIndex()) == pivot_column_index.end()) {
-            pivot.copyBirthdayIndex(coface);
+            pivot.copyBirthdayIndex4(coface);
             goto_found_persistence_pair = true;// goto (B)
           } else {
             might_be_apparent_pair = false;// goto(A)
@@ -1228,21 +1228,21 @@ void ComputePairs::compute_pairs_main(){
   }
 }
 
-void ComputePairs::outputPP(int _dim, double _birth, double _death){
+void ComputePairs4::outputPP(int _dim, double _birth, double _death){
   if(_birth != _death){
     if(_death != dcg -> threshold){
       
-      wp -> push_back(WritePairs(_dim, _birth, _death));
+      wp -> push_back(WritePairs4(_dim, _birth, _death));
     } else {
       
-      wp -> push_back(WritePairs(-1, _birth, dcg -> threshold));
+      wp -> push_back(WritePairs4(-1, _birth, dcg -> threshold));
     }
   }
 }
 
-BirthdayIndex ComputePairs::pop_pivot(priority_queue<BirthdayIndex, vector<BirthdayIndex>, BirthdayIndexComparator>& column){
+BirthdayIndex4 ComputePairs4::pop_pivot(priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>& column){
   if (column.empty()) {
-    return BirthdayIndex(0, -1, 0);
+    return BirthdayIndex4(0, -1, 0);
   } else {
     auto pivot = column.top();
     column.pop();
@@ -1250,7 +1250,7 @@ BirthdayIndex ComputePairs::pop_pivot(priority_queue<BirthdayIndex, vector<Birth
     while (!column.empty() && column.top().index == pivot.getIndex()) {
       column.pop();
       if (column.empty())
-        return BirthdayIndex(0, -1, 0);
+        return BirthdayIndex4(0, -1, 0);
       else {
         pivot = column.top();
         column.pop();
@@ -1260,16 +1260,16 @@ BirthdayIndex ComputePairs::pop_pivot(priority_queue<BirthdayIndex, vector<Birth
   }
 }
 
-BirthdayIndex ComputePairs::get_pivot(priority_queue<BirthdayIndex, vector<BirthdayIndex>, BirthdayIndexComparator>&
+BirthdayIndex4 ComputePairs4::get_pivot(priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator>&
   column) {
-  BirthdayIndex result = pop_pivot(column);
+  BirthdayIndex4 result = pop_pivot(column);
   if (result.getIndex() != -1) {
     column.push(result);
   }
   return result;
 }
 
-void ComputePairs::assemble_columns_to_reduce() {
+void ComputePairs4::assemble_columns_to_reduce() {
   ++dim;
   ctr -> dim = dim;
   
@@ -1284,7 +1284,7 @@ void ComputePairs::assemble_columns_to_reduce() {
               if (pivot_column_index.find(index) == pivot_column_index.end()) {
                 double birthday = dcg -> getBirthday(index, 1);
                 if (birthday != dcg -> threshold) {
-                  ctr->columns_to_reduce.push_back(BirthdayIndex(birthday, index, 1));
+                  ctr->columns_to_reduce.push_back(BirthdayIndex4(birthday, index, 1));
                 }
               }
             }
@@ -1303,7 +1303,7 @@ void ComputePairs::assemble_columns_to_reduce() {
               if (pivot_column_index.find(index) == pivot_column_index.end()) {
                 double birthday = dcg -> getBirthday(index, 2);
                 if (birthday != dcg -> threshold) {
-                  ctr->columns_to_reduce.push_back(BirthdayIndex(birthday, index, 2));
+                  ctr->columns_to_reduce.push_back(BirthdayIndex4(birthday, index, 2));
                 }
               }
             }
@@ -1322,7 +1322,7 @@ void ComputePairs::assemble_columns_to_reduce() {
               if (pivot_column_index.find(index) == pivot_column_index.end()) {
                 double birthday = dcg -> getBirthday(index, 3);
                 if (birthday != dcg -> threshold) {
-                  ctr -> columns_to_reduce.push_back(BirthdayIndex(birthday, index, 3));
+                  ctr -> columns_to_reduce.push_back(BirthdayIndex4(birthday, index, 3));
                 }
               }
             }
@@ -1331,7 +1331,7 @@ void ComputePairs::assemble_columns_to_reduce() {
       }
     }
   }
-  sort(ctr -> columns_to_reduce.begin(), ctr -> columns_to_reduce.end(), BirthdayIndexComparator());
+  sort(ctr -> columns_to_reduce.begin(), ctr -> columns_to_reduce.end(), BirthdayIndex4Comparator());
 }
 
 enum calculation_method { LINKFIND, COMPUTEPAIRS};
@@ -1344,19 +1344,19 @@ Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, i
   // Rcpp::Rcout << "HERE AT START\n";
   bool print = false;
   
-  vector<WritePairs> writepairs; // dim birth death
+  vector<WritePairs4> writepairs; // dim birth death
   writepairs.clear();
   
-  DenseCubicalGrids* dcg = new DenseCubicalGrids(image, threshold, nx, ny, nz, nt);
-  ColumnsToReduce* ctr = new ColumnsToReduce(dcg); 
+  DenseCubicalGrids4* dcg = new DenseCubicalGrids4(image, threshold, nx, ny, nz, nt);
+  ColumnsToReduce4* ctr = new ColumnsToReduce4(dcg); 
   
   switch(method){
   case 0:
   {
-    JointPairs* jp = new JointPairs(dcg, ctr, writepairs, print);
+    JointPairs4* jp = new JointPairs4(dcg, ctr, writepairs, print);
     jp -> joint_pairs_main();
     
-    ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
+    ComputePairs4* cp = new ComputePairs4(dcg, ctr, writepairs, print);
     cp -> compute_pairs_main(); // dim1
     
     cp -> assemble_columns_to_reduce();
@@ -1368,7 +1368,7 @@ Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, i
   }
   case 1:
   {	
-    ComputePairs* cp = new ComputePairs(dcg, ctr, writepairs, print);
+    ComputePairs4* cp = new ComputePairs4(dcg, ctr, writepairs, print);
     cp -> compute_pairs_main(); // dim0
     cp -> assemble_columns_to_reduce();
     
