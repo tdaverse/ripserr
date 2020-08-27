@@ -122,6 +122,8 @@ calculate_homology <- function(mat, dim = 1, threshold = -1, p = 2L, format = "c
   }
 }
 
+# add size limits
+# check parameter formats/values
 #' Calculate Persistent Homology using a Cubical Complex
 #'
 #' Temporary description.
