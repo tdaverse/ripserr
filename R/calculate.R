@@ -48,16 +48,22 @@ vietoris_rips <- function(dataset, dim = 1, threshold = -1, p = 2L, format = "cl
 
   # make sure threshold is of type numeric
   if (!is.numeric(threshold)) {
-    stop(paste("threshold parameter must be of class integer or numeric; current class = ",
+    stop(paste("threshold parameter must be of class integer or numeric; current class =",
                class(threshold)))
   }
 
   # make sure p is integer; whether p is prime is checked in C++
   if (!is.numeric(p)) {
-    stop(paste("p parameter must be of class integer or numeric; current class = ",
+    stop(paste("p parameter must be of class integer or numeric; current class =",
                class(p)))
   }
   p <- as.integer(p)
+  
+  # make sure standardize is boolean
+  if (!is.logical(standardize)) {
+    stop(paste("standardize parameter must be of class logical; passed value =",
+               standardize))
+  }
 
   ## If dist object passed in directly, use that, otherwise check various conditions that
   ## mat is a valid matrix object
@@ -76,11 +82,8 @@ vietoris_rips <- function(dataset, dim = 1, threshold = -1, p = 2L, format = "cl
       stop("Point cloud must have at least 2 points and at least 2 dimensions.")
     }
 
-    # make sure matrix contains numeric (or integer) values
-    # assumption: matrix can only hold objects of one class so only need to check
-    #   one element
-    temp <- mat[1, 1]
-    if (class(temp) != "numeric" && class(temp) != "integer") {
+    # make sure matrix contains only numeric (includes integer) values
+    if (!all(is.numeric(mat))) {
       stop("Point cloud must contain values of class `numeric` or `integer` only.")
     }
 
@@ -128,7 +131,6 @@ vietoris_rips <- function(dataset, dim = 1, threshold = -1, p = 2L, format = "cl
                 })
 }
 
-# check parameter formats/values
 #' Calculate Persistent Homology using a Cubical Complex
 #'
 #' Temporary description.
@@ -141,61 +143,98 @@ vietoris_rips <- function(dataset, dim = 1, threshold = -1, p = 2L, format = "cl
 #' @inheritParams vietoris_rips
 #' @return 3-column matrix with each row representing a TDA feature
 #' @export
-cubical <- function(dataset, threshold = 9999, method = 0, return_format = "df") {
+cubical <- function(dataset, threshold = 9999, method = 0,
+                    standardize = FALSE, return_format = "df") {
+  
   # temp var to store before formatting at end
   ans <- NULL
   
+  # make sure threshold is of type numeric
+  if (!is.numeric(threshold)) {
+    stop(paste("threshold parameter must be of class integer or numeric; current class = ",
+               class(threshold)))
+  }
+  
+  # make sure matrix contains only numeric (includes integer) values
+  if (!all(is.numeric(dataset))) {
+    stop("Data must contain values of class `numeric` or `integer` only.")
+  }
+  
+  # make sure valid method is picked
+  if (!(method %in% c(0, 1))) {
+    stop(paste("method must be either 0 (link find) or 1 (compute pairs); passed method =",
+                method))
+  }
+  
+  # make sure standardize is boolean
+  if (!is.logical(standardize)) {
+    stop(paste("standardize parameter must be of class logical; passed value =",
+               standardize))
+  }
+  
+  # make all pixels/voxels in [0, 1]
+  if (standardize) {
+    min_val <- min(dataset)
+    max_val <- max(dataset)
+    
+    dataset <- (dataset - min_val) / (max_val - min_val)
+  }
+  
   # dim = 2
-  if (length(dim(mat)) == 2) {
+  if (length(dim(dataset)) == 2) {
     
     # check size limit
-    if (dim(mat)[1] > 2000 |
-        dim(mat)[2] > 1000) {
+    if (dim(dataset)[1] > 2000 |
+        dim(dataset)[2] > 1000) {
       stop(paste("Max size for dim 2 = 2000 x 1000; passed size =",
-                 dim(mat)[1], "x", dim(mat)[2]))
+                 dim(dataset)[1], "x", dim(dataset)[2]))
     }
     
-    ans <- cubical_2dim(mat, threshold, method)
+    ans <- cubical_2dim(dataset, threshold, method)
   
   # dim = 3
-  } else if (length(dim(mat)) == 3) {
+  } else if (length(dim(dataset)) == 3) {
     
     # check size limit
-    if (sum(dim(mat) < 512) < 3) {
+    if (sum(dim(dataset) < 512) < 3) {
       stop(paste("Max size for dim 3 = 512 x 512 x 512; passed size =",
-                 dim(mat)[1], "x", dim(mat)[2], "x", dim(mat)[3]))
+                 dim(dataset)[1], "x", dim(dataset)[2], "x", dim(dataset)[3]))
     }
     
-    temp_mat <- mat
-    dim(temp_mat) <- prod(dim(mat))
+    temp_mat <- dataset
+    dim(temp_mat) <- prod(dim(dataset))
     ans <- cubical_3dim(temp_mat, threshold, method,
-                        dim(mat)[1],
-                        dim(mat)[2],
-                        dim(mat)[3])
+                        dim(dataset)[1],
+                        dim(dataset)[2],
+                        dim(dataset)[3])
     
   # dim = 4
-  } else if (length(dim(mat)) == 4) {
+  } else if (length(dim(dataset)) == 4) {
     # check size limit
-    if (sum(dim(mat) < 64) < 4) {
+    if (sum(dim(dataset) < 64) < 4) {
       stop(paste("Max size for dim 4 = 64 x 64 x 64 x 64; passed size =",
-                 dim(mat)[1], "x", dim(mat)[2], "x", dim(mat)[3], "x", dim(mat)[4]))
+                 dim(dataset)[1], "x", dim(dataset)[2], "x", dim(dataset)[3], "x", dim(dataset)[4]))
     }
     
-    temp_mat <- mat
-    dim(temp_mat) <- prod(dim(mat))
+    temp_mat <- dataset
+    dim(temp_mat) <- prod(dim(dataset))
     ans <- cubical_4dim(temp_mat, threshold, method,
-                        dim(mat)[1],
-                        dim(mat)[2],
-                        dim(mat)[3],
-                        dim(mat)[4])
+                        dim(dataset)[1],
+                        dim(dataset)[2],
+                        dim(dataset)[3],
+                        dim(dataset)[4])
     
-  # idk what to do with `mat` for now (will add 3-dim soon)
+  # idk what to do with `dataset` for now
   } else {
-    stop(paste("Don't know with to do w/ data of dimension =", length(dim(mat))))
+    stop(paste("Can only handle data with dimension = 2, 3, or 4; passed data dimension =", length(dim(dataset))))
   }
   
   ans <- as.data.frame(ans)
   colnames(ans) <- c("dimension", "birth", "death")
+  ans$dimension <- as.integer(ans$dimension)
+  ans <- switch(return_format,
+                "df" = ans,
+                "mat" = as.matrix(ans))
   
   return(ans)
 }

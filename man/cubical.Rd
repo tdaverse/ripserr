@@ -4,17 +4,27 @@
 \alias{cubical}
 \title{Calculate Persistent Homology using a Cubical Complex}
 \usage{
-cubical(mat, threshold = 9999, method = 0, return_format = "df")
+cubical(
+  dataset,
+  threshold = 9999,
+  method = 0,
+  standardize = FALSE,
+  return_format = "df"
+)
 }
 \arguments{
+\item{dataset}{numeric array containing pixel/voxel data}
+
 \item{threshold}{maximum diameter for computation of Cubical complex}
 
-\item{method}{choose betwen link_join and compute_pairs from Cubical Ripser}
+\item{method}{defaults to 0 for link join; alternatively, can be 1 for
+compute pairs. See original Cubical Ripser code at GitHub user
+CubicalRipser for details.}
+
+\item{standardize}{boolean determining whether point cloud size should be standardized}
 
 \item{return_format}{defaults to \code{"df"}, returning a data frame;
 if \code{mat}, returns a numeric matrix}
-
-\item{dataset}{numeric array containing pixel/voxel data}
 }
 \value{
 3-column matrix with each row representing a TDA feature
