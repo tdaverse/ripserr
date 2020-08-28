@@ -146,6 +146,22 @@ vietoris_rips <- function(dataset, dim = 1, threshold = -1, p = 2L, format = "cl
 #' @inheritParams vietoris_rips
 #' @return 3-column matrix with each row representing a TDA feature
 #' @export
+#' @examples 
+#' 
+#' # 2-dim example
+#' dataset <- rnorm(10 ^ 2)
+#' dim(dataset) <- rep(10, 2)
+#' cubical_hom2 <- cubical(dataset)
+#' 
+#' # 3-dim example
+#' dataset <- rnorm(8 ^ 3)
+#' dim(dataset) <- rep(8, 3)
+#' cubical_hom3 <- cubical(dataset)
+#' 
+#' # 4-dim example
+#' dataset <- rnorm(5 ^ 4)
+#' dim(dataset) <- rep(5, 4)
+#' cubical_hom4 <- cubical(dataset)
 cubical <- function(dataset, threshold = 9999, method = 0,
                     standardize = FALSE, return_format = "df") {
   
