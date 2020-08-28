@@ -1,6 +1,7 @@
 #' Calculate Persistent Homology with Ripser and Cubical Ripser
 #'
-#' Temp description paragraph; need to replace.
+#' Ports Ripser-based persistent homology calculation engines
+#' from C++ to R using the Rcpp package.
 #'
 #' @useDynLib ripserr
 #' @importFrom Rcpp sourceCpp
