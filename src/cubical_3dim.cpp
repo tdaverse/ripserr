@@ -61,10 +61,6 @@ public:
   long getIndex();
   
   int getDimension();
-  
-  void print();
-  
-  void VertexPrint();
 };
 
 struct BirthdayIndexComparator
@@ -111,19 +107,6 @@ long BirthdayIndex::getIndex(){
 
 int BirthdayIndex::getDimension(){
   return dim;
-}
-
-void BirthdayIndex::print(){
-  // std::cout << "(dob:" << birthday << "," << index << ")" << std::endl;
-}
-
-void BirthdayIndex::VertexPrint(){
-  int px = index & 0x01ff;
-  int py = (index >> 9) & 0x01ff;
-  int pz = (index >> 18) & 0x01ff;
-  int pm = (index >> 27) & 0xff;
-  
-  // cout << "birthday : (m, z, y, x) = " << birthday << " : (" << pm << ", " << pz << ", " << py << ", " << px << ")" << endl; 
 }
 
 bool BirthdayIndexComparator::operator()(const BirthdayIndex& o1, const BirthdayIndex& o2) const{
@@ -387,19 +370,19 @@ double DenseCubicalGrids::getBirthday(int index, int dim){
     switch(cm){
     case 0: // x - y (fix z)
       return max({dense3[cx][cy][cz], dense3[cx + 1][cy][cz], 
-                 dense3[cx + 1][cy + 1][cz], dense3[cx][cy + 1][cz]});
+                  dense3[cx + 1][cy + 1][cz], dense3[cx][cy + 1][cz]});
     case 1: // z - x (fix y)
       return max({dense3[cx][cy][cz], dense3[cx][cy][cz + 1], 
-                 dense3[cx + 1][cy][cz + 1], dense3[cx + 1][cy][cz]});
+                  dense3[cx + 1][cy][cz + 1], dense3[cx + 1][cy][cz]});
     case 2: // y - z (fix x)
       return max({dense3[cx][cy][cz], dense3[cx][cy + 1][cz], 
-                 dense3[cx][cy + 1][cz + 1], dense3[cx][cy][cz + 1]});
+                  dense3[cx][cy + 1][cz + 1], dense3[cx][cy][cz + 1]});
     }
   case 3:
     return max({dense3[cx][cy][cz], dense3[cx + 1][cy][cz], 
-               dense3[cx + 1][cy + 1][cz], dense3[cx][cy + 1][cz],
-                                                             dense3[cx][cy][cz + 1], dense3[cx + 1][cy][cz + 1], 
-                                                                                                       dense3[cx + 1][cy + 1][cz + 1], dense3[cx][cy + 1][cz + 1]});
+                dense3[cx + 1][cy + 1][cz], dense3[cx][cy + 1][cz],
+                dense3[cx][cy][cz + 1], dense3[cx + 1][cy][cz + 1], 
+                dense3[cx + 1][cy + 1][cz + 1], dense3[cx][cy + 1][cz + 1]});
   }
   return threshold;
 }
