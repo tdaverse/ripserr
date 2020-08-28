@@ -2,6 +2,7 @@
 
 [![Travis-CI Build Status](https://travis-ci.org/rrrlw/ripserr.svg?branch=master)](https://travis-ci.org/rrrlw/ripserr)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/rrrlw/ripserr?branch=master&svg=true)](https://ci.appveyor.com/project/rrrlw/ripserr)
+[![Codecov test coverage](https://codecov.io/gh/rrrlw/ripserr/branch/master/graph/badge.svg)](https://codecov.io/gh/rrrlw/ripserr?branch=master)
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![CRAN version](http://www.r-pkg.org/badges/version/ripserr)](https://CRAN.R-project.org/package=ripserr)

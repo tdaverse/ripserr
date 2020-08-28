@@ -34,4 +34,5 @@ Imports:
     stats (>= 4.0)
 SystemRequirements: C++11
 Suggests: 
-    testthat (>= 2.3)
+    testthat (>= 2.3),
+    covr

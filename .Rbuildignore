@@ -1,7 +1,9 @@
 ^ripserr\.Rproj$
 ^\.Rproj\.user$
+^README\.md$
 ^LICENSE\.md$
 ^\.travis\.yml$
 ^appveyor\.yml$
 ^data-raw$
 ^.*\.png$
+^codecov\.yml$
