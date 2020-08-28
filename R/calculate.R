@@ -10,16 +10,16 @@
 #' if `mat` has 50 rows and 5 columns, it represents a point cloud with 50 points
 #' in 5 dimensions. The `dim` parameter should be a positive integer.
 #' Alternatively, the `mat` parameter could be a distance matrix (upper
-#' triangular half is ignored); note: `format` should be specified as "ldm".
+#' triangular half is ignored); note: `format` should be specified as "distmat".
 #'
-#' @param mat numeric matrix containing point cloud or distance matrix
+#' @param dataset numeric matrix containing point cloud or distance matrix
 #' @param dim maximum dimension of features to calculate
 #' @param threshold maximum diameter for computation of Vietoris-Rips complexes
 #' @param p number of the prime field Z/pZ to compute the homology over
-#' @param format  format of `mat`, either "cloud" for point cloud or "distmat" for distance matrix
+#' @param format  format of `mat`, either `"cloud"` for point cloud or `"distmat"` for distance matrix
 #' @param standardize boolean determining whether point cloud size should be standardized
-#' @param return_df defaults to `FALSE`, returning a matrix;
-#'   if `TRUE`, returns a data frame
+#' @param return_format defaults to `"df"`, returning a data frame;
+#'   if `mat`, returns a numeric matrix
 #' @return 3-column matrix or data frame, with each row representing a TDA feature
 #' @importFrom stats complete.cases
 #' @export
@@ -31,38 +31,45 @@
 #' pt.cloud <- cbind(cos(rand.angle), sin(rand.angle))
 #'
 #' # calculate persistent homology (num.pts by 3 numeric matrix)
-#' pers.hom <- calculate_homology(pt.cloud)
-calculate_homology <- function(mat, dim = 1, threshold = -1, p = 2L, format = "cloud",
-                               standardize = FALSE, return_df = FALSE) {
+#' pers.hom <- vietoris_rips(pt.cloud)
+vietoris_rips <- function(dataset, dim = 1, threshold = -1, p = 2L, format = "cloud",
+                               standardize = FALSE, return_format = "df") {
 
   # make sure dim is an integer greater than or equal to zero
-  if (as.integer(dim) != dim) {
-    stop("dim parameter needs to be an integer")
+  if (!is.numeric(dim)) {
+    stop(paste("dim needs to be of class integer or numeric; passed class =",
+               class(dim)))
   }
+  dim <- as.integer(dim)
   if (dim < 0) {
-    stop("dim cannot be negative")
+    stop(paste("dim cannot be negative; passed value =",
+               dim))
   }
 
   # make sure threshold is of type numeric
-  if (!(class(threshold) %in% c("numeric", "integer"))) {
-    stop("threshold parameter must be of type numeric")
+  if (!is.numeric(threshold)) {
+    stop(paste("threshold parameter must be of class integer or numeric; current class = ",
+               class(threshold)))
   }
-  threshold <- as.numeric(threshold)
 
   # make sure p is integer; whether p is prime is checked in C++
-  if (as.integer(p) != p) {
-    stop("p parameter must be of type integer")
+  if (!is.numeric(p)) {
+    stop(paste("p parameter must be of class integer or numeric; current class = ",
+               class(p)))
   }
+  p <- as.integer(p)
 
   ## If dist object passed in directly, use that, otherwise check various conditions that
   ## mat is a valid matrix object
-  if (methods::is(mat, "dist")) {
+  if (methods::is(dataset, "dist")) {
     format <- "distmat"
-    stopifnot(all(is.numeric(mat)))
-    ans_vec <- ripser_cpp_dist(mat, dim, threshold, p)
+    stopifnot(all(is.numeric(dataset)))
+    ans_vec <- ripser_cpp_dist(dataset, dim, threshold, p)
+  
+  ## not a dist object
   } else {
     # coerce mat into matrix to work with class object such as dist class object
-    mat <- as.matrix(mat)
+    mat <- as.matrix(dataset)
 
     # make sure matrix has at least 2 columns and at least 2 rows
     if (nrow(mat) < 2 | ncol(mat) < 2) {
@@ -105,21 +112,20 @@ calculate_homology <- function(mat, dim = 1, threshold = -1, p = 2L, format = "c
     ans_vec <- ripser_cpp(mat, dim, threshold, p, int.format)
   }
 
-
   # format properly and return
   ans_mat <- matrix(ans_vec,
                     byrow = TRUE,
                     ncol = 3)
   colnames(ans_mat) <- c("dimension", "birth", "death")
 
-  # convert matrix to data frame - better for visualization, manipulation
-  if (return_df) {
-    ans_df <- as.data.frame(ans_mat)
-    ans_df$dimension <- as.integer(ans_df$dimension)
-    return(ans_df)
-  } else {
-    return(ans_mat)
-  }
+  # return the format requested by user
+  ans <- switch(return_format,
+                "mat" = ans_mat,
+                "df" = {
+                  temp <- as.data.frame(ans_mat)
+                  temp$dimension <- as.integer(temp$dimension)
+                  temp
+                })
 }
 
 # add size limits
