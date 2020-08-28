@@ -133,12 +133,15 @@ vietoris_rips <- function(dataset, dim = 1, threshold = -1, p = 2L, format = "cl
 #'
 #' Temporary description.
 #'
-#' @param mat numeric matrix containing pixel/voxel data
+#' @param dataset numeric array containing pixel/voxel data
 #' @param threshold maximum diameter for computation of Cubical complex
-#' @param method choose betwen link_join and compute_pairs from Cubical Ripser
+#' @param method defaults to 0 for link join; alternatively, can be 1 for
+#'   compute pairs. See original Cubical Ripser code at GitHub user
+#'   CubicalRipser for details.
+#' @inheritParams vietoris_rips
 #' @return 3-column matrix with each row representing a TDA feature
 #' @export
-cubical <- function(mat, threshold = 9999, method = 0) {
+cubical <- function(dataset, threshold = 9999, method = 0, return_format = "df") {
   # temp var to store before formatting at end
   ans <- NULL
   

@@ -5,7 +5,7 @@
 \title{Calculate Persistent Homology of a Point Cloud}
 \usage{
 vietoris_rips(
-  mat,
+  dataset,
   dim = 1,
   threshold = -1,
   p = 2L,
@@ -15,7 +15,7 @@ vietoris_rips(
 )
 }
 \arguments{
-\item{mat}{numeric matrix containing point cloud or distance matrix}
+\item{dataset}{numeric matrix containing point cloud or distance matrix}
 
 \item{dim}{maximum dimension of features to calculate}
 
