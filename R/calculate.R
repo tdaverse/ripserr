@@ -128,7 +128,6 @@ vietoris_rips <- function(dataset, dim = 1, threshold = -1, p = 2L, format = "cl
                 })
 }
 
-# add size limits
 # check parameter formats/values
 #' Calculate Persistent Homology using a Cubical Complex
 #'
@@ -145,10 +144,25 @@ cubical <- function(mat, threshold = 9999, method = 0) {
   
   # dim = 2
   if (length(dim(mat)) == 2) {
+    
+    # check size limit
+    if (dim(mat)[1] > 2000 |
+        dim(mat)[2] > 1000) {
+      stop(paste("Max size for dim 2 = 2000 x 1000; passed size =",
+                 dim(mat)[1], "x", dim(mat)[2]))
+    }
+    
     ans <- cubical_2dim(mat, threshold, method)
   
   # dim = 3
   } else if (length(dim(mat)) == 3) {
+    
+    # check size limit
+    if (sum(dim(mat) < 512) < 3) {
+      stop(paste("Max size for dim 3 = 512 x 512 x 512; passed size =",
+                 dim(mat)[1], "x", dim(mat)[2], "x", dim(mat)[3]))
+    }
+    
     temp_mat <- mat
     dim(temp_mat) <- prod(dim(mat))
     ans <- cubical_3dim(temp_mat, threshold, method,
@@ -158,6 +172,12 @@ cubical <- function(mat, threshold = 9999, method = 0) {
     
   # dim = 4
   } else if (length(dim(mat)) == 4) {
+    # check size limit
+    if (sum(dim(mat) < 64) < 4) {
+      stop(paste("Max size for dim 4 = 64 x 64 x 64 x 64; passed size =",
+                 dim(mat)[1], "x", dim(mat)[2], "x", dim(mat)[3], "x", dim(mat)[4]))
+    }
+    
     temp_mat <- mat
     dim(temp_mat) <- prod(dim(mat))
     ans <- cubical_4dim(temp_mat, threshold, method,
