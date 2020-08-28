@@ -30,5 +30,8 @@ if \code{mat}, returns a numeric matrix}
 3-column matrix with each row representing a TDA feature
 }
 \description{
-Temporary description.
+Calculates the persistent homology of a 2- to 4-dimensional numeric array
+using a Cubical complex. This function is an R wrapper for Takeki Sudo
+and Kazushi Ahara's Cubical Ripser C++ library. For more information on
+the C++ library, see \url{https://github.com/CubicalRipser}.
 }
