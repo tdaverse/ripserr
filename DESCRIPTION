@@ -1,5 +1,5 @@
 Package: ripserr
-Title: Calculate Persistent Homology with Ripser and Cubical Ripser
+Title: Calculate Persistent Homology with Ripser-based Engines
 Version: 0.0.1
 Authors@R:
     c(person(given = "Raoul",
@@ -35,4 +35,4 @@ Imports:
 SystemRequirements: C++11
 Suggests: 
     testthat (>= 2.3),
-    covr
+    covr (>= 3.5)

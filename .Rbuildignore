@@ -1,7 +1,7 @@
 ^ripserr\.Rproj$
 ^\.Rproj\.user$
 ^README\.md$
-^LICENSE\.md$
+^LICENSE$
 ^\.travis\.yml$
 ^appveyor\.yml$
 ^data-raw$
