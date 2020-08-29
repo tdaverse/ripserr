@@ -29,9 +29,9 @@ BugReports: https://github.com/rrrlw/ripserr/issues
 LinkingTo: Rcpp
 Depends: R (>= 3.5.0)
 Imports: 
-    methods (>= 4.0),
+    methods (>= 3.0),
     Rcpp (>= 1.0),
-    stats (>= 4.0)
+    stats (>= 3.0)
 SystemRequirements: C++11
 Suggests: 
     testthat (>= 2.3),
