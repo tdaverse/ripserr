@@ -179,13 +179,13 @@ following (based on use):
 
   - **General use of ripserr:** Wadhwa RR, Piekenbrock M, Scott JG.
     ripserr: Calculate Persistent Homology with Ripser-based Engines;
-    version 0.0.1. URL <https://github.com/rrrlw/ripserr>.
-  - **Calculation of Vietoris-Rips complex:** Bauer U. Ripser: Efficient
-    computation of Vietoris-Rips persistence barcodes. 2019; arXiv:
-    1908.02518.
-  - **Calculation of cubical complex:** Kaji S, Sudo T, Ahara K. Cubical
-    Ripser: Software for computing persistent homology of image and
-    volume data. 2020; arXiv: 2005.12692.
+    version 0.1.0. URL <https://github.com/rrrlw/ripserr>.
+  - **Calculation using Vietoris-Rips complex:** Bauer U. Ripser:
+    Efficient computation of Vietoris-Rips persistence barcodes. 2019;
+    arXiv: 1908.02518.
+  - **Calculation using cubical complex:** Kaji S, Sudo T, Ahara K.
+    Cubical Ripser: Software for computing persistent homology of image
+    and volume data. 2020; arXiv: 2005.12692.
 
 ## Contribute
 
