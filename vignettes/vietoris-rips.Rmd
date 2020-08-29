@@ -1,0 +1,19 @@
+---
+title: "vietoris-rips"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vietoris-rips}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ripserr)
+```

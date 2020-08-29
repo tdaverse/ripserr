@@ -6,3 +6,4 @@
 
 # images/test runs
 *.png
+inst/doc

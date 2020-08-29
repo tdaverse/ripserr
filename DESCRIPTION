@@ -35,4 +35,7 @@ Imports:
 SystemRequirements: C++11
 Suggests: 
     testthat (>= 2.3),
-    covr (>= 3.5)
+    covr (>= 3.5),
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
