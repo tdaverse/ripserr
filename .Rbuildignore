@@ -12,3 +12,5 @@
 ^pkgdown$
 ^README\.Rmd$
 ^cran-comments\.md$
+^NEWS.\.md$
+
