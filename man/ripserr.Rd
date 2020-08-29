@@ -3,7 +3,7 @@
 \docType{package}
 \name{ripserr}
 \alias{ripserr}
-\title{Calculate Persistent Homology with Ripser and Cubical Ripser}
+\title{Calculate Persistent Homology with Ripser-Based Engines}
 \description{
 Ports Ripser-based persistent homology calculation engines
 from C++ to R using the Rcpp package.

@@ -1,5 +1,5 @@
 Package: ripserr
-Title: Calculate Persistent Homology with Ripser-based Engines
+Title: Calculate Persistent Homology with Ripser-Based Engines
 Version: 0.1.0
 Authors@R:
     c(person(given = "Raoul",
