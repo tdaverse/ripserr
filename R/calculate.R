@@ -174,12 +174,27 @@ cubical <- function(dataset, threshold = 9999, method = 0,
                class(threshold)))
   }
   
-  # make sure matrix contains only numeric (includes integer) values
+  # make sure dataset is of type array (also includes matrix)
+  if (!("array" %in% class(dataset))) {
+    stop(paste("Data must be of class array; passed dataset has class =",
+               class(dataset)))
+  }
+  
+  # make sure dataset contains only numeric (includes integer) values
   if (!all(is.numeric(dataset))) {
     stop("Data must contain values of class `numeric` or `integer` only.")
   }
   
-  # make sure valid method is picked
+  # make sure dataset is not too small
+  if (prod(dim(dataset)) == 0) {
+    stop(paste("dataset must have at least 1 value; passed dataset contains zero"))
+  }
+  
+  # make sure valid method is picked and is numeric
+  if (!is.numeric(method)) {
+    stop(paste("method must be numeric; class of passed method =",
+               class(method)))
+  }
   if (!(method %in% c(0, 1))) {
     stop(paste("method must be either 0 (link find) or 1 (compute pairs); passed method =",
                 method))

@@ -1,22 +1,22 @@
 context("cubical 2-dim")
 library("ripserr")
 
+# setup vars
+INPUT_SIZE <- 10
+DIM <- 2
+set.seed(42)
+test_data <- rnorm(INPUT_SIZE ^ DIM)
+dim(test_data) <- rep(INPUT_SIZE, DIM)
+
 test_that("basic 2-dim cubical works", {
-  # reproducibility
-  set.seed(42)
-  
-  # create data
-  test_data <- matrix(rnorm(100, mean = 1000, sd = 150),
-                      nrow = 10, ncol = 10)
-  
   # create cubical complex
-  cub_comp <- ripserr::cubical(test_data)
+  cub_comp <- cubical(test_data)
   
   # test cubical complex frequency/counts
   expect_equal(ncol(cub_comp), 3)
   expect_true(nrow(cub_comp) > 0)
   
-  counts <- base::table(cub_comp[, 1])
+  counts <- table(cub_comp$dimension)
   names(counts) <- NULL
   counts <- as.numeric(counts)
   
@@ -26,19 +26,24 @@ test_that("basic 2-dim cubical works", {
   expect_true(counts[3] > 0)
   
   # make sure no births after deaths
-  expect_equal(0, sum(cub_comp[, 2] > cub_comp[, 3]))
+  expect_equal(0, sum(cub_comp$birth > cub_comp$death))
+  
+  # can return a matrix or a data frame (both equivalent)
+  expect_equal(cub_comp, 
+               as.data.frame(cubical(test_data, return_format = "mat")))
 })
 
 # these tests use example data + original code from Github: CubicalRipser/Cubical_2dim
 #   to validate accuracy
-test_that("2-dim calculation returns same values as validated tests", {
+test_that("2-dim cubical returns same values as validated tests", {
+  
   # read validated input and output data
   input_data <- readRDS("input_2dim.rds")
   output_data <- readRDS("output_2dim.rds")
   
   # re-calculate output w/ ripserr
   THRESH <- 9999
-  test_output <- ripserr::cubical(input_data, threshold = THRESH)
+  test_output <- cubical(input_data, threshold = THRESH)
   
   # filter out threshold value features to avoid spurious differences in equality
   output_data <- subset(output_data, death < THRESH)
