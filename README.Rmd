@@ -1,0 +1,114 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# ripserr: Calculate Persistent Homology of Vietoris-Rips and Cubical Complexes using Ripser in R
+
+[![Travis-CI Build Status](https://travis-ci.org/rrrlw/ripserr.svg?branch=master)](https://travis-ci.org/rrrlw/ripserr)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/rrrlw/ripserr?branch=master&svg=true)](https://ci.appveyor.com/project/rrrlw/ripserr)
+[![Codecov test coverage](https://codecov.io/gh/rrrlw/ripserr/branch/master/graph/badge.svg)](https://codecov.io/gh/rrrlw/ripserr?branch=master)
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![CRAN version](http://www.r-pkg.org/badges/version/ripserr)](https://CRAN.R-project.org/package=ripserr)
+[![CRAN Downloads](http://cranlogs.r-pkg.org/badges/grand-total/ripserr)](https://CRAN.R-project.org/package=ripserr)
+
+## Overview
+
+ripserr ports the [Ripser](https://arxiv.org/1908.02518) and [Cubical Ripser](https://arxiv.org/abs/2005.12692) persistent homology calculation engines from C++ via [Rcpp](https://CRAN.R-project.org/package=Rcpp).
+It can be used as a convenient and rapid calculation tool in topological data analysis pipelines.
+
+## Installation
+
+```{r install, eval=FALSE}
+# install development version
+devtools::install_github("rrrlw/ripserr")
+
+# install from CRAN (not available yet)
+# install.packages("ripserr")
+```
+
+## Sample code
+
+Ripser (Vietoris-Rips complex) can be used as follows for data with dimension greater than or equal to 2.
+
+```{r sample-vr}
+# load ripserr
+library("ripserr")
+
+set.seed(42)
+SIZE <- 100
+
+# 2-dimensional example
+dataset2 <- rnorm(SIZE * 2)
+dim(dataset2) <- c(SIZE, 2)
+vr_phom2 <- vietoris_rips(dataset2)
+head(vr_phom2)
+tail(vr_phom2)
+
+# 3-dimensional example
+dataset3 <- rnorm(SIZE * 3)
+dim(dataset3) <- c(SIZE, 3)
+vr_phom3 <- vietoris_rips(dataset3, dim = 2) # default: dim = 1
+head(vr_phom3)
+tail(vr_phom3)
+```
+
+Cubical Ripser (cubical complex) can be used as follows for data with dimension equal to 2, 3, or 4.
+
+```{r sample-cub}
+# load ripserr
+library("ripserr")
+
+set.seed(42)
+SIZE <- 10
+
+# 2-dimensional example
+dataset2 <- rnorm(SIZE ^ 2)
+dim(dataset2) <- rep(SIZE, 2)
+cub_phom2 <- cubical(dataset2)
+head(cub_phom2)
+tail(cub_phom2)
+
+# 3-dimensional example
+dataset3 <- rnorm(SIZE ^ 3)
+dim(dataset3) <- rep(SIZE, 3)
+cub_phom3 <- cubical(dataset3)
+head(cub_phom3)
+tail(cub_phom3)
+
+# 4-dimensional example
+dataset4 <- rnorm(SIZE ^ 4)
+dim(dataset4) <- rep(SIZE, 4)
+cub_phom4 <- cubical(dataset4)
+head(cub_phom4)
+tail(cub_phom4)
+```
+
+## Functionality
+
+1. Calculation of persistent homology of Vietoris-Rips complexes using Ripser (function named `vietoris_rips`).
+1. Calculation of persistent homology of cubical complexes using Cubical Ripser (function named `cubical`).
+
+## Citation
+
+If you use the ripserr package in your work, please consider citing the following (based on use):
+
+* **General use of ripserr:** Wadhwa RR, Piekenbrock M, Scott JG. ripserr: Calculate Persistent Homology with Ripser-based Engines; version 0.1.0. URL https://github.com/rrrlw/ripserr.
+* **Calculation of Vietoris-Rips complex:** Bauer U. Ripser: Efficient computation of Vietoris-Rips persistence barcodes. 2019; arXiv: 1908.02518.
+* **Calculation of cubical complex:** Kaji S, Sudo T, Ahara K. Cubical Ripser: Software for computing persistent homology of image and volume data. 2020; arXiv: 2005.12692.
+
+## Contribute
+
+To contribute to ripserr, you can create issues for any bugs/suggestions on the [issues page](https://github.com/rrrlw/ripserr/issues).
+You can also fork the ripserr repository and create pull requests to add useful features.
