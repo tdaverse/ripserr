@@ -481,7 +481,9 @@ template <typename DistanceMatrix, typename ComparatorCofaces, typename Comparat
     std::vector<diameter_entry_t> coface_entries;
 
     for (index_t_ripser i = 0; i < columns_to_reduce.size(); ++i) {
-      Rcpp::checkUserInterrupt();
+      if (i % 1000 == 0) {
+        Rcpp::checkUserInterrupt();
+      }
 
       auto column_to_reduce = columns_to_reduce[i];
 
@@ -498,12 +500,10 @@ template <typename DistanceMatrix, typename ComparatorCofaces, typename Comparat
       bool might_be_apparent_pair = (i == j);
 
       do {
-        Rcpp::checkUserInterrupt();
         const coefficient_t_ripser factor = modulus - get_coefficient(pivot);
         auto coeffs_begin = &columns_to_reduce[j], coeffs_end = &columns_to_reduce[j] + 1;
 
         for (auto it = coeffs_begin; it != coeffs_end; ++it) {
-          Rcpp::checkUserInterrupt();
           diameter_entry_t simplex = *it;
           set_coefficient(simplex, get_coefficient(simplex) * factor % modulus);
 
@@ -600,8 +600,7 @@ compressed_lower_distance_matrix getLowerDistMatrix(const NumericMatrix& inputMa
   std::vector<value_t_ripser> distances;
   value_t_ripser value;
 
-  int numRows = inputMat.nrow(),
-  numCols = inputMat.ncol();
+  int numRows = inputMat.nrow();
 
   for (int i = 0; i < numRows; i++)
   {
@@ -690,7 +689,6 @@ template < typename DistanceMatrix >
     }
 
     for (index_t_ripser dim = 1; dim <= dim_max; ++dim) {
-      Rcpp::checkUserInterrupt();
 
       rips_filtration_comparator<decltype(dist)> comp(dist, dim + 1, binomial_coeff);
       rips_filtration_comparator<decltype(dist)> comp_prev(dist, dim, binomial_coeff);

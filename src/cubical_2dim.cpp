@@ -527,6 +527,10 @@ public:
 
     for (int i = 0; i < ctl_size; ++i)
     {
+      if (i % 2500 == 0) {
+        Rcpp::checkUserInterrupt();
+      }
+      
       auto column_to_reduce = ctr->columns_to_reduce[i];
       priority_queue<BirthdayIndex2, vector<BirthdayIndex2>, BirthdayIndex2Comparator> working_coboundary;
       double birth = column_to_reduce.getBirthday();
@@ -679,7 +683,6 @@ public:
       ctr->columns_to_reduce.clear();
       for (int y = 1; y <= ay; ++y)
       {
-        Rcpp::checkUserInterrupt();
         for (int x = 1; x <= ax; ++x)
         {
           for (int m = 0; m < typenum; ++m)

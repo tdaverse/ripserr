@@ -1042,13 +1042,14 @@ public:
     recorded_wc.reserve(ctl_size);
     
     
-    for(int i = 0; i < ctl_size; ++i){ 
+    for(int i = 0; i < ctl_size; ++i) {
+      if (i % 10000 == 0) {
+        Rcpp::checkUserInterrupt();
+      }
+      
       auto column_to_reduce = ctr -> columns_to_reduce[i]; 
       priority_queue<BirthdayIndex4, vector<BirthdayIndex4>, BirthdayIndex4Comparator> working_coboundary;
       double birth = column_to_reduce.getBirthday();
-      
-      // allow R user to quit/interrupt
-      Rcpp::checkUserInterrupt();
       
       int j = i;
       BirthdayIndex4 pivot(0, -1, 0);

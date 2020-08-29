@@ -782,7 +782,11 @@ public:
     pivot_column_index.reserve(ctl_size);
     recorded_wc.reserve(ctl_size);
     
-    for(int i = 0; i < ctl_size; ++i){ 
+    for(int i = 0; i < ctl_size; ++i) {
+      if (i % 5000 == 0) {
+        Rcpp::checkUserInterrupt();
+      }
+      
       auto column_to_reduce = ctr -> columns_to_reduce[i]; 
       priority_queue<BirthdayIndex3, vector<BirthdayIndex3>, BirthdayIndex3Comparator> 
         working_coboundary;
