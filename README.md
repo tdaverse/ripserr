@@ -19,8 +19,8 @@ Downloads](http://cranlogs.r-pkg.org/badges/grand-total/ripserr)](https://CRAN.R
 
 ## Overview
 
-ripserr ports the [Ripser](https://arxiv.org/1908.02518) and [Cubical
-Ripser](https://arxiv.org/abs/2005.12692) persistent homology
+ripserr ports the [Ripser](https://arxiv.org/abs/1908.02518) and
+[Cubical Ripser](https://arxiv.org/abs/2005.12692) persistent homology
 calculation engines from C++ via
 [Rcpp](https://CRAN.R-project.org/package=Rcpp). It can be used as a
 convenient and rapid calculation tool in topological data analysis
