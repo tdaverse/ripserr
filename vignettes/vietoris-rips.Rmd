@@ -1,0 +1,102 @@
+---
+title: "Calculating Persistent Homology with a Vietoris-Rips Complex"
+author: "Raoul R. Wadhwa, ***, Jacob G. Scott"
+date: "31 August 2020"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Calculating Persistent Homology with a Vietoris-Rips Complex}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+references:
+- id: Rcpp-paper
+  title: 'Rcpp: Seamless R and C++ Integration'
+  author:
+  - family: Eddelbuettel
+    given: Dirk
+  - family: Francois
+    given: Romain
+  container-title: Journal of Statistical Software
+  volume: 40
+  URL: 'http://www.jstatsoft.org/v40/i08'
+  DOI: 10.18637/jss.v040.i08
+  page: 1-18
+  type: article-journal
+  issued:
+    year: 2011
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ripserr)
+```
+
+## Sample dataset
+
+In this vignette, we will generate a point cloud using a sample of 2-dimensional points on the unit circle's circumference; this will be stored in a variable named `circle2d`.
+
+```{r load-data}
+# create reproducible dataset
+set.seed(42)
+unif_angles <- runif(25, 0, 2 * pi)
+circle2d <- data.frame(x = cos(unif_angles),
+                       y = sin(unif_angles))
+
+# take a peek at first 6 rows
+head(circle2d)
+```
+
+Above, each of the 100 rows represents a single point, with each of the 2 columns representing a Cartesian coordinate for a single dimension.
+Column `x` contains the x-coordinates of the 100 points and column `y` contains the respective y-coordinates.
+To confirm that the points in `circle2d` do lie on the circumference of a circle, we can quickly create a scatterplot.
+
+```{r plot-circle2d, fig.width = 4, fig.height = 4.5}
+# scatterplot of circle2d
+plot(circle2d, xlab = "x", ylab = "y", main = "2-d circle point cloud")
+```
+
+## Calculating persistent homology
+
+Given that the points in `circle2d` are uniformly distributed across the circumference of a circle without any error or noise, we expect a single prominent 1-cycle to be present in its persistent homology.
+The [Ripser](https://github.com/Ripser/ripser) C++ library is wrapped by R using [Rcpp](https://github.com/RcppCore/Rcpp), and performs calculations on a Vietoris-Rips complex created with the input point cloud [@Rcpp-paper].
+These calculations result in a numeric matrix that contains all the necessary information to characterize the persistence of homological features within `circle2d`, and can be performed with a single line of R code using ripserr.
+
+```{r calc-hom}
+# calculate persistent homology
+circle.phom <- vietoris_rips(circle2d)
+
+# print first 6 features (ordered by dimension and birth)
+head(circle.phom)
+
+# print last 6 features (ordered by dimension and birth)
+tail(circle.phom)
+```
+
+Each row in the homology matrix returned by the `vietoris_rips` function (variable named `circle.phom`) represents a single feature (cycle).
+The homology matrix has 3 columns in the following order:
+
+1. **dimension:** if 0, represents a 0-cycle; if 1, represents a 1-cycle; and so on.
+1. **birth:** the radius of the Vietoris-Rips complex at which this feature was first detected.
+1. **death:** the radius of the Vietoris-Rips complex at which this feature was last detected.
+
+Persistence of a feature is generally defined as the length of the interval of the radius within which the feature exists.
+This can be calculated as the numerical difference between the second (birth) and third (death) columns of the homology matrix.
+Confirmed in the output of the `head` and `tail` functions above, the homology matrix is ordered by dimension, with the birth column used to compare features of the same dimension.
+As expected for `circle2d`, the homology matrix contains a single prominent 1-cycle (last line of `tail`'s output).
+Although we suspect the feature to be a persistent 1-cycle, comparison with the other features in the homology matrix is required to confirm that it is sufficiently persistent.
+This task is done far more easily with an appropriate visualization than by eyeballing the contents of `circle.phom`.
+Below, we use the TDAstats R package to quickly generate a topological barcode for persistent homology visualization.
+
+```{r phom-vis, fig.height = 3, fig.width = 7}
+# plot topological barcode
+TDAstats::plot_barcode(as.matrix(circle.phom))
+```
+
+The single blue bar represents the expected 1-cycle in a 2-dimensional, circular point cloud.
+
+## References
