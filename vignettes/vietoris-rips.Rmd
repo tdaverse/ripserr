@@ -1,10 +1,28 @@
 ---
-title: "vietoris-rips"
+title: "Calculating Persistent Homology with a Vietoris-Rips complex"
+author: "Raoul R. Wadhwa, ***, Jacob G. Scott"
+date: "31 August 2020"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{vietoris-rips}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+references:
+- id: Rcpp-paper
+  title: 'Rcpp: Seamless R and C++ Integration'
+  author:
+  - family: Eddelbuettel
+    given: Dirk
+  - family: Francois
+    given: Romain
+  container-title: Journal of Statistical Software
+  volume: 40
+  URL: 'http://www.jstatsoft.org/v40/i08'
+  DOI: 10.18637/jss.v040.i08
+  page: 1-18
+  type: article-journal
+  issued:
+    year: 2011
 ---
 
 ```{r, include = FALSE}
@@ -17,3 +35,66 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(ripserr)
 ```
+
+## Sample dataset
+
+In this vignette, we will use the `circle2d` dataset included in TDAstats.
+The `circle2d` dataset is a numeric matrix containing the 2-dimensional Cartesian coordinates of 100 points on the circumference of a unit circle centered at the origin.
+To load `circle2d` and take a quick peek, run the following R code:
+
+```{r load-data}
+# create dataset
+unif_angles <- runif(25, 0, 2 * pi)
+circle2d <- data.frame(x = cos(unif_angles),
+                       y = sin(unif_angles))
+
+# look at the dimensions and class of circle2d
+class(circle2d)
+nrow(circle2d)
+ncol(circle2d)
+
+# take a peek at first 6 rows
+head(circle2d)
+```
+
+Above, each of the 100 rows represents a single point, with each of the 2 columns representing a Cartesian coordinate for a single dimension.
+Column 1 (accessed by `circle2d[, 1]`) contains the x-coordinates of the 100 points and column 2 (accessed by `circle2d[, 2]`) contains the respective y-coordinates.
+To confirm that the points in `circle2d` do lie on the circumference of a circle, we can quickly create a scatterplot.
+
+```{r plot-circle2d, fig.width = 4, fig.height = 4.5}
+# scatterplot of circle2d
+plot(circle2d, xlab = "x", ylab = "y", main = "Point cloud in circle2d dataset")
+```
+
+## Calculating persistent homology
+
+Given that the points in `circle2d` are uniformly distributed across the circumference of a circle without any error or noise, we expect a single prominent 1-cycle to be present in its persistent homology.
+The [Ripser](https://github.com/Ripser/ripser) C++ library is wrapped by R using [Rcpp](https://github.com/RcppCore/Rcpp), and performs calculations on a Vietoris-Rips complex created using the `circle2d` point cloud [@Rcpp-paper].
+These calculations result in a numeric matrix that contains all the necessary information to characterize the persistence of features within `circle2d`, and can be performed with a single line of R code using TDAstats.
+
+```{r calc-hom}
+# calculate persistent homology
+circle.phom <- vietoris_rips(circle2d)
+
+# print first 6 features (ordered by dimension and birth)
+head(circle.phom)
+
+# print last 6 features (ordered by dimension and birth)
+tail(circle.phom)
+```
+
+Each row in the homology matrix returned by the `vietoris_rips` function (variable named `circle.phom`) represents a single feature (cycle).
+The homology matrix has 3 columns in the following order:
+
+1. **dimension:** if 0, represents a 0-cycle; if 1, represents a 1-cycle; and so on.
+1. **birth:** the radius of the Vietoris-Rips complex at which this feature was first detected.
+1. **death:** the radius of the Vietoris-Rips complex at which this feature was last detected.
+
+Persistence of a feature is generally defined as the length of the interval of the radius within which the feature exists.
+This can be calculated as the numerical difference between the second (birth) and third (death) columns of the homology matrix.
+Confirmed in the output of the `head` and `tail` functions above, the homology matrix is ordered by dimension, with the birth column used to compare features of the same dimension.
+As expected for `circle2d`, the homology matrix contains a single prominent 1-cycle (last line of the output of `tail`).
+Although we suspect the feature to be a persistent 1-cycle, comparison with the other features in the homology matrix is required to confirm that it is sufficiently persistent.
+This task is done far more easily with an appropriate visualization than by eyeballing the contents of `circle.phom`.
+
+## References
