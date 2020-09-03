@@ -1,4 +1,9 @@
-This is the first submission of ripserr to CRAN.
+This is a re-submission of ripserr to CRAN.
+
+In this re-submission, three people were added to Authors@R.
+Derivatives of their code (CRAN-compatible open source licenses) are included in this package.
+They have been assigned the roles "ctb" and "cph" with appropriate comments in Authors@R.
+Thank you for the helpful comments to aid in revision of the first submission.
 
 ## Test environments
 
@@ -11,10 +16,7 @@ This is the first submission of ripserr to CRAN.
 
 There were no ERRORs or WARNINGs.
 
-There were 2 NOTEs:
-* checking for future file timestamps ... NOTE
-  unable to verify current time
-  
+There was 1 NOTE:
 * checking CRAN incoming feasibility ... NOTE
   Possible mis-spelled words in DESCRIPTION:
     Homology
