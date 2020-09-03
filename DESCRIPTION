@@ -51,7 +51,7 @@ SystemRequirements: C++11
 Suggests: 
     testthat (>= 2.3),
     covr (>= 3.5),
-    knitr,
-    rmarkdown,
-    TDAstats
+    knitr (>= 1.29),
+    rmarkdown (>= 2.3),
+    TDAstats (>= 0.4)
 VignetteBuilder: knitr
