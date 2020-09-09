@@ -151,6 +151,14 @@ public:
       vertex[d] = new Coeff();
   }
   
+  // free pointers
+  ~Vertices()
+  {
+    for (int d = 0; d < 8; d++)
+      delete vertex[d];
+    delete vertex;
+  }
+  
   void setVertices(int _dim, int _ox, int _oy, int _oz, int _om) // 0 cell
   {
     dim = _dim;
@@ -416,6 +424,12 @@ public:
   {
     vtx = new Vertices();
     nextCoface = BirthdayIndex3(0, -1, 1);
+  }
+  
+  // free pointers
+  ~SimplexCoboundaryEnumerator3()
+  {
+    delete vtx;
   }
   
   void setSimplexCoboundaryEnumerator3(BirthdayIndex3 _s, DenseCubicalGrids3* _dcg)
@@ -702,6 +716,13 @@ public:
     
     sort(dim1_simplex_list.rbegin(), dim1_simplex_list.rend(), BirthdayIndex3Comparator());
   }
+  
+  // free pointers
+  ~JointPairs3()
+  {
+    delete vtx;
+  }
+  
   void joint_pairs_main()
   {
     cubes_edges.reserve(2);
@@ -972,6 +993,11 @@ Rcpp::NumericMatrix cubical_3dim(Rcpp::NumericVector& image, double threshold, i
       cp -> assemble_columns_to_reduce();
       
       cp -> compute_pairs_main(); // dim2
+      
+      // free pointers
+      delete jp;
+      delete cp;
+      
       break;
     }
       
@@ -985,9 +1011,17 @@ Rcpp::NumericMatrix cubical_3dim(Rcpp::NumericVector& image, double threshold, i
       cp -> assemble_columns_to_reduce();
       
       cp -> compute_pairs_main(); // dim2
+      
+      // free pointers
+      delete cp;
+      
       break;
     }
   }
+  
+  // free pointers
+  delete dcg;
+  delete ctr;
   
   Rcpp::NumericMatrix ans(writepairs.size(), 3);
   for (int i = 0; i < ans.nrow(); i++)
