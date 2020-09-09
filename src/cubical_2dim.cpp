@@ -726,6 +726,10 @@ Rcpp::NumericMatrix cubical_2dim(const Rcpp::NumericMatrix& image, double thresh
 
       ComputePairs2* cp = new ComputePairs2(dcg, ctr, writepairs, print);
       cp->compute_pairs_main(); // dim1
+      
+      // free pointers
+      delete jp;
+      delete cp;
 
       break;
     }
@@ -737,10 +741,17 @@ Rcpp::NumericMatrix cubical_2dim(const Rcpp::NumericMatrix& image, double thresh
       cp->assemble_columns_to_reduce();
 
       cp->compute_pairs_main(); // dim1
+      
+      // free pointers
+      delete cp;
 
       break;
     }
   }
+  
+  // free pointers
+  delete dcg;
+  delete ctr;
 
   Rcpp::NumericMatrix ans(writepairs.size(), 3);
   for (int i = 0; i < ans.nrow(); i++)
