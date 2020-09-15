@@ -177,7 +177,7 @@ cubical <- function(dataset, threshold = 9999, method = 0,
   # make sure dataset is of type array (also includes matrix)
   #   allow type matrix (second condition) for older R versions
   if (!("array" %in% class(dataset) | "matrix" %in% class(dataset))) {
-    stop(paste("Data must be of class array; passed dataset has class =",
+    stop(paste("Data must be of class array or matrix; passed dataset has class =",
                class(dataset)))
   }
   
