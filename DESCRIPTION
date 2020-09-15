@@ -52,6 +52,5 @@ Suggests:
     testthat (>= 2.3),
     covr (>= 3.5),
     knitr (>= 1.29),
-    rmarkdown (>= 2.3),
-    TDAstats (>= 0.4)
+    rmarkdown (>= 2.3)
 VignetteBuilder: knitr

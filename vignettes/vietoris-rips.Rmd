@@ -73,12 +73,5 @@ This can be calculated as the numerical difference between the second (birth) an
 Confirmed in the output of the `head` and `tail` functions above, the homology matrix is ordered by dimension, with the birth column used to compare features of the same dimension.
 As expected for `circle2d`, the homology matrix contains a single prominent 1-cycle (last line of `tail`'s output).
 Although we suspect the feature to be a persistent 1-cycle, comparison with the other features in the homology matrix is required to confirm that it is sufficiently persistent.
-This task is done far more easily with an appropriate visualization than by eyeballing the contents of `circle.phom`.
-Below, we use the TDAstats R package to quickly generate a topological barcode for persistent homology visualization.
-
-```{r phom-vis, fig.height = 3, fig.width = 7}
-# plot topological barcode
-TDAstats::plot_barcode(as.matrix(circle.phom))
-```
-
-The single blue bar represents the expected 1-cycle in a 2-dimensional, circular point cloud.
+This task is done far more easily with an appropriate visualization (e.g. topological barcode or persistence diagram) than by eyeballing the contents of `circle.phom`.
+The `TDAstats` and `ggtda` R packages could be useful to create such visualizations.
