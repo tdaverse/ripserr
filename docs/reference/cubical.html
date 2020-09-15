@@ -75,7 +75,7 @@ the C++ library, see https://github.com/CubicalRipser." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ripserr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -142,11 +142,11 @@ the C++ library, see <a href='https://github.com/CubicalRipser'>https://github.c
     </div>
 
     <pre class="usage"><span class='fu'>cubical</span>(
-  <span class='no'>dataset</span>,
-  <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>9999</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>return_format</span> <span class='kw'>=</span> <span class='st'>"df"</span>
+  <span class='kw'>dataset</span>,
+  threshold = <span class='fl'>9999</span>,
+  method = <span class='fl'>0</span>,
+  standardize = <span class='fl'>FALSE</span>,
+  return_format = <span class='st'>"df"</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -184,19 +184,20 @@ if <code>mat</code>, returns a numeric matrix</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'># 2-dim example</span>
-<span class='no'>dataset</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span> ^ <span class='fl'>2</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='no'>dataset</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>10</span>, <span class='fl'>2</span>)
-<span class='no'>cubical_hom2</span> <span class='kw'>&lt;-</span> <span class='fu'>cubical</span>(<span class='no'>dataset</span>)
+<span class='kw'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span> <span class='op'>^</span> <span class='fl'>2</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='kw'>dataset</span>) <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>10</span>, <span class='fl'>2</span>)
+<span class='kw'>cubical_hom2</span> <span class='op'>&lt;-</span> <span class='fu'>cubical</span>(<span class='kw'>dataset</span>)
 
 <span class='co'># 3-dim example</span>
-<span class='no'>dataset</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>8</span> ^ <span class='fl'>3</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='no'>dataset</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>8</span>, <span class='fl'>3</span>)
-<span class='no'>cubical_hom3</span> <span class='kw'>&lt;-</span> <span class='fu'>cubical</span>(<span class='no'>dataset</span>)
+<span class='kw'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>8</span> <span class='op'>^</span> <span class='fl'>3</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='kw'>dataset</span>) <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>8</span>, <span class='fl'>3</span>)
+<span class='kw'>cubical_hom3</span> <span class='op'>&lt;-</span> <span class='fu'>cubical</span>(<span class='kw'>dataset</span>)
 
 <span class='co'># 4-dim example</span>
-<span class='no'>dataset</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>5</span> ^ <span class='fl'>4</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='no'>dataset</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>5</span>, <span class='fl'>4</span>)
-<span class='no'>cubical_hom4</span> <span class='kw'>&lt;-</span> <span class='fu'>cubical</span>(<span class='no'>dataset</span>)</div></pre>
+<span class='kw'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>5</span> <span class='op'>^</span> <span class='fl'>4</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='kw'>dataset</span>) <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>5</span>, <span class='fl'>4</span>)
+<span class='kw'>cubical_hom4</span> <span class='op'>&lt;-</span> <span class='fu'>cubical</span>(<span class='kw'>dataset</span>)
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -212,7 +213,7 @@ if <code>mat</code>, returns a numeric matrix</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

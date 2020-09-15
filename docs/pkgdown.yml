@@ -1,8 +1,6 @@
 pandoc: 2.3.1
-pkgdown: 1.5.1
+pkgdown: 1.6.0
 pkgdown_sha: ~
-articles:
-  cubical: cubical.html
-  vietoris-rips: vietoris-rips.html
-last_built: 2020-08-31T21:02Z
+articles: []
+last_built: 2020-09-15T18:09Z
 
