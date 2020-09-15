@@ -1,28 +1,12 @@
 ---
 title: "Calculating Persistent Homology with a Vietoris-Rips Complex"
-author: "Raoul R. Wadhwa, ***, Jacob G. Scott"
-date: "31 August 2020"
+author: "Raoul R. Wadhwa, Jacob G. Scott"
+date: "15 September 2020"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Calculating Persistent Homology with a Vietoris-Rips Complex}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-references:
-- id: Rcpp-paper
-  title: 'Rcpp: Seamless R and C++ Integration'
-  author:
-  - family: Eddelbuettel
-    given: Dirk
-  - family: Francois
-    given: Romain
-  container-title: Journal of Statistical Software
-  volume: 40
-  URL: 'http://www.jstatsoft.org/v40/i08'
-  DOI: 10.18637/jss.v040.i08
-  page: 1-18
-  type: article-journal
-  issued:
-    year: 2011
 ---
 
 ```{r, include = FALSE}
@@ -63,7 +47,7 @@ plot(circle2d, xlab = "x", ylab = "y", main = "2-d circle point cloud")
 ## Calculating persistent homology
 
 Given that the points in `circle2d` are uniformly distributed across the circumference of a circle without any error or noise, we expect a single prominent 1-cycle to be present in its persistent homology.
-The [Ripser](https://github.com/Ripser/ripser) C++ library is wrapped by R using [Rcpp](https://github.com/RcppCore/Rcpp), and performs calculations on a Vietoris-Rips complex created with the input point cloud [@Rcpp-paper].
+The [Ripser](https://github.com/Ripser/ripser) C++ library is wrapped by R using [Rcpp](https://github.com/RcppCore/Rcpp), and performs calculations on a Vietoris-Rips complex created with the input point cloud.
 These calculations result in a numeric matrix that contains all the necessary information to characterize the persistence of homological features within `circle2d`, and can be performed with a single line of R code using ripserr.
 
 ```{r calc-hom}
@@ -98,5 +82,3 @@ TDAstats::plot_barcode(as.matrix(circle.phom))
 ```
 
 The single blue bar represents the expected 1-cycle in a 2-dimensional, circular point cloud.
-
-## References
