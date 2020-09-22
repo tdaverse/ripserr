@@ -725,7 +725,7 @@ public:
   
   void joint_pairs_main()
   {
-    cubes_edges.reserve(2);
+    cubes_edges.resize(2);
     UnionFind3 dset(ctr_moi, dcg);
     ctr -> columns_to_reduce.clear();
     ctr -> dim = 1;
