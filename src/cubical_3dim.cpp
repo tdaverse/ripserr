@@ -736,8 +736,8 @@ public:
       cubes_edges.clear();
       dcg -> GetSimplexVertices(e.getIndex(), 1, vtx);
       
-      cubes_edges[0] = vtx -> vertex[0] -> getIndex();
-      cubes_edges[1] = vtx -> vertex[1] -> getIndex();
+      cubes_edges.push_back(vtx -> vertex[0] -> getIndex());
+      cubes_edges.push_back(vtx -> vertex[1] -> getIndex());
       
       u = dset.find(cubes_edges[0]);
       v = dset.find(cubes_edges[1]);
