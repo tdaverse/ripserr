@@ -139,14 +139,13 @@ public:
 class Vertices
 {
 public:	
-  Coeff** vertex;
+  Coeff* vertex[8];
   int dim; 
   int ox, oy, oz;
   int type;
   
   Vertices() : dim(0)
   {
-    vertex = new Coeff*[8];
     for (int d = 0; d < 8; ++d)
       vertex[d] = new Coeff();
   }
@@ -156,7 +155,6 @@ public:
   {
     for (int d = 0; d < 8; d++)
       delete vertex[d];
-    delete[] vertex;
   }
   
   void setVertices(int _dim, int _ox, int _oy, int _oz, int _om) // 0 cell
