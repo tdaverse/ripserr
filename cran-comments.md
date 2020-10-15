@@ -1,4 +1,10 @@
-## Submission comments for archived package (1 Oct 2020)
+## Submission comments for archived package
+
+### From fourth resubmission (15 Oct 2020)
+
+The lines of C++ code causing the AddressSanitizer ERROR were modified so that each use of new is paired with an appropriate use of delete to prevent memory leaks.
+
+### From third resubmission (1 Oct 2020)
 
 The lines of C++ code causing the AddressSanitizer ERROR were modified so that random access (accessing memory that was not formally allocated, only reserved) is not used. Instead, the std::vector STL container is cleared and then new elements are added using push_back, which should avoid raising a container-overflow error with AddressSanitizer.
 
