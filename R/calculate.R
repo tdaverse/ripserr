@@ -129,6 +129,8 @@ vietoris_rips <- function(dataset, dim = 1, threshold = -1, p = 2L, format = "cl
                   temp$dimension <- as.integer(temp$dimension)
                   temp
                 })
+  
+  return(ans)
 }
 
 #' Calculate Persistent Homology using a Cubical Complex
