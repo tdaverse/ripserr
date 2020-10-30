@@ -1,5 +1,29 @@
-#' Calculate Persistent Homology via a Vietoris-Rips Complex
+#' Calculates the persistent homology of a Vietoris-Rips complex.
+#' This function is an R wrapper for the Ripser C++ library for calculating
+#' persistent homology. For more information on the C++ library, see
+#' <https://github.com/Ripser/ripser>. For more information on how objects of
+#' different classes are evaluated by `vietoris_rips`, read the Details section
+#' below.
 #' 
+#' `vietoris_rips.data.frame` assumes `dataset` is a point cloud, with each row
+#' representing a point and each column representing a dimension.
+#' 
+#' `vietoris_rips.matrix` currently assumes `dataset` is a point cloud (similar
+#' to `vietoris_rips.data.frame`). Currently in the process of adding network
+#' representation to this method.
+#' 
+#' `vietoris_rips.dist` takes a `dist` object and calculates persistent homology
+#' based on pairwise distances. The `dist` object could have been calculated
+#' from a point cloud, network, or any object containing elements from a finite
+#' metric space.
+#' 
+#' `vietoris_rips.numeric` and `vietoris_rips.ts` both calculate persistent
+#' homology of a time series object. The time series object is converted to a
+#' matrix using the quasi-attractor method detailed in Umeda (2017)
+#' <doi:10.1527/tjsai.D-G72>. Persistent homology of the resulting matrix is
+#' then calculated.
+#' 
+#' @title Calculate Persistent Homology via a Vietoris-Rips Complex
 #' @rdname vietoris_rips
 #' @export vietoris_rips
 # Notes:
@@ -11,8 +35,6 @@ vietoris_rips <- function(dataset, ...) {
   UseMethod("vietoris_rips")
 }
 
-#' Vietoris-Rips Persistent Homology of a Data Frame
-#' 
 #' @importFrom magrittr %>%
 #' @rdname vietoris_rips
 #' @export vietoris_rips.data.frame
@@ -28,8 +50,6 @@ vietoris_rips.data.frame <- function(dataset, ...) {
   return(ans)
 }
 
-#' Vietoris-Rips Persistent Homology of a Matrix
-#' 
 #' @importFrom magrittr %>%
 #' @rdname vietoris_rips
 #' @export vietoris_rips.matrix
@@ -52,8 +72,6 @@ vietoris_rips.matrix <- function(dataset,
   return(ans)
 }
 
-#' Vietoris-Rips Persistent Homology of a \code{dist} Object
-#' 
 #' @importFrom magrittr %>%
 #' @rdname vietoris_rips
 #' @export vietoris_rips.dist
@@ -76,8 +94,6 @@ vietoris_rips.dist <- function(dataset,
   return(ans)
 }
 
-#' Vietoris-Rips Persistent Homology of Time Series
-#' 
 #' @aliases vietoris_rips.numeric vietoris_rips.ts
 #' @importFrom magrittr %>%
 #' @rdname vietoris_rips
@@ -123,8 +139,6 @@ vietoris_rips.ts <- function(dataset, ...) {
   return(ans)
 }
 
-#' Default Vietoris-Rips Persistent Homology
-#' 
 #' @rdname vietoris_rips
 #' @export vietoris_rips.default
 #' @export

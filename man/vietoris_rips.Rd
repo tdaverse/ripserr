@@ -32,15 +32,29 @@ vietoris_rips(dataset, ...)
 \method{vietoris_rips}{default}(dataset, ...)
 }
 \description{
-Calculate Persistent Homology via a Vietoris-Rips Complex
+Calculates the persistent homology of a Vietoris-Rips complex.
+This function is an R wrapper for the Ripser C++ library for calculating
+persistent homology. For more information on the C++ library, see
+\url{https://github.com/Ripser/ripser}. For more information on how objects of
+different classes are evaluated by \code{vietoris_rips}, read the Details section
+below.
+}
+\details{
+\code{vietoris_rips.data.frame} assumes \code{dataset} is a point cloud, with each row
+representing a point and each column representing a dimension.
 
-Vietoris-Rips Persistent Homology of a Data Frame
+\code{vietoris_rips.matrix} currently assumes \code{dataset} is a point cloud (similar
+to \code{vietoris_rips.data.frame}). Currently in the process of adding network
+representation to this method.
 
-Vietoris-Rips Persistent Homology of a Matrix
+\code{vietoris_rips.dist} takes a \code{dist} object and calculates persistent homology
+based on pairwise distances. The \code{dist} object could have been calculated
+from a point cloud, network, or any object containing elements from a finite
+metric space.
 
-Vietoris-Rips Persistent Homology of a \code{dist} Object
-
-Vietoris-Rips Persistent Homology of Time Series
-
-Default Vietoris-Rips Persistent Homology
+\code{vietoris_rips.numeric} and \code{vietoris_rips.ts} both calculate persistent
+homology of a time series object. The time series object is converted to a
+matrix using the quasi-attractor method detailed in Umeda (2017)
+\url{doi:10.1527/tjsai.D-G72}. Persistent homology of the resulting matrix is
+then calculated.
 }
