@@ -44,13 +44,14 @@ BugReports: https://github.com/rrrlw/ripserr/issues
 LinkingTo: Rcpp
 Depends: R (>= 3.5.0)
 Imports: 
+    magrittr (>= 1.5),
     methods (>= 3.0),
     Rcpp (>= 1.0),
     stats (>= 3.0)
 SystemRequirements: C++11
 Suggests: 
-    testthat (>= 2.3),
     covr (>= 3.5),
     knitr (>= 1.29),
-    rmarkdown (>= 2.3)
+    rmarkdown (>= 2.3),
+    testthat (>= 2.3)
 VignetteBuilder: knitr
