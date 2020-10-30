@@ -130,9 +130,9 @@ validate_dist_vr <- function(dataset) {
   error_class(dataset, "dataset", "dist")
   
   # min size
-  if (attr(dist(dataset), "Size") < 3) {
+  if (attr(dataset, "Size") < 3) {
     stop("dataset parameter must contain at least 3 elements, passed dist",
-         "object contains", attr(dist(dataset), "Size"), "elements")
+         "object contains", attr(dataset, "Size"), "elements")
   }
   
   # no missing elements
