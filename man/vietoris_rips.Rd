@@ -31,6 +31,31 @@ vietoris_rips(dataset, ...)
 
 \method{vietoris_rips}{default}(dataset, ...)
 }
+\arguments{
+\item{dataset}{object on which to calculate persistent homology}
+
+\item{...}{other relevant parameters}
+
+\item{max_dim}{maximum dimension of persistent homology features to be
+calculated}
+
+\item{threshold}{maximum simplicial complex diameter to explore}
+
+\item{p}{prime field in which to calculate persistent homology}
+
+\item{data_dim}{desired end data dimension}
+
+\item{dim_lag}{time series lag factor between dimensions}
+
+\item{sample_lag}{time series lag factor between samples (rows)}
+
+\item{method}{currently only allows \code{"qa"} (quasi-attractor method)}
+}
+\value{
+data frame (also of class \code{PHom}) with 3 columns and \code{n} rows, where
+column 1 contains feature dimension, column 2 contains feature birth, and
+column 3 contains feature death; each row contains 1 of \code{n} features
+}
 \description{
 Calculates the persistent homology of a Vietoris-Rips complex.
 This function is an R wrapper for the Ripser C++ library for calculating

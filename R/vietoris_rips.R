@@ -24,8 +24,13 @@
 #' then calculated.
 #' 
 #' @title Calculate Persistent Homology via a Vietoris-Rips Complex
+#' @param dataset object on which to calculate persistent homology
+#' @param ... other relevant parameters
 #' @rdname vietoris_rips
 #' @export vietoris_rips
+#' @return data frame (also of class `PHom`) with 3 columns and `n` rows, where
+#'   column 1 contains feature dimension, column 2 contains feature birth, and
+#'   column 3 contains feature death; each row contains 1 of `n` features
 # Notes:
 # - figure out format from `dataset`
 # - return_format will be "df" (opinionated) w/ additional "PHom" S3 class
@@ -50,6 +55,10 @@ vietoris_rips.data.frame <- function(dataset, ...) {
   return(ans)
 }
 
+#' @param max_dim maximum dimension of persistent homology features to be
+#'   calculated
+#' @param threshold maximum simplicial complex diameter to explore
+#' @param p prime field in which to calculate persistent homology
 #' @importFrom magrittr %>%
 #' @rdname vietoris_rips
 #' @export vietoris_rips.matrix
@@ -95,6 +104,10 @@ vietoris_rips.dist <- function(dataset,
 }
 
 #' @aliases vietoris_rips.numeric vietoris_rips.ts
+#' @param data_dim desired end data dimension
+#' @param dim_lag time series lag factor between dimensions
+#' @param sample_lag time series lag factor between samples (rows)
+#' @param method currently only allows `"qa"` (quasi-attractor method)
 #' @importFrom magrittr %>%
 #' @rdname vietoris_rips
 #' @export vietoris_rips.numeric
