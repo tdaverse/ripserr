@@ -1,5 +1,4 @@
-#' Calculates the persistent homology of a Vietoris-Rips complex.
-#' This function is an R wrapper for the Ripser C++ library for calculating
+#' This function is an R wrapper for the Ripser C++ library to calculate
 #' persistent homology. For more information on the C++ library, see
 #' <https://github.com/Ripser/ripser>. For more information on how objects of
 #' different classes are evaluated by `vietoris_rips`, read the Details section
@@ -31,6 +30,15 @@
 #' @return data frame (also of class `PHom`) with 3 columns and `n` rows, where
 #'   column 1 contains feature dimension, column 2 contains feature birth, and
 #'   column 3 contains feature death; each row contains 1 of `n` features
+#' @examples
+#'
+#' # create a 2-d point cloud of a circle (100 points)
+#' num.pts <- 100
+#' rand.angle <- runif(num.pts, 0, 2*pi)
+#' pt.cloud <- cbind(cos(rand.angle), sin(rand.angle))
+#'
+#' # calculate persistent homology (num.pts by 3 numeric matrix)
+#' pers.hom <- vietoris_rips(pt.cloud)
 # Notes:
 # - figure out format from `dataset`
 # - return_format will be "df" (opinionated) w/ additional "PHom" S3 class

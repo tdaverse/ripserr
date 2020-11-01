@@ -57,8 +57,7 @@ column 1 contains feature dimension, column 2 contains feature birth, and
 column 3 contains feature death; each row contains 1 of \code{n} features
 }
 \description{
-Calculates the persistent homology of a Vietoris-Rips complex.
-This function is an R wrapper for the Ripser C++ library for calculating
+This function is an R wrapper for the Ripser C++ library to calculate
 persistent homology. For more information on the C++ library, see
 \url{https://github.com/Ripser/ripser}. For more information on how objects of
 different classes are evaluated by \code{vietoris_rips}, read the Details section
@@ -82,4 +81,14 @@ homology of a time series object. The time series object is converted to a
 matrix using the quasi-attractor method detailed in Umeda (2017)
 \url{doi:10.1527/tjsai.D-G72}. Persistent homology of the resulting matrix is
 then calculated.
+}
+\examples{
+
+# create a 2-d point cloud of a circle (100 points)
+num.pts <- 100
+rand.angle <- runif(num.pts, 0, 2*pi)
+pt.cloud <- cbind(cos(rand.angle), sin(rand.angle))
+
+# calculate persistent homology (num.pts by 3 numeric matrix)
+pers.hom <- vietoris_rips(pt.cloud)
 }
