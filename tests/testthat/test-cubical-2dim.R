@@ -23,14 +23,9 @@ test_that("basic 2-dim cubical works", {
   # at least 1 feature from each dimension
   expect_true(counts[1] > 0)
   expect_true(counts[2] > 0)
-  expect_true(counts[3] > 0)
   
   # make sure no births after deaths
   expect_equal(0, sum(cub_comp$birth > cub_comp$death))
-  
-  # can return a matrix or a data frame (both equivalent)
-  expect_equal(cub_comp, 
-               as.data.frame(cubical(test_data, return_format = "mat")))
 })
 
 # these tests use example data + original code from Github: CubicalRipser/Cubical_2dim

@@ -25,7 +25,6 @@ test_that("basic 4-dim cubical works", {
   expect_true(counts[2] > 0)
   expect_true(counts[3] > 0)
   expect_true(counts[4] > 0)
-  expect_true(counts[5] > 0)
   
   # make sure no births after deaths
   expect_equal(0, sum(cub_comp[, 2] > cub_comp[, 3]))
