@@ -20,11 +20,6 @@ cubical(
 \item{method}{defaults to 0 for link join; alternatively, can be 1 for
 compute pairs. See original Cubical Ripser code at GitHub user
 CubicalRipser for details.}
-
-\item{standardize}{boolean determining whether point cloud size should be standardized}
-
-\item{return_format}{defaults to \code{"df"}, returning a data frame;
-if \code{mat}, returns a numeric matrix}
 }
 \value{
 3-column matrix with each row representing a TDA feature
