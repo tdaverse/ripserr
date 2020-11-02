@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculate Persistent Homology using a Cubical Complex — cubical • ripserr</title>
+<title>Calculating Persistent Homology via a Cubical Complex — cubical • ripserr</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,12 @@
 
 
 
-<meta property="og:title" content="Calculate Persistent Homology using a Cubical Complex — cubical" />
-<meta property="og:description" content="Calculates the persistent homology of a 2- to 4-dimensional numeric array
-using a Cubical complex. This function is an R wrapper for Takeki Sudo
-and Kazushi Ahara's Cubical Ripser C++ library. For more information on
-the C++ library, see https://github.com/CubicalRipser." />
+<meta property="og:title" content="Calculating Persistent Homology via a Cubical Complex — cubical" />
+<meta property="og:description" content="This function is an R wrapper for the CubicalRipser C++ library to calculate
+persistent homology. For more information on the C++ library, see
+https://github.com/CubicalRipser. For more information on how objects of
+different classes are evaluated by cubical, read the Details section
+below." />
 
 
 
@@ -75,7 +76,7 @@ the C++ library, see https://github.com/CubicalRipser." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ripserr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -98,7 +99,7 @@ the C++ library, see https://github.com/CubicalRipser." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cubical.html">cubical</a>
+      <a href="../articles/cubical.html">Calculating Persistent Homology with a Cubical Complex</a>
     </li>
     <li>
       <a href="../articles/vietoris-rips.html">Calculating Persistent Homology with a Vietoris-Rips Complex</a>
@@ -129,57 +130,63 @@ the C++ library, see https://github.com/CubicalRipser." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculate Persistent Homology using a Cubical Complex</h1>
-    <small class="dont-index">Source: <a href='https://github.com/rrrlw/ripserr/blob/master/R/calculate.R'><code>R/calculate.R</code></a></small>
+    <h1>Calculating Persistent Homology via a Cubical Complex</h1>
+    <small class="dont-index">Source: <a href='https://github.com/rrrlw/ripserr/blob/master/R/cubical.R'><code>R/cubical.R</code></a></small>
     <div class="hidden name"><code>cubical.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calculates the persistent homology of a 2- to 4-dimensional numeric array
-using a Cubical complex. This function is an R wrapper for Takeki Sudo
-and Kazushi Ahara's Cubical Ripser C++ library. For more information on
-the C++ library, see <a href='https://github.com/CubicalRipser'>https://github.com/CubicalRipser</a>.</p>
+    <p>This function is an R wrapper for the CubicalRipser C++ library to calculate
+persistent homology. For more information on the C++ library, see
+<a href='https://github.com/CubicalRipser'>https://github.com/CubicalRipser</a>. For more information on how objects of
+different classes are evaluated by <code>cubical</code>, read the Details section
+below.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cubical</span>(
-  <span class='kw'>dataset</span>,
-  threshold = <span class='fl'>9999</span>,
-  method = <span class='fl'>0</span>,
-  standardize = <span class='fl'>FALSE</span>,
-  return_format = <span class='st'>"df"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>cubical</span>(<span class='kw'>dataset</span>, <span class='kw'>...</span>)
+
+<span class='co'># S3 method for array</span>
+<span class='fu'>cubical</span>(<span class='kw'>dataset</span>, threshold = <span class='fl'>9999</span>, method = <span class='st'>"lj"</span>, <span class='kw'>...</span>)
+
+<span class='co'># S3 method for matrix</span>
+<span class='fu'>cubical</span>(<span class='kw'>dataset</span>, <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>dataset</th>
-      <td><p>numeric array containing pixel/voxel data</p></td>
+      <td><p>object on which to calculate persistent homology</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>other relevant parameters</p></td>
     </tr>
     <tr>
       <th>threshold</th>
-      <td><p>maximum diameter for computation of Cubical complex</p></td>
+      <td><p>maximum simplicial complex diameter to explore</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>defaults to 0 for link join; alternatively, can be 1 for
-compute pairs. See original Cubical Ripser code at GitHub user
-CubicalRipser for details.</p></td>
-    </tr>
-    <tr>
-      <th>standardize</th>
-      <td><p>boolean determining whether point cloud size should be standardized</p></td>
-    </tr>
-    <tr>
-      <th>return_format</th>
-      <td><p>defaults to <code>"df"</code>, returning a data frame;
-if <code>mat</code>, returns a numeric matrix</p></td>
+      <td><p>either <code>"lj"</code> (for Link Join) or <code>"cp"</code> (for Compute Pairs);
+see Kaji et al. (2020) <a href='arXiv:2005.12692'>arXiv:2005.12692</a> for details</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>3-column matrix with each row representing a TDA feature</p>
+    <p>data frame (also of class <code>PHom</code>) with 3 columns and <code>n</code> rows, where
+column 1 contains feature dimension, column 2 contains feature birth, and
+column 3 contains feature death; each row contains 1 of <code>n</code> features</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><code>cubical.array</code> assumes <code>dataset</code> is a lattice, with each element containing
+the value of the lattice at the point represented by the indices of the
+element in the <code>array</code>.</p>
+<p><code>cubical.matrix</code> is redundant for versions of <code>R</code> at or after 4.0. For
+previous versions of <code>R</code>, in which objects with class <code>matrix</code> do not
+necessarily also have class <code>array</code>, <code>dataset</code> is converted to an <code>array</code>
+and persistent homology is then calculated using <code>cubical.array</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -196,7 +203,6 @@ if <code>mat</code>, returns a numeric matrix</p></td>
 <span class='co'># 4-dim example</span>
 <span class='kw'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>5</span> <span class='op'>^</span> <span class='fl'>4</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='kw'>dataset</span>) <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>5</span>, <span class='fl'>4</span>)
-<span class='kw'>cubical_hom4</span> <span class='op'>&lt;-</span> <span class='fu'>cubical</span>(<span class='kw'>dataset</span>)
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
