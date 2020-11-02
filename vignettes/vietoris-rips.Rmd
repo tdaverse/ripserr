@@ -1,7 +1,7 @@
 ---
 title: "Calculating Persistent Homology with a Vietoris-Rips Complex"
-author: "Raoul R. Wadhwa, Jacob G. Scott"
-date: "15 September 2020"
+author: "Raoul R. Wadhwa and Jacob G. Scott"
+date: "` r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Calculating Persistent Homology with a Vietoris-Rips Complex}
@@ -27,9 +27,9 @@ In this vignette, we will generate a point cloud using a sample of 2-dimensional
 ```{r load-data}
 # create reproducible dataset
 set.seed(42)
-unif_angles <- runif(25, 0, 2 * pi)
-circle2d <- data.frame(x = cos(unif_angles),
-                       y = sin(unif_angles))
+angles <- runif(25, 0, 2 * pi)
+circle2d <- data.frame(x = cos(angles),
+                       y = sin(angles))
 
 # take a peek at first 6 rows
 head(circle2d)
