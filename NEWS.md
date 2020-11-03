@@ -1,3 +1,11 @@
+# ripserr 0.2.0
+
+## Changes
+
+* `vietoris_rips` and `cubical` are now S3 generics
+* `vietoris_rips` accepts objects of class `data.frame`, `matrix`, `numeric`, `ts`, and `dist`
+* `cubical` accepts objects of class `array` and `matrix` (for r-oldrel, in which not all `matrix` objects are also of class `array`)
+
 # ripserr 0.1.1
 
 ## Logistics
