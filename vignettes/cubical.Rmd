@@ -1,0 +1,69 @@
+---
+title: "Calculating Persistent Homology with a Cubical Complex"
+author: "Raoul R. Wadhwa and Jacob G. Scott"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Calculating Persistent Homology with a Cubical Complex}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ripserr)
+```
+
+## Sample dataset
+
+For this vignette, we will generate a lattice representing a 2-dimensional image; this will be stored in a variable named `sample_image`.
+
+```{r load-data,fig.width=6,fig.height=4}
+# create dataset
+sample_image <- matrix(0, nrow = 10, ncol = 10)
+i <- 2:9
+j <- c(2, 9)
+sample_image[i, j] <- 1
+sample_image[j, i] <- 1
+
+# view as matrix
+sample_image
+
+# view as image
+graphics::image(sample_image, useRaster = TRUE, axes = FALSE)
+```
+
+Above, each of the 100 matrix values is analogous to a single pixel in an image.
+
+## Calculating persistent homology
+
+Based on the image, we expect a 1-cycle to be present in the persistent homology of `sample_image`.
+The [CubicalRipser](https://arxiv.org/abs/2005.12692) C++ library is wrapped by R using [Rcpp](https://CRAN.R-project.org/package=Rcpp), and performs calculations via a cubical complex created with `sample_image`.
+These calculations result in a data frame that characterizes the persistent homology of `sample_image` and can be performed with a single line of R code using ripserr.
+
+```{r}
+# calculate persistent homology
+image_phom <- cubical(sample_image)
+
+# print features
+image_phom
+```
+
+Each row in `image_phom` represents a single feature.
+The homology matrix has 3 columns:
+
+1. **dimension:** if 0, represents a 0-cycle; if 1, represents a 1-cycle; and so on.
+1. **birth:** radius of the cubical complex at which this feature begins
+1. **death:** radius of the cubical complex at which this feature ends
+
+Persistence of a feature is generally defined as the length of the interval of the radius within which the feature exists.
+This is calculated as the numerical difference between the second (birth) and third (death) columns of the homology data frame
+Confirmed in the output above, the homology data frame is ordered by dimension, with the birth column used to sort features of the same dimension.
+As expected for `sample_image`, the homology data frame contains a single 1-cycle.
+The [ggtda](https://CRAN.R-project.org/package=ggtda) and [TDAstats](https://CRAN.R-project.org/package=TDAstats) R packages can be used to visualize `image_phom` for further insight.

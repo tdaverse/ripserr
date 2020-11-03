@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ripserr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cubical.html">cubical</a>
+      <a href="../articles/cubical.html">Calculating Persistent Homology with a Cubical Complex</a>
     </li>
     <li>
       <a href="../articles/vietoris-rips.html">Calculating Persistent Homology with a Vietoris-Rips Complex</a>
@@ -131,7 +131,7 @@
 
     <div id="ripserr-0-1-1" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.1">
-<a href="#ripserr-0-1-1" class="anchor"></a>ripserr 0.1.1<small> Unreleased </small>
+<a href="#ripserr-0-1-1" class="anchor"></a>ripserr 0.1.1<small> 2020-10-20 </small>
 </h1>
 <div id="logistics" class="section level2">
 <h2 class="hasAnchor">
@@ -139,6 +139,7 @@
 <ul>
 <li>Added Code of Conduct (CODE_OF_CONDUCT.md) from Contributor Covenant</li>
 <li>Added Contribution Guide (CONTRIBUTING.md) from ggalluvial</li>
+<li>Removed empty vignette (<code>cubical</code>), will add in next minor update (likely 0.2.x)</li>
 </ul>
 </div>
 <div id="bugs" class="section level2">
@@ -148,6 +149,7 @@
 <li>Fixed memory leak in Cubical Ripser C++ code</li>
 <li>Fixed citation issue in vignette (<code>vietoris-rips</code>)</li>
 <li>Removed TDAstats from Suggests to avoid circular dependency in the future</li>
+<li>Fixed issue in old R versions where 2-d matrices are not automatically also of type “array” (cubical() checks)</li>
 </ul>
 </div>
 </div>
