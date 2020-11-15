@@ -273,7 +273,7 @@ print.PHom <- function(x, ...) {
 #' tail(df_phom)
 head.PHom <- function(x, ...) {
   x <- as.data.frame(x)
-  head(x, ...)
+  utils::head(x, ...)
 }
 
 #' Last Part of PHom Object
@@ -296,5 +296,5 @@ head.PHom <- function(x, ...) {
 #' tail(df_phom)
 tail.PHom <- function(x, ...) {
   x <- as.data.frame(x)
-  tail(x, ...)
+  utils::tail(x, ...)
 }
