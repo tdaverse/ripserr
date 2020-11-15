@@ -11,7 +11,7 @@ new_PHom <- function(x = data.frame(dimension = integer(0),
                      dim_col = 1,
                      b_col = 2,
                      d_col = 3) {
-  # ensure valid parameters
+  # ensure valid parameters (do this in PHom helper instead?)
   
   # construct df for PHom object
   ans <- data.frame(dimension = as.integer(x[, dim_col]),
@@ -44,8 +44,10 @@ PHom <- function(x, dim_col = 1, birth_col = 2, death_col = 3) {
 }
 
 #####CONVERTER/CHECKER#####
-as.PHom <- function(x) {
+as.PHom <- function(x, dim_col = 1, birth_col = 2, death_col = 3) {
+  x <- as.data.frame(x)
   
+  return(PHom(x))
 }
 
 is.PHom <- function(x) {
