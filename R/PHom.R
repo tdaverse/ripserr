@@ -225,7 +225,7 @@ is.PHom <- function(x) {
 #' 
 #' # print persistence data
 #' print(circle_phom)
-print.PHom <- function(x) {
+print.PHom <- function(x, ...) {
   # make sure `x` is a valid PHom object - too expensive for each print??
   stopifnot(is.PHom(x))
   
