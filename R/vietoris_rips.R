@@ -83,7 +83,8 @@ vietoris_rips.matrix <- function(dataset,
   # calculate persistent homology
   ans <- dataset %>%
     ripser_cpp(max_dim, threshold, p, 0) %>%
-    ripser_vec_to_df()
+    ripser_vec_to_df() %>%
+    new_PHom()
   
   # return
   return(ans)
@@ -105,7 +106,8 @@ vietoris_rips.dist <- function(dataset,
   # calculate persistent homology
   ans <- dataset %>%
     ripser_cpp_dist(max_dim, threshold, p) %>%
-    ripser_vec_to_df()
+    ripser_vec_to_df() %>%
+    new_PHom()
   
   # return
   return(ans)

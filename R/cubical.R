@@ -104,8 +104,8 @@ cubical.array <- function(dataset, threshold = 9999, method = "lj", ...) {
     ans <- ans[-remove_row, ]
   }
   
-  # add PHom class to data frame
-  class(ans) <- c("PHom", "data.frame")
+  # convert data frame to a PHom object
+  ans <- new_PHom(ans)
   
   # return
   return(ans)
