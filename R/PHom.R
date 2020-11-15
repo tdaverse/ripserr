@@ -99,6 +99,34 @@ valid_colval <- function(df, val, val_name) {
 }
 
 # export helper
+#' Persistence Data Container
+#' 
+#' PHom() creates instances of `PHom` objects, which are convenient containers
+#' for persistence data. Generally, data frame (or similar) objects are used
+#' to create `PHom` instances with users specifying which columns contain
+#' dimension, birth, and death details for each feature.
+#' 
+#' @param x object used to create `PHom` instance
+#' @param dim_col either `integer` representing column index for feature
+#'   dimension data or `character` representing column name
+#' @param birth_col either `integer` representing column index for feature
+#'   birth data or `character` representing column name
+#' @param death_col either `integer` representing column index for feature
+#'   death data or `character` representing column name
+#' @return `PHom` instance
+#' @export
+#' @examples 
+#' # construct data frame with valid persistence data
+#' df <- data.frame(dimension = c(0, 0, 1, 1, 1, 2),
+#'                  birth = rnorm(6),
+#'                  death = rnorm(6, mean = 15))
+#' 
+#' # create `PHom` instance and print
+#' df_phom <- PHom(df)
+#' df_phom
+#' 
+#' # print feature details to confirm accuracy
+#' print.data.frame(df_phom)
 PHom <- function(x, dim_col = 1, birth_col = 2, death_col = 3) {
   ## basic parameter checks (column nums/names are valid, etc.)
   if (!is.data.frame(x)) {
@@ -124,12 +152,54 @@ PHom <- function(x, dim_col = 1, birth_col = 2, death_col = 3) {
 }
 
 #####CONVERTER/CHECKER#####
+#' Convert to PHom Object
+#' 
+#' Converts valid objects to `PHom` instances.
+#' 
+#' @param x object being converted to `PHom` instance
+#' @inheritParams PHom
+#' @return `PHom` instance
+#' @export
+#' @examples 
+#' # construct data frame with valid persistence data
+#' df <- data.frame(dimension = c(0, 0, 1, 1, 1, 2),
+#'                  birth = rnorm(6),
+#'                  death = rnorm(6, mean = 15))
+#' 
+#' # convert to `PHom` instance and print
+#' df_phom <- as.PHom(df)
+#' df_phom
+#' 
+#' # print feature details to confirm accuracy
+#' print.data.frame(df_phom)
 as.PHom <- function(x, dim_col = 1, birth_col = 2, death_col = 3) {
   x <- as.data.frame(x)
   
   return(PHom(x))
 }
 
+#' Check PHom Object
+#' 
+#' Tests if objects are valid `PHom` instances.
+#' 
+#' @param x object whose `PHom`-ness is being tested
+#' @return `TRUE` if `x` is a valid `PHom` object; `FALSE` otherwise
+#' @export
+#' @examples
+#' # create sample persistence data
+#' df <- data.frame(dimension = c(0, 0, 1, 1, 1, 2),
+#'                  birth = rnorm(6),
+#'                  death = rnorm(6, mean = 15))
+#' df <- as.PHom(df)
+#' 
+#' # confirm that persistence data is valid
+#' is.PHom(df)
+#' 
+#' # mess up df object (feature birth cannot be after death)
+#' df$birth[1] <- rnorm(1, mean = 50)
+#' 
+#' # confirm that persistence data is NOT valid
+#' is.PHom(df)
 is.PHom <- function(x) {
   # use validate to implement checks
   return(
@@ -139,6 +209,22 @@ is.PHom <- function(x) {
 
 #####S3 GENERICS#####
 # base::print S3 generic
+#' Printing Persistence Data
+#' 
+#' Print a PHom object.
+#' 
+#' @param x object of class `PHom`
+#' @export
+#' @examples
+#' # create circle dataset
+#' angles <- runif(25, 0, 2 * pi)
+#' circle <- cbind(cos(angles), sin(angles))
+#' 
+#' # calculate persistent homology
+#' circle_phom <- vietoris_rips(circle)
+#' 
+#' # print persistence data
+#' print(circle_phom)
 print.PHom <- function(x) {
   # make sure `x` is a valid PHom object - too expensive for each print??
   stopifnot(is.PHom(x))
