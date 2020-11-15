@@ -8,9 +8,9 @@
 new_PHom <- function(x = data.frame(dimension = integer(0),
                                     birth = double(0),
                                     death = double(0)),
-                     dim_col = "dimension",
-                     b_col = "birth",
-                     d_col = "death") {
+                     dim_col = 1,
+                     b_col = 2,
+                     d_col = 3) {
   # ensure valid parameters
   
   # construct df for PHom object
@@ -30,7 +30,18 @@ validate_PHom <- function(x) {
   x
 }
 
-#####HELPER#####
+# export helper
+PHom <- function(x, dim_col = 1, birth_col = 2, death_col = 3) {
+  # any parameter checks needed?
+  
+  # return PHom object
+  validate_PHom(
+    new_PHom(x = x,
+             dim_col = dim_col,
+             b_col = birth_col,
+             d_col = death_col)
+  )
+}
 
 #####CONVERTER/CHECKER#####
 
