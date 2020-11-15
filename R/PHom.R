@@ -23,7 +23,7 @@ new_PHom <- function(x = data.frame(dimension = integer(0),
             class = c("PHom", "data.frame"))
 }
 
-validate_PHom <- function(x) {
+validate_PHom <- function(x, error = TRUE) {
   # complete checks
   
   # return original object if all okay
@@ -44,5 +44,15 @@ PHom <- function(x, dim_col = 1, birth_col = 2, death_col = 3) {
 }
 
 #####CONVERTER/CHECKER#####
+as.PHom <- function(x) {
+  
+}
+
+is.PHom <- function(x) {
+  # use validate to implement checks
+  return(
+    validate_PHom(x = x, error = FALSE)
+  )
+}
 
 #####S3 GENERICS#####
