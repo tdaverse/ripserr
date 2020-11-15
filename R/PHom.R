@@ -214,6 +214,7 @@ is.PHom <- function(x) {
 #' Print a PHom object.
 #' 
 #' @param x object of class `PHom`
+#' @param ... other parameters; ignored
 #' @export
 #' @examples
 #' # create circle dataset
@@ -249,4 +250,51 @@ print.PHom <- function(x, ...) {
                  "; max = ", signif(max(x$death), digits = 5), ".")
   
   cat(paste(ans1, ans2, ans3, sep = "\n\n"))
+}
+
+#' First Part of PHom Object
+#' 
+#' Returns the first part of a `PHom` instance.
+#' 
+#' @param x object of class `PHom`
+#' @param ... other parameters
+#' @export
+#' @examples
+#' # create sample persistence data
+#' df <- data.frame(dimension = c(0, 0, 1, 1, 1, 2),
+#'                  birth = rnorm(6),
+#'                  death = rnorm(6, mean = 15))
+#' df_phom <- as.PHom(df_phom)
+#' 
+#' # look at first 3 features
+#' head(df_phom)
+#' 
+#' # look at last 3 features
+#' tail(df_phom)
+head.PHom <- function(x, ...) {
+  x <- as.data.frame(x)
+  head(x, ...)
+}
+
+#' Last Part of PHom Object
+#' 
+#' Returns the last part of a `PHom` instance.
+#' 
+#' @inheritParams head.PHom
+#' @export
+#' @examples
+#' # create sample persistence data
+#' df <- data.frame(dimension = c(0, 0, 1, 1, 1, 2),
+#'                  birth = rnorm(6),
+#'                  death = rnorm(6, mean = 15))
+#' df_phom <- as.PHom(df_phom)
+#' 
+#' # look at first 3 features
+#' head(df_phom)
+#' 
+#' # look at last 3 features
+#' tail(df_phom)
+tail.PHom <- function(x, ...) {
+  x <- as.data.frame(x)
+  tail(x, ...)
 }

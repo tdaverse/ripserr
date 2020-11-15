@@ -4,10 +4,12 @@
 \alias{print.PHom}
 \title{Printing Persistence Data}
 \usage{
-\method{print}{PHom}(x)
+\method{print}{PHom}(x, ...)
 }
 \arguments{
 \item{x}{object of class \code{PHom}}
+
+\item{...}{other parameters; ignored}
 }
 \description{
 Print a PHom object.

@@ -2,7 +2,9 @@
 
 S3method(cubical,array)
 S3method(cubical,matrix)
+S3method(head,PHom)
 S3method(print,PHom)
+S3method(tail,PHom)
 S3method(vietoris_rips,data.frame)
 S3method(vietoris_rips,default)
 S3method(vietoris_rips,dist)

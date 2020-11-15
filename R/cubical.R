@@ -18,9 +18,7 @@
 #' @param ... other relevant parameters
 #' @rdname cubical
 #' @export cubical
-#' @return data frame (also of class `PHom`) with 3 columns and `n` rows, where
-#'   column 1 contains feature dimension, column 2 contains feature birth, and
-#'   column 3 contains feature death; each row contains 1 of `n` features
+#' @return `PHom` object
 #' @examples 
 #' 
 #' # 2-dim example

@@ -23,9 +23,7 @@ cubical(dataset, ...)
 see Kaji et al. (2020) \url{arXiv:2005.12692} for details}
 }
 \value{
-data frame (also of class \code{PHom}) with 3 columns and \code{n} rows, where
-column 1 contains feature dimension, column 2 contains feature birth, and
-column 3 contains feature death; each row contains 1 of \code{n} features
+\code{PHom} object
 }
 \description{
 This function is an R wrapper for the CubicalRipser C++ library to calculate
