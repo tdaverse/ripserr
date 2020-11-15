@@ -1,0 +1,1 @@
+# S3 class for basic persistence data
