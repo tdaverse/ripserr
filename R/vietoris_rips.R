@@ -27,9 +27,7 @@
 #' @param ... other relevant parameters
 #' @rdname vietoris_rips
 #' @export vietoris_rips
-#' @return data frame (also of class `PHom`) with 3 columns and `n` rows, where
-#'   column 1 contains feature dimension, column 2 contains feature birth, and
-#'   column 3 contains feature death; each row contains 1 of `n` features
+#' @return `PHom` object
 #' @examples
 #'
 #' # create a 2-d point cloud of a circle (100 points)
@@ -83,7 +81,8 @@ vietoris_rips.matrix <- function(dataset,
   # calculate persistent homology
   ans <- dataset %>%
     ripser_cpp(max_dim, threshold, p, 0) %>%
-    ripser_vec_to_df()
+    ripser_vec_to_df() %>%
+    new_PHom()
   
   # return
   return(ans)
@@ -105,7 +104,8 @@ vietoris_rips.dist <- function(dataset,
   # calculate persistent homology
   ans <- dataset %>%
     ripser_cpp_dist(max_dim, threshold, p) %>%
-    ripser_vec_to_df()
+    ripser_vec_to_df() %>%
+    new_PHom()
   
   # return
   return(ans)

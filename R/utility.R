@@ -231,9 +231,6 @@ ripser_vec_to_df <- function(ans_vec) {
   ans_df <- as.data.frame(ans_mat)
   ans_df$dimension <- as.integer(ans_df$dimension)
   
-  # add "PHom" class
-  class(ans_df) <- c("PHom", "data.frame")
-  
   # finally return properly formatted object
   return(ans_df)
 }
