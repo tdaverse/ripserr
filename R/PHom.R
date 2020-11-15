@@ -26,8 +26,8 @@ new_PHom <- function(x = data.frame(dimension = integer(0),
 validate_PHom <- function(x, error = TRUE) {
   # complete checks
   
-  # return original object if all okay
-  x
+  # return original object if all okay (or TRUE)
+  return(ifelse(error, x, TRUE))
 }
 
 # export helper
@@ -58,3 +58,29 @@ is.PHom <- function(x) {
 }
 
 #####S3 GENERICS#####
+# base::print S3 generic
+print.PHom <- function(x) {
+  # make sure `x` is a valid PHom object - too expensive for each print??
+  stopifnot(is.PHom(x))
+  
+  dim_counts <- table(x$dimension)
+  
+  ans1 <- paste("PHom object containing persistence data for",
+               nrow(x), "features.")
+  
+  ans2 <- "Contains:"
+  for (i in sort(unique(x$dimension))) {
+    curr <- paste0("* ", dim_counts[as.character(i)], " ", i,
+                   "-dim feature")
+    if (dim_counts[as.character(i)] != 1) {
+      curr <- paste0(curr, "s")
+    }
+    
+    ans2 <- paste(ans2, curr, sep = "\n")
+  }
+  
+  ans3 <- paste0("Radius/diameter: min = ", signif(min(x$birth), digits = 5),
+                 "; max = ", signif(max(x$death), digits = 5), ".")
+  
+  cat(paste(ans1, ans2, ans3, sep = "\n\n"))
+}
