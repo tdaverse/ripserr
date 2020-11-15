@@ -19,7 +19,7 @@ Returns the last part of a \code{PHom} instance.
 df <- data.frame(dimension = c(0, 0, 1, 1, 1, 2),
                  birth = rnorm(6),
                  death = rnorm(6, mean = 15))
-df_phom <- as.PHom(df_phom)
+df_phom <- as.PHom(df)
 
 # look at first 3 features
 head(df_phom)
