@@ -11,7 +11,7 @@ new_PHom <- function(x = data.frame(dimension = integer(0),
                      dim_col = 1,
                      b_col = 2,
                      d_col = 3) {
-  # ensure valid parameters (do this in PHom helper instead?)
+  # parameter validity checked in PHom helper
   
   # construct df for PHom object
   ans <- data.frame(dimension = as.integer(x[, dim_col]),
@@ -24,17 +24,97 @@ new_PHom <- function(x = data.frame(dimension = integer(0),
 }
 
 validate_PHom <- function(x, error = TRUE) {
-  # complete checks
+  # check structure of x
+  if (!("PHom" %in% class(x) & "data.frame" %in% class(x))) {
+    if (error) {
+      stop(paste("PHom objects must have classes `PHom` and `data.frame`;",
+                 "paseed value has class =", class(x)))
+    } else {
+      return(FALSE)
+    }
+  }
+  if (ncol(x) != 3) {
+    if (error) {
+      stop(paste("PHom objects must be data frames with exactly 3 columns;",
+                 "passed object has", ncol(x), "columns."))
+    } else {
+      return(FALSE)
+    }
+  }
+  if (!("integer" %in% class(x$dimension))) {
+    if (error) {
+      stop(paste("`dimension` column in PHom objects must have class integer;",
+                 "`dimension` column in passed object has class =",
+                 class(x$dimension)))
+    } else {
+      return(FALSE)
+    }
+  }
+  if (!("numeric" %in% class(x$birth) & "numeric" %in% class(x$death))) {
+    if (error) {
+      stop(paste("`birth` and `death` columns in PHom objects must have",
+                 "class integer; respective columns in passed object have",
+                 "classes =", class(x$birth), "and", class(x$death)))
+    } else {
+      return(FALSE)
+    }
+  }
+  
+  # make sure all deaths are after corresponding births
+  if (!all(x$birth < x$death)) {
+    if (error) {
+      stop(paste("In PHom objects, all births must be before corresponding",
+                 "deaths."))
+    } else {
+      return(FALSE)
+    }
+  }
   
   # return original object if all okay (or TRUE)
-  return(ifelse(error, x, TRUE))
+  if (error) {
+    x
+  } else {
+    return(TRUE)
+  }
+}
+
+# validation helper: check if valid column in df is provided
+valid_colval <- function(df, val, val_name) {
+  if (is.numeric(val)) {
+    val <- as.integer(val)
+    
+    if (!(val %in% seq_len(ncol(df)))) {
+      stop(paste(val_name, "parameter must be a valid column index for the",
+                 "provided data frame; passed value =", val))
+    }
+  } else if (is.character(val)) {
+    if (!(val %in% colnames(df))) {
+      stop(paste(val_name, "parameter must be a valid column name for the",
+                 "provided data frame; passed value =", val))
+    }
+  } else {
+    stop(paste(val_name, "parameter must either be a valid column name or",
+               "index; passed value =", val))
+  }
 }
 
 # export helper
 PHom <- function(x, dim_col = 1, birth_col = 2, death_col = 3) {
-  # any parameter checks needed?
+  ## basic parameter checks (column nums/names are valid, etc.)
+  if (!is.data.frame(x)) {
+    x <- as.data.frame(x)
+  }
   
-  # return PHom object
+  # check dim_col
+  valid_colval(df = x, val = dim_col, val_name = "dim_col")
+  
+  # check birth_col
+  valid_colval(df = x, val = birth_col, val_name = "birth_col")
+  
+  # check death_col
+  valid_colval(df = x, val = death_col, val_name = "death_col")
+  
+  ## return PHom object
   validate_PHom(
     new_PHom(x = x,
              dim_col = dim_col,
