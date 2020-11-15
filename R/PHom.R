@@ -23,6 +23,13 @@ new_PHom <- function(x = data.frame(dimension = integer(0),
             class = c("PHom", "data.frame"))
 }
 
+validate_PHom <- function(x) {
+  # complete checks
+  
+  # return original object if all okay
+  x
+}
+
 #####HELPER#####
 
 #####CONVERTER/CHECKER#####
