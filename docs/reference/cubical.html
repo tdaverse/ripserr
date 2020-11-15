@@ -143,13 +143,13 @@ different classes are evaluated by <code>cubical</code>, read the Details sectio
 below.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cubical</span>(<span class='kw'>dataset</span>, <span class='kw'>...</span>)
+    <pre class="usage"><span class='fu'>cubical</span><span class='op'>(</span><span class='va'>dataset</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for array</span>
-<span class='fu'>cubical</span>(<span class='kw'>dataset</span>, threshold = <span class='fl'>9999</span>, method = <span class='st'>"lj"</span>, <span class='kw'>...</span>)
+<span class='fu'>cubical</span><span class='op'>(</span><span class='va'>dataset</span>, threshold <span class='op'>=</span> <span class='fl'>9999</span>, method <span class='op'>=</span> <span class='st'>"lj"</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for matrix</span>
-<span class='fu'>cubical</span>(<span class='kw'>dataset</span>, <span class='kw'>...</span>)</pre>
+<span class='fu'>cubical</span><span class='op'>(</span><span class='va'>dataset</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -175,9 +175,7 @@ see Kaji et al. (2020) <a href='arXiv:2005.12692'>arXiv:2005.12692</a> for detai
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data frame (also of class <code>PHom</code>) with 3 columns and <code>n</code> rows, where
-column 1 contains feature dimension, column 2 contains feature birth, and
-column 3 contains feature death; each row contains 1 of <code>n</code> features</p>
+    <p><code>PHom</code> object</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><code>cubical.array</code> assumes <code>dataset</code> is a lattice, with each element containing
@@ -191,18 +189,18 @@ and persistent homology is then calculated using <code>cubical.array</code>.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'># 2-dim example</span>
-<span class='kw'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span> <span class='op'>^</span> <span class='fl'>2</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='kw'>dataset</span>) <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>10</span>, <span class='fl'>2</span>)
-<span class='kw'>cubical_hom2</span> <span class='op'>&lt;-</span> <span class='fu'>cubical</span>(<span class='kw'>dataset</span>)
+<span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10</span> <span class='op'>^</span> <span class='fl'>2</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>2</span><span class='op'>)</span>
+<span class='va'>cubical_hom2</span> <span class='op'>&lt;-</span> <span class='fu'>cubical</span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>)</span>
 
 <span class='co'># 3-dim example</span>
-<span class='kw'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>8</span> <span class='op'>^</span> <span class='fl'>3</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='kw'>dataset</span>) <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>8</span>, <span class='fl'>3</span>)
-<span class='kw'>cubical_hom3</span> <span class='op'>&lt;-</span> <span class='fu'>cubical</span>(<span class='kw'>dataset</span>)
+<span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>8</span> <span class='op'>^</span> <span class='fl'>3</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>8</span>, <span class='fl'>3</span><span class='op'>)</span>
+<span class='va'>cubical_hom3</span> <span class='op'>&lt;-</span> <span class='fu'>cubical</span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>)</span>
 
 <span class='co'># 4-dim example</span>
-<span class='kw'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>5</span> <span class='op'>^</span> <span class='fl'>4</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='kw'>dataset</span>) <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>5</span>, <span class='fl'>4</span>)
+<span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>5</span> <span class='op'>^</span> <span class='fl'>4</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>4</span><span class='op'>)</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -219,7 +217,7 @@ and persistent homology is then calculated using <code>cubical.array</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • ripserr</title>
+<title>Check PHom Object — is.PHom • ripserr</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Check PHom Object — is.PHom" />
+<meta property="og:description" content="Tests if objects are valid PHom instances." />
 
 
 
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -123,90 +124,49 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Check PHom Object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/rrrlw/ripserr/blob/master/R/PHom.R'><code>R/PHom.R</code></a></small>
+    <div class="hidden name"><code>is.PHom.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Tests if objects are valid <code>PHom</code> instances.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>is.PHom</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="PHom.html">PHom()</a></code> </p>
-        </td>
-        <td><p>Persistence Data Container</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="as.PHom.html">as.PHom()</a></code> </p>
-        </td>
-        <td><p>Convert to PHom Object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cubical.html">cubical()</a></code> </p>
-        </td>
-        <td><p>Calculating Persistent Homology via a Cubical Complex</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="head.PHom.html">head(<i>&lt;PHom&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>First Part of PHom Object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="is.PHom.html">is.PHom()</a></code> </p>
-        </td>
-        <td><p>Check PHom Object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="print.PHom.html">print(<i>&lt;PHom&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Printing Persistence Data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="ripserr.html">ripserr</a></code> </p>
-        </td>
-        <td><p>Calculate Persistent Homology with Ripser-Based Engines</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tail.PHom.html">tail(<i>&lt;PHom&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Last Part of PHom Object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vietoris_rips.html">vietoris_rips()</a></code> </p>
-        </td>
-        <td><p>Calculate Persistent Homology via a Vietoris-Rips Complex</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>object whose <code>PHom</code>-ness is being tested</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p><code>TRUE</code> if <code>x</code> is a valid <code>PHom</code> object; <code>FALSE</code> otherwise</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># create sample persistence data</span>
+<span class='va'>df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>dimension <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>,
+                 birth <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>6</span><span class='op'>)</span>,
+                 death <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>6</span>, mean <span class='op'>=</span> <span class='fl'>15</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='as.PHom.html'>as.PHom</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span>
+
+<span class='co'># confirm that persistence data is valid</span>
+<span class='fu'>is.PHom</span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+<span class='co'># mess up df object (feature birth cannot be after death)</span>
+<span class='va'>df</span><span class='op'>$</span><span class='va'>birth</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>1</span>, mean <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span>
+
+<span class='co'># confirm that persistence data is NOT valid</span>
+<span class='fu'>is.PHom</span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] FALSE</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>

@@ -82,13 +82,14 @@
 
       
 
-      </header><div class="row">
+      </header><script src="cubical_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="cubical_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="cubical_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Calculating Persistent Homology with a Cubical Complex</h1>
                         <h4 class="author">Raoul R. Wadhwa and Jacob G. Scott</h4>
             
-            <h4 class="date">2020-11-02</h4>
+            <h4 class="date">2020-11-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/rrrlw/ripserr/blob/master/vignettes/cubical.Rmd"><code>vignettes/cubical.Rmd</code></a></small>
       <div class="hidden name"><code>cubical.Rmd</code></div>
@@ -98,22 +99,21 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://rrrlw.github.io/ripserr">ripserr</a></span>)
-</pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rrrlw.github.io/ripserr/">ripserr</a></span><span class="op">)</span></pre></div>
 <div id="sample-dataset" class="section level2">
 <h2 class="hasAnchor">
 <a href="#sample-dataset" class="anchor"></a>Sample dataset</h2>
 <p>For this vignette, we will generate a lattice representing a 2-dimensional image; this will be stored in a variable named <code>sample_image</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
 <span class="co"># create dataset</span>
-<span class="kw">sample_image</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fl">0</span>, nrow = <span class="fl">10</span>, ncol = <span class="fl">10</span>)
-<span class="kw">i</span> <span class="op">&lt;-</span> <span class="fl">2</span><span class="op">:</span><span class="fl">9</span>
-<span class="kw">j</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>, <span class="fl">9</span>)
-<span class="kw">sample_image</span>[<span class="kw">i</span>, <span class="kw">j</span>] <span class="op">&lt;-</span> <span class="fl">1</span>
-<span class="kw">sample_image</span>[<span class="kw">j</span>, <span class="kw">i</span>] <span class="op">&lt;-</span> <span class="fl">1</span>
+<span class="va">sample_image</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">0</span>, nrow <span class="op">=</span> <span class="fl">10</span>, ncol <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
+<span class="va">i</span> <span class="op">&lt;-</span> <span class="fl">2</span><span class="op">:</span><span class="fl">9</span>
+<span class="va">j</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">9</span><span class="op">)</span>
+<span class="va">sample_image</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span>
+<span class="va">sample_image</span><span class="op">[</span><span class="va">j</span>, <span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span>
 
 <span class="co"># view as matrix</span>
-<span class="kw">sample_image</span>
+<span class="va">sample_image</span>
 <span class="co">#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
 <span class="co">#&gt;  [1,]    0    0    0    0    0    0    0    0    0     0</span>
 <span class="co">#&gt;  [2,]    0    1    1    1    1    1    1    1    1     0</span>
@@ -127,8 +127,7 @@
 <span class="co">#&gt; [10,]    0    0    0    0    0    0    0    0    0     0</span>
 
 <span class="co"># view as image</span>
-<span class="kw">graphics</span>::<span class="fu"><a href="https://rdrr.io/r/graphics/image.html">image</a></span>(<span class="kw">sample_image</span>, useRaster = <span class="fl">TRUE</span>, axes = <span class="fl">FALSE</span>)
-</pre></div>
+<span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html">image</a></span><span class="op">(</span><span class="va">sample_image</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span>, axes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></pre></div>
 <p><img src="cubical_files/figure-html/load-data-1.png" width="576"></p>
 <p>Above, each of the 100 matrix values is analogous to a single pixel in an image.</p>
 </div>
@@ -138,14 +137,17 @@
 <p>Based on the image, we expect a 1-cycle to be present in the persistent homology of <code>sample_image</code>. The <a href="https://arxiv.org/abs/2005.12692">CubicalRipser</a> C++ library is wrapped by R using <a href="https://CRAN.R-project.org/package=Rcpp">Rcpp</a>, and performs calculations via a cubical complex created with <code>sample_image</code>. These calculations result in a data frame that characterizes the persistent homology of <code>sample_image</code> and can be performed with a single line of R code using ripserr.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
 <span class="co"># calculate persistent homology</span>
-<span class="kw">image_phom</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cubical.html">cubical</a></span>(<span class="kw">sample_image</span>)
+<span class="va">image_phom</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cubical.html">cubical</a></span><span class="op">(</span><span class="va">sample_image</span><span class="op">)</span>
 
 <span class="co"># print features</span>
-<span class="kw">image_phom</span>
-<span class="co">#&gt;   dimension birth death</span>
-<span class="co">#&gt; 1         0     0     1</span>
-<span class="co">#&gt; 3         1     0     1</span>
-</pre></div>
+<span class="va">image_phom</span>
+<span class="co">#&gt; PHom object containing persistence data for 2 features.</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Contains:</span>
+<span class="co">#&gt; * 1 0-dim feature</span>
+<span class="co">#&gt; * 1 1-dim feature</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Radius/diameter: min = 0; max = 1.</span></pre></div>
 <p>Each row in <code>image_phom</code> represents a single feature. The homology matrix has 3 columns:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -174,7 +176,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • ripserr</title>
+<title>Last Part of PHom Object — tail.PHom • ripserr</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Last Part of PHom Object — tail.PHom" />
+<meta property="og:description" content="Returns the last part of a PHom instance." />
 
 
 
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -123,90 +124,60 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Last Part of PHom Object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/rrrlw/ripserr/blob/master/R/PHom.R'><code>R/PHom.R</code></a></small>
+    <div class="hidden name"><code>tail.PHom.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Returns the last part of a <code>PHom</code> instance.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='co'># S3 method for PHom</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>tail</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="PHom.html">PHom()</a></code> </p>
-        </td>
-        <td><p>Persistence Data Container</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="as.PHom.html">as.PHom()</a></code> </p>
-        </td>
-        <td><p>Convert to PHom Object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cubical.html">cubical()</a></code> </p>
-        </td>
-        <td><p>Calculating Persistent Homology via a Cubical Complex</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="head.PHom.html">head(<i>&lt;PHom&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>First Part of PHom Object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="is.PHom.html">is.PHom()</a></code> </p>
-        </td>
-        <td><p>Check PHom Object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="print.PHom.html">print(<i>&lt;PHom&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Printing Persistence Data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="ripserr.html">ripserr</a></code> </p>
-        </td>
-        <td><p>Calculate Persistent Homology with Ripser-Based Engines</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tail.PHom.html">tail(<i>&lt;PHom&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Last Part of PHom Object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="vietoris_rips.html">vietoris_rips()</a></code> </p>
-        </td>
-        <td><p>Calculate Persistent Homology via a Vietoris-Rips Complex</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>object of class <code>PHom</code></p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>other parameters</p></td>
+    </tr>
     </table>
-  </div>
 
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># create sample persistence data</span>
+<span class='va'>df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>dimension <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>,
+                 birth <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>6</span><span class='op'>)</span>,
+                 death <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>6</span>, mean <span class='op'>=</span> <span class='fl'>15</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>df_phom</span> <span class='op'>&lt;-</span> <span class='fu'><a href='as.PHom.html'>as.PHom</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span>
+
+<span class='co'># look at first 3 features</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>df_phom</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   dimension       birth    death
+#&gt; 1         0 -1.26047622 14.17945
+#&gt; 2         0 -0.11465603 15.52880
+#&gt; 3         1  1.39502319 14.77455
+#&gt; 4         1 -1.47615111 15.15845
+#&gt; 5         1 -0.08441358 13.24570
+#&gt; 6         2  0.54650824 14.61254</div><div class='input'>
+<span class='co'># look at last 3 features</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>tail</a></span><span class='op'>(</span><span class='va'>df_phom</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   dimension       birth    death
+#&gt; 1         0 -1.26047622 14.17945
+#&gt; 2         0 -0.11465603 15.52880
+#&gt; 3         1  1.39502319 14.77455
+#&gt; 4         1 -1.47615111 15.15845
+#&gt; 5         1 -0.08441358 13.24570
+#&gt; 6         2  0.54650824 14.61254</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
