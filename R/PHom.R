@@ -259,6 +259,7 @@ print.PHom <- function(x, ...) {
 #' @param x object of class `PHom`
 #' @param ... other parameters
 #' @export
+#' @importFrom utils head
 #' @examples
 #' # create sample persistence data
 #' df <- data.frame(dimension = c(0, 0, 1, 1, 1, 2),
@@ -273,7 +274,7 @@ print.PHom <- function(x, ...) {
 #' tail(df_phom)
 head.PHom <- function(x, ...) {
   x <- as.data.frame(x)
-  utils::head(x, ...)
+  head(x, ...)
 }
 
 #' Last Part of PHom Object
@@ -282,6 +283,7 @@ head.PHom <- function(x, ...) {
 #' 
 #' @inheritParams head.PHom
 #' @export
+#' @importFrom utils tail
 #' @examples
 #' # create sample persistence data
 #' df <- data.frame(dimension = c(0, 0, 1, 1, 1, 2),
@@ -296,5 +298,5 @@ head.PHom <- function(x, ...) {
 #' tail(df_phom)
 tail.PHom <- function(x, ...) {
   x <- as.data.frame(x)
-  utils::tail(x, ...)
+  tail(x, ...)
 }
