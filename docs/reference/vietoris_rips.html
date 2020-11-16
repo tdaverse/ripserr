@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculate Persistent Homology of a Point Cloud — vietoris_rips • ripserr</title>
+<title>Calculate Persistent Homology via a Vietoris-Rips Complex — vietoris_rips • ripserr</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,12 @@
 
 
 
-<meta property="og:title" content="Calculate Persistent Homology of a Point Cloud — vietoris_rips" />
-<meta property="og:description" content="Calculates the persistent homology of a point cloud, as represented by
-a Vietoris-Rips complex. This function is an R wrapper for Ulrich Bauer's
-Ripser C++ library for calculating persistent homology. For more
-information on the C++ library, see https://github.com/Ripser/ripser." />
+<meta property="og:title" content="Calculate Persistent Homology via a Vietoris-Rips Complex — vietoris_rips" />
+<meta property="og:description" content="This function is an R wrapper for the Ripser C++ library to calculate
+persistent homology. For more information on the C++ library, see
+https://github.com/Ripser/ripser. For more information on how objects of
+different classes are evaluated by vietoris_rips, read the Details section
+below." />
 
 
 
@@ -75,7 +76,7 @@ information on the C++ library, see https://github.com/Ripser/ripser." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ripserr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -98,7 +99,7 @@ information on the C++ library, see https://github.com/Ripser/ripser." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cubical.html">cubical</a>
+      <a href="../articles/cubical.html">Calculating Persistent Homology with a Cubical Complex</a>
     </li>
     <li>
       <a href="../articles/vietoris-rips.html">Calculating Persistent Homology with a Vietoris-Rips Complex</a>
@@ -129,83 +130,117 @@ information on the C++ library, see https://github.com/Ripser/ripser." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculate Persistent Homology of a Point Cloud</h1>
-    <small class="dont-index">Source: <a href='https://github.com/rrrlw/ripserr/blob/master/R/calculate.R'><code>R/calculate.R</code></a></small>
+    <h1>Calculate Persistent Homology via a Vietoris-Rips Complex</h1>
+    <small class="dont-index">Source: <a href='https://github.com/rrrlw/ripserr/blob/master/R/vietoris_rips.R'><code>R/vietoris_rips.R</code></a></small>
     <div class="hidden name"><code>vietoris_rips.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calculates the persistent homology of a point cloud, as represented by
-a Vietoris-Rips complex. This function is an R wrapper for Ulrich Bauer's
-Ripser C++ library for calculating persistent homology. For more
-information on the C++ library, see <a href='https://github.com/Ripser/ripser'>https://github.com/Ripser/ripser</a>.</p>
+    <p>This function is an R wrapper for the Ripser C++ library to calculate
+persistent homology. For more information on the C++ library, see
+<a href='https://github.com/Ripser/ripser'>https://github.com/Ripser/ripser</a>. For more information on how objects of
+different classes are evaluated by <code>vietoris_rips</code>, read the Details section
+below.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>vietoris_rips</span>(
-  <span class='kw'>dataset</span>,
-  dim = <span class='fl'>1</span>,
-  threshold = <span class='op'>-</span><span class='fl'>1</span>,
-  p = <span class='fl'>2L</span>,
-  format = <span class='st'>"cloud"</span>,
-  standardize = <span class='fl'>FALSE</span>,
-  return_format = <span class='st'>"df"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>vietoris_rips</span><span class='op'>(</span><span class='va'>dataset</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for data.frame</span>
+<span class='fu'>vietoris_rips</span><span class='op'>(</span><span class='va'>dataset</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for matrix</span>
+<span class='fu'>vietoris_rips</span><span class='op'>(</span><span class='va'>dataset</span>, max_dim <span class='op'>=</span> <span class='fl'>1L</span>, threshold <span class='op'>=</span> <span class='op'>-</span><span class='fl'>1</span>, p <span class='op'>=</span> <span class='fl'>2L</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for dist</span>
+<span class='fu'>vietoris_rips</span><span class='op'>(</span><span class='va'>dataset</span>, max_dim <span class='op'>=</span> <span class='fl'>1L</span>, threshold <span class='op'>=</span> <span class='op'>-</span><span class='fl'>1</span>, p <span class='op'>=</span> <span class='fl'>2L</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for numeric</span>
+<span class='fu'>vietoris_rips</span><span class='op'>(</span>
+  <span class='va'>dataset</span>,
+  data_dim <span class='op'>=</span> <span class='fl'>2L</span>,
+  dim_lag <span class='op'>=</span> <span class='fl'>1L</span>,
+  sample_lag <span class='op'>=</span> <span class='fl'>1L</span>,
+  method <span class='op'>=</span> <span class='st'>"qa"</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
+
+<span class='co'># S3 method for ts</span>
+<span class='fu'>vietoris_rips</span><span class='op'>(</span><span class='va'>dataset</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for default</span>
+<span class='fu'>vietoris_rips</span><span class='op'>(</span><span class='va'>dataset</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>dataset</th>
-      <td><p>numeric matrix containing point cloud or distance matrix</p></td>
+      <td><p>object on which to calculate persistent homology</p></td>
     </tr>
     <tr>
-      <th>dim</th>
-      <td><p>maximum dimension of features to calculate</p></td>
+      <th>...</th>
+      <td><p>other relevant parameters</p></td>
+    </tr>
+    <tr>
+      <th>max_dim</th>
+      <td><p>maximum dimension of persistent homology features to be
+calculated</p></td>
     </tr>
     <tr>
       <th>threshold</th>
-      <td><p>maximum diameter for computation of Vietoris-Rips complexes</p></td>
+      <td><p>maximum simplicial complex diameter to explore</p></td>
     </tr>
     <tr>
       <th>p</th>
-      <td><p>number of the prime field Z/pZ to compute the homology over</p></td>
+      <td><p>prime field in which to calculate persistent homology</p></td>
     </tr>
     <tr>
-      <th>format</th>
-      <td><p>format of <code>mat</code>, either <code>"cloud"</code> for point cloud or <code>"distmat"</code> for distance matrix</p></td>
+      <th>data_dim</th>
+      <td><p>desired end data dimension</p></td>
     </tr>
     <tr>
-      <th>standardize</th>
-      <td><p>boolean determining whether point cloud size should be standardized</p></td>
+      <th>dim_lag</th>
+      <td><p>time series lag factor between dimensions</p></td>
     </tr>
     <tr>
-      <th>return_format</th>
-      <td><p>defaults to <code>"df"</code>, returning a data frame;
-if <code>mat</code>, returns a numeric matrix</p></td>
+      <th>sample_lag</th>
+      <td><p>time series lag factor between samples (rows)</p></td>
+    </tr>
+    <tr>
+      <th>method</th>
+      <td><p>currently only allows <code>"qa"</code> (quasi-attractor method)</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>3-column matrix or data frame, with each row representing a TDA feature</p>
+    <p><code>PHom</code> object</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The <code>mat</code> parameter should be a numeric matrix with each row corresponding
-to a single point, and each column corresponding to a single dimension. Thus,
-if <code>mat</code> has 50 rows and 5 columns, it represents a point cloud with 50 points
-in 5 dimensions. The <code>dim</code> parameter should be a positive integer.
-Alternatively, the <code>mat</code> parameter could be a distance matrix (upper
-triangular half is ignored); note: <code>format</code> should be specified as "distmat".</p>
+    <p><code>vietoris_rips.data.frame</code> assumes <code>dataset</code> is a point cloud, with each row
+representing a point and each column representing a dimension.</p>
+<p><code>vietoris_rips.matrix</code> currently assumes <code>dataset</code> is a point cloud (similar
+to <code>vietoris_rips.data.frame</code>). Currently in the process of adding network
+representation to this method.</p>
+<p><code>vietoris_rips.dist</code> takes a <code>dist</code> object and calculates persistent homology
+based on pairwise distances. The <code>dist</code> object could have been calculated
+from a point cloud, network, or any object containing elements from a finite
+metric space.</p>
+<p><code>vietoris_rips.numeric</code> and <code>vietoris_rips.ts</code> both calculate persistent
+homology of a time series object. The time series object is converted to a
+matrix using the quasi-attractor method detailed in Umeda (2017)
+<a href='doi:10.1527/tjsai.D-G72'>doi:10.1527/tjsai.D-G72</a>. Persistent homology of the resulting matrix is
+then calculated.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'># create a 2-d point cloud of a circle (100 points)</span>
-<span class='kw'>num.pts</span> <span class='op'>&lt;-</span> <span class='fl'>100</span>
-<span class='kw'>rand.angle</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='kw'>num.pts</span>, <span class='fl'>0</span>, <span class='fl'>2</span><span class='op'>*</span><span class='kw'>pi</span>)
-<span class='kw'>pt.cloud</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>cos</a></span>(<span class='kw'>rand.angle</span>), <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='kw'>rand.angle</span>))
+<span class='va'>num.pts</span> <span class='op'>&lt;-</span> <span class='fl'>100</span>
+<span class='va'>rand.angle</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='va'>num.pts</span>, <span class='fl'>0</span>, <span class='fl'>2</span><span class='op'>*</span><span class='va'>pi</span><span class='op'>)</span>
+<span class='va'>pt.cloud</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>cos</a></span><span class='op'>(</span><span class='va'>rand.angle</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span><span class='op'>(</span><span class='va'>rand.angle</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># calculate persistent homology (num.pts by 3 numeric matrix)</span>
-<span class='kw'>pers.hom</span> <span class='op'>&lt;-</span> <span class='fu'>vietoris_rips</span>(<span class='kw'>pt.cloud</span>)
+<span class='va'>pers.hom</span> <span class='op'>&lt;-</span> <span class='fu'>vietoris_rips</span><span class='op'>(</span><span class='va'>pt.cloud</span><span class='op'>)</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -222,7 +257,7 @@ triangular half is ignored); note: <code>format</code> should be specified as "d
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

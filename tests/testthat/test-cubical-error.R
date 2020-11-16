@@ -21,9 +21,6 @@ test_that("errors are detected appropriately by cubical", {
   # invalid method class
   expect_error(cubical(test_data, method = "0"))
   
-  # invalid standardize class
-  expect_error(cubical(test_data, standardize = "TRUE"))
-  
   skip_on_cran()
   
   # too large dataset (2-dim)

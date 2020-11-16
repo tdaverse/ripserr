@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ripserr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cubical.html">cubical</a>
+      <a href="../articles/cubical.html">Calculating Persistent Homology with a Cubical Complex</a>
     </li>
     <li>
       <a href="../articles/vietoris-rips.html">Calculating Persistent Homology with a Vietoris-Rips Complex</a>
@@ -129,9 +129,29 @@
       <small>Source: <a href='https://github.com/rrrlw/ripserr/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="ripserr-0-1-1" class="section level1">
+    <div id="ripserr-020" class="section level1">
+<h1 class="page-header" data-toc-text="0.2.0">
+<a href="#ripserr-020" class="anchor"></a>ripserr 0.2.0<small> Unreleased </small>
+</h1>
+<div id="changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#changes" class="anchor"></a>Changes</h2>
+<ul>
+<li>
+<code>vietoris_rips</code> and <code>cubical</code> are now S3 generics</li>
+<li>
+<code>vietoris_rips</code> accepts objects of class <code>data.frame</code>, <code>matrix</code>, <code>numeric</code>, <code>ts</code>, and <code>dist</code>
+</li>
+<li>
+<code>cubical</code> accepts objects of class <code>array</code> and <code>matrix</code> (for r-oldrel, in which not all <code>matrix</code> objects are also of class <code>array</code>)</li>
+<li>
+<code>vietoris_rips</code> and <code>cubical</code> return objects of class <code>PHom</code> and <code>data.frame</code> (instead of either <code>data.frame</code> or <code>matrix</code> previously)</li>
+</ul>
+</div>
+</div>
+    <div id="ripserr-011" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.1">
-<a href="#ripserr-0-1-1" class="anchor"></a>ripserr 0.1.1<small> Unreleased </small>
+<a href="#ripserr-011" class="anchor"></a>ripserr 0.1.1<small> 2020-10-20 </small>
 </h1>
 <div id="logistics" class="section level2">
 <h2 class="hasAnchor">
@@ -139,6 +159,7 @@
 <ul>
 <li>Added Code of Conduct (CODE_OF_CONDUCT.md) from Contributor Covenant</li>
 <li>Added Contribution Guide (CONTRIBUTING.md) from ggalluvial</li>
+<li>Removed empty vignette (<code>cubical</code>), will add in next minor update (likely 0.2.x)</li>
 </ul>
 </div>
 <div id="bugs" class="section level2">
@@ -148,12 +169,13 @@
 <li>Fixed memory leak in Cubical Ripser C++ code</li>
 <li>Fixed citation issue in vignette (<code>vietoris-rips</code>)</li>
 <li>Removed TDAstats from Suggests to avoid circular dependency in the future</li>
+<li>Fixed issue in old R versions where 2-d matrices are not automatically also of type “array” (cubical() checks)</li>
 </ul>
 </div>
 </div>
-    <div id="ripserr-0-1-0" class="section level1">
+    <div id="ripserr-010" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.0">
-<a href="#ripserr-0-1-0" class="anchor"></a>ripserr 0.1.0<small> 2020-09-14 </small>
+<a href="#ripserr-010" class="anchor"></a>ripserr 0.1.0<small> 2020-09-14 </small>
 </h1>
 <ul>
 <li>Initial release</li>
@@ -178,7 +200,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

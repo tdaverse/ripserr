@@ -59,7 +59,7 @@ tail(vr_phom2)
 # 3-dimensional example
 dataset3 <- rnorm(SIZE * 3)
 dim(dataset3) <- c(SIZE, 3)
-vr_phom3 <- vietoris_rips(dataset3, dim = 2) # default: dim = 1
+vr_phom3 <- vietoris_rips(dataset3, max_dim = 2) # default: max_dim = 1
 head(vr_phom3)
 tail(vr_phom3)
 ```

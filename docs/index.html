@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">ripserr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -57,7 +57,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/cubical.html">cubical</a>
+      <a href="articles/cubical.html">Calculating Persistent Homology with a Cubical Complex</a>
     </li>
     <li>
       <a href="articles/vietoris-rips.html">Calculating Persistent Homology with a Vietoris-Rips Complex</a>
@@ -102,11 +102,10 @@
 <a href="#installation" class="anchor"></a>Installation</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit">
 <span class="co"># install development version</span>
-<span class="kw">devtools</span>::<span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"rrrlw/ripserr"</span>)
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"rrrlw/ripserr"</span><span class="op">)</span>
 
 <span class="co"># install from CRAN (not available yet)</span>
-<span class="co"># install.packages("ripserr")</span>
-</pre></div>
+<span class="co"># install.packages("ripserr")</span></pre></div>
 </div>
 <div id="sample-code" class="section level2">
 <h2 class="hasAnchor">
@@ -114,16 +113,16 @@
 <p>Ripser (Vietoris-Rips complex) can be used as follows for data with dimension greater than or equal to 2.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
 <span class="co"># load ripserr</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st"><a href="https://rrrlw.github.io/ripserr">"ripserr"</a></span>)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://rrrlw.github.io/ripserr/">"ripserr"</a></span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">42</span>)
-<span class="kw">SIZE</span> <span class="op">&lt;-</span> <span class="fl">100</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span>
+<span class="va">SIZE</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 
 <span class="co"># 2-dimensional example</span>
-<span class="kw">dataset2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">SIZE</span> <span class="op">*</span> <span class="fl">2</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="kw">dataset2</span>) <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">SIZE</span>, <span class="fl">2</span>)
-<span class="kw">vr_phom2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/vietoris_rips.html">vietoris_rips</a></span>(<span class="kw">dataset2</span>)
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">vr_phom2</span>)
+<span class="va">dataset2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">SIZE</span> <span class="op">*</span> <span class="fl">2</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">dataset2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">SIZE</span>, <span class="fl">2</span><span class="op">)</span>
+<span class="va">vr_phom2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/vietoris_rips.html">vietoris_rips</a></span><span class="op">(</span><span class="va">dataset2</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">vr_phom2</span><span class="op">)</span>
 <span class="co">#&gt;   dimension birth      death</span>
 <span class="co">#&gt; 1         0     0 0.01004861</span>
 <span class="co">#&gt; 2         0     0 0.02923702</span>
@@ -131,7 +130,7 @@
 <span class="co">#&gt; 4         0     0 0.06829826</span>
 <span class="co">#&gt; 5         0     0 0.06853393</span>
 <span class="co">#&gt; 6         0     0 0.07187663</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span>(<span class="kw">vr_phom2</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span><span class="op">(</span><span class="va">vr_phom2</span><span class="op">)</span>
 <span class="co">#&gt;     dimension     birth     death</span>
 <span class="co">#&gt; 112         1 0.3916344 0.4239412</span>
 <span class="co">#&gt; 113         1 0.3906770 0.5577989</span>
@@ -141,10 +140,10 @@
 <span class="co">#&gt; 117         1 0.2418318 0.2504820</span>
 
 <span class="co"># 3-dimensional example</span>
-<span class="kw">dataset3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">SIZE</span> <span class="op">*</span> <span class="fl">3</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="kw">dataset3</span>) <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">SIZE</span>, <span class="fl">3</span>)
-<span class="kw">vr_phom3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/vietoris_rips.html">vietoris_rips</a></span>(<span class="kw">dataset3</span>, dim = <span class="fl">2</span>) <span class="co"># default: dim = 1</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">vr_phom3</span>)
+<span class="va">dataset3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">SIZE</span> <span class="op">*</span> <span class="fl">3</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">dataset3</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">SIZE</span>, <span class="fl">3</span><span class="op">)</span>
+<span class="va">vr_phom3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/vietoris_rips.html">vietoris_rips</a></span><span class="op">(</span><span class="va">dataset3</span>, max_dim <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="co"># default: max_dim = 1</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">vr_phom3</span><span class="op">)</span>
 <span class="co">#&gt;   dimension birth     death</span>
 <span class="co">#&gt; 1         0     0 0.1282935</span>
 <span class="co">#&gt; 2         0     0 0.1421812</span>
@@ -152,28 +151,27 @@
 <span class="co">#&gt; 4         0     0 0.1819928</span>
 <span class="co">#&gt; 5         0     0 0.1858051</span>
 <span class="co">#&gt; 6         0     0 0.2114116</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span>(<span class="kw">vr_phom3</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span><span class="op">(</span><span class="va">vr_phom3</span><span class="op">)</span>
 <span class="co">#&gt;     dimension     birth     death</span>
 <span class="co">#&gt; 132         1 0.5212961 0.5233529</span>
 <span class="co">#&gt; 133         2 1.1829207 1.1999911</span>
 <span class="co">#&gt; 134         2 1.1194325 1.3245908</span>
 <span class="co">#&gt; 135         2 1.0707410 1.0914850</span>
 <span class="co">#&gt; 136         2 0.9433034 0.9867254</span>
-<span class="co">#&gt; 137         2 0.6882204 0.6913078</span>
-</pre></div>
+<span class="co">#&gt; 137         2 0.6882204 0.6913078</span></pre></div>
 <p>Cubical Ripser (cubical complex) can be used as follows for data with dimension equal to 2, 3, or 4.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
 <span class="co"># load ripserr</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st"><a href="https://rrrlw.github.io/ripserr">"ripserr"</a></span>)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://rrrlw.github.io/ripserr/">"ripserr"</a></span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">42</span>)
-<span class="kw">SIZE</span> <span class="op">&lt;-</span> <span class="fl">10</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span>
+<span class="va">SIZE</span> <span class="op">&lt;-</span> <span class="fl">10</span>
 
 <span class="co"># 2-dimensional example</span>
-<span class="kw">dataset2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">SIZE</span> <span class="op">^</span> <span class="fl">2</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="kw">dataset2</span>) <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="kw">SIZE</span>, <span class="fl">2</span>)
-<span class="kw">cub_phom2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cubical.html">cubical</a></span>(<span class="kw">dataset2</span>)
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">cub_phom2</span>)
+<span class="va">dataset2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">SIZE</span> <span class="op">^</span> <span class="fl">2</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">dataset2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="va">SIZE</span>, <span class="fl">2</span><span class="op">)</span>
+<span class="va">cub_phom2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cubical.html">cubical</a></span><span class="op">(</span><span class="va">dataset2</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">cub_phom2</span><span class="op">)</span>
 <span class="co">#&gt;   dimension      birth      death</span>
 <span class="co">#&gt; 1         0 -1.1943289 -0.8607926</span>
 <span class="co">#&gt; 2         0 -2.4142076 -0.8509076</span>
@@ -181,20 +179,20 @@
 <span class="co">#&gt; 4         0 -1.7170087 -0.7844590</span>
 <span class="co">#&gt; 5         0 -0.7272921 -0.5428288</span>
 <span class="co">#&gt; 6         0 -0.9535234 -0.5428288</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span>(<span class="kw">cub_phom2</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span><span class="op">(</span><span class="va">cub_phom2</span><span class="op">)</span>
 <span class="co">#&gt;    dimension     birth     death</span>
-<span class="co">#&gt; 23         1 0.8217731 0.9333463</span>
-<span class="co">#&gt; 24         1 0.7681787 1.0385061</span>
-<span class="co">#&gt; 25         1 0.7581632 1.5757275</span>
-<span class="co">#&gt; 26         1 0.7208782 1.3025426</span>
-<span class="co">#&gt; 27         1 0.6792888 1.4441013</span>
-<span class="co">#&gt; 28         1 0.6359504 1.8951935</span>
+<span class="co">#&gt; 22         1 0.8217731 0.9333463</span>
+<span class="co">#&gt; 23         1 0.7681787 1.0385061</span>
+<span class="co">#&gt; 24         1 0.7581632 1.5757275</span>
+<span class="co">#&gt; 25         1 0.7208782 1.3025426</span>
+<span class="co">#&gt; 26         1 0.6792888 1.4441013</span>
+<span class="co">#&gt; 27         1 0.6359504 1.8951935</span>
 
 <span class="co"># 3-dimensional example</span>
-<span class="kw">dataset3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">SIZE</span> <span class="op">^</span> <span class="fl">3</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="kw">dataset3</span>) <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="kw">SIZE</span>, <span class="fl">3</span>)
-<span class="kw">cub_phom3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cubical.html">cubical</a></span>(<span class="kw">dataset3</span>)
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">cub_phom3</span>)
+<span class="va">dataset3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">SIZE</span> <span class="op">^</span> <span class="fl">3</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">dataset3</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="va">SIZE</span>, <span class="fl">3</span><span class="op">)</span>
+<span class="va">cub_phom3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cubical.html">cubical</a></span><span class="op">(</span><span class="va">dataset3</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">cub_phom3</span><span class="op">)</span>
 <span class="co">#&gt;   dimension     birth     death</span>
 <span class="co">#&gt; 1         0 -1.926167 -1.737728</span>
 <span class="co">#&gt; 2         0 -1.737297 -1.439229</span>
@@ -202,20 +200,20 @@
 <span class="co">#&gt; 4         0 -1.500221 -1.354600</span>
 <span class="co">#&gt; 5         0 -2.277778 -1.354600</span>
 <span class="co">#&gt; 6         0 -1.682481 -1.306676</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span>(<span class="kw">cub_phom3</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span><span class="op">(</span><span class="va">cub_phom3</span><span class="op">)</span>
 <span class="co">#&gt;     dimension     birth    death</span>
-<span class="co">#&gt; 325         2 1.2488637 1.258482</span>
-<span class="co">#&gt; 326         2 1.2009654 2.036972</span>
-<span class="co">#&gt; 327         2 1.0452759 1.199978</span>
-<span class="co">#&gt; 328         2 0.9885968 1.809382</span>
-<span class="co">#&gt; 329         2 0.9310749 1.179696</span>
-<span class="co">#&gt; 330         2 0.8447922 1.709689</span>
+<span class="co">#&gt; 324         2 1.2488637 1.258482</span>
+<span class="co">#&gt; 325         2 1.2009654 2.036972</span>
+<span class="co">#&gt; 326         2 1.0452759 1.199978</span>
+<span class="co">#&gt; 327         2 0.9885968 1.809382</span>
+<span class="co">#&gt; 328         2 0.9310749 1.179696</span>
+<span class="co">#&gt; 329         2 0.8447922 1.709689</span>
 
 <span class="co"># 4-dimensional example</span>
-<span class="kw">dataset4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">SIZE</span> <span class="op">^</span> <span class="fl">4</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="kw">dataset4</span>) <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="kw">SIZE</span>, <span class="fl">4</span>)
-<span class="kw">cub_phom4</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cubical.html">cubical</a></span>(<span class="kw">dataset4</span>)
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">cub_phom4</span>)
+<span class="va">dataset4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">SIZE</span> <span class="op">^</span> <span class="fl">4</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">dataset4</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="va">SIZE</span>, <span class="fl">4</span><span class="op">)</span>
+<span class="va">cub_phom4</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cubical.html">cubical</a></span><span class="op">(</span><span class="va">dataset4</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">cub_phom4</span><span class="op">)</span>
 <span class="co">#&gt;   dimension     birth     death</span>
 <span class="co">#&gt; 1         0 -1.986299 -1.923519</span>
 <span class="co">#&gt; 2         0 -1.822606 -1.816506</span>
@@ -223,15 +221,14 @@
 <span class="co">#&gt; 4         0 -1.833663 -1.710387</span>
 <span class="co">#&gt; 5         0 -1.947054 -1.704791</span>
 <span class="co">#&gt; 6         0 -1.701462 -1.639160</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span>(<span class="kw">cub_phom4</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span><span class="op">(</span><span class="va">cub_phom4</span><span class="op">)</span>
 <span class="co">#&gt;      dimension    birth    death</span>
-<span class="co">#&gt; 4330         3 1.676609 2.019277</span>
-<span class="co">#&gt; 4331         3 1.675766 1.932152</span>
-<span class="co">#&gt; 4332         3 1.669449 2.149646</span>
-<span class="co">#&gt; 4333         3 1.662486 1.863734</span>
-<span class="co">#&gt; 4334         3 1.535361 1.963609</span>
-<span class="co">#&gt; 4335         3 1.349235 2.263581</span>
-</pre></div>
+<span class="co">#&gt; 4329         3 1.676609 2.019277</span>
+<span class="co">#&gt; 4330         3 1.675766 1.932152</span>
+<span class="co">#&gt; 4331         3 1.669449 2.149646</span>
+<span class="co">#&gt; 4332         3 1.662486 1.863734</span>
+<span class="co">#&gt; 4333         3 1.535361 1.963609</span>
+<span class="co">#&gt; 4334         3 1.349235 2.263581</span></pre></div>
 </div>
 <div id="functionality" class="section level2">
 <h2 class="hasAnchor">
@@ -266,6 +263,8 @@
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
+<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=ripserr">https://​cloud.r-project.org/​package=ripserr</a>
+</li>
 <li>Browse source code at <br><a href="https://github.com/rrrlw/ripserr/">https://​github.com/​rrrlw/​ripserr/​</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/rrrlw/ripserr/issues">https://​github.com/​rrrlw/​ripserr/​issues</a>
@@ -312,7 +311,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
