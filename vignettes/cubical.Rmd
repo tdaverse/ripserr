@@ -51,8 +51,11 @@ These calculations result in a data frame that characterizes the persistent homo
 # calculate persistent homology
 image_phom <- cubical(sample_image)
 
-# print features
+# print `cubical` output
 image_phom
+
+# print features
+head(image_phom)
 ```
 
 Each row in `image_phom` represents a single feature.
