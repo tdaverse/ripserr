@@ -6,6 +6,11 @@ authors:
     affiliation: Case Western Reserve University
     location: Cleveland, OH 44195
     email: raoul.wadhwa@case.edu
+  - name: Matthew Piekenbrock
+    department: Department of Computational Mathematics, Science, and Engineering
+    affiliation: Michigan State University
+    location: East Lansing, MI 48824
+    email: matt.piekenbrock@gmail.com
   - name: Jacob G. Scott
     department: Translational Hematology \& Oncology Research
     affiliation: Lerner Research Institute, Cleveland Clinic
@@ -30,9 +35,27 @@ With increasing use of persistent homology, effective incorporation of Ripser an
 The R programming language [@rlang] has been popular with data scientists [@cite-something
 Here, we introduce `ripserr`, a software package that wraps Ripser and Ripser-based C++ libraries to calculate persistent homology in the R programming language.
 
-# Implementation
+# PHom S3 class
 
-\lipsum[1]
+## structure
+
+## basic functions
+
+# vietoris_rips
+
+## overview and basic parameters
+
+## generic methods
+
+## prime fields
+
+# cubical
+
+## overview and basic parameters
+
+## generic methods
+
+## size limitations
 
 # Use case
 
