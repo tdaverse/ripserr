@@ -1,6 +1,6 @@
 ---
 title: "Calculating Persistent Homology with a Cubical Complex"
-author: "Raoul R. Wadhwa and Jacob G. Scott"
+author: "Raoul R. Wadhwa, Jacob G. Scott"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
