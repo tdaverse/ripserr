@@ -1,20 +1,20 @@
 ---
-title: Calculating persistent homology with ripserr
+title: Calculating persistent homology in R with ripserr
 authors:
   - name: Raoul R. Wadhwa
     department: Cleveland Clinic Lerner College of Medicine
     affiliation: Case Western Reserve University
-    location: Cleveland, OH 44195
+    location: Cleveland, OH 44195, United States
     email: raoul.wadhwa@case.edu
-  - name: Matthew Piekenbrock
-    department: Department of Computational Mathematics, Science, and Engineering
+  - name: Matthew Piekenbrock, MS
+    department: Computational Mathematics, Science, \& Engineering
     affiliation: Michigan State University
-    location: East Lansing, MI 48824
+    location: East Lansing, MI 48824, United States
     email: matt.piekenbrock@gmail.com
-  - name: Jacob G. Scott
+  - name: Jacob G. Scott, MD, DPhil
     department: Translational Hematology \& Oncology Research
     affiliation: Lerner Research Institute, Cleveland Clinic
-    location: Cleveland, OH 44195
+    location: Cleveland, OH 44195, United States
     email: ScottJ10@ccf.org
 abstract: |
   Enter the text of your abstract here.
@@ -32,7 +32,7 @@ Calculating persistent homology via a Vietoris-Rips complex presents a computati
 Ripser, a C++ library, addresses this obstacle and significantly reduces processing time and memory usage compared to other available persistent homology libraries [@ripser].
 Although Ripser calculates persistent homology of a Vietoris-Rips complex, other libraries have taken advantage of its general technique to calculate persistent homology of cubical complexes [@cubicalripser], directed flag complexes [@flagser], or to provide other functionality [@lockfreeripser; @ripserpp].
 With increasing use of persistent homology, effective incorporation of Ripser and Ripser-based engines in data analysis pipelines would serve a useful purpose.
-The R programming language [@rlang] has been popular with data scientists [@cite-something
+The R programming language [@rlang] has been popular with data scientists [@cite-something].
 Here, we introduce `ripserr`, a software package that wraps Ripser and Ripser-based C++ libraries to calculate persistent homology in the R programming language.
 
 # PHom S3 class
@@ -49,6 +49,8 @@ Here, we introduce `ripserr`, a software package that wraps Ripser and Ripser-ba
 
 ## prime fields
 
+## use case
+
 # cubical
 
 ## overview and basic parameters
@@ -57,8 +59,12 @@ Here, we introduce `ripserr`, a software package that wraps Ripser and Ripser-ba
 
 ## size limitations
 
-# Use case
+## use case
 
 # Discussion/Conclusions
+
+## comparison to TDAstats and TDA
+
+## future directions
 
 # References
