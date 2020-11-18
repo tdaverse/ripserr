@@ -28,12 +28,11 @@ output: rticles::arxiv_article
 
 # Introduction
 
-Calculating persistent homology via a Vietoris-Rips complex presents a computationally expensive challenge, particularly for high-dimensional datasets.
-Ripser, a C++ library, addresses this obstacle and significantly reduces processing time and memory usage compared to other available persistent homology libraries [@ripser].
-Although Ripser calculates persistent homology of a Vietoris-Rips complex, other libraries have taken advantage of its general technique to calculate persistent homology of cubical complexes [@cubicalripser], directed flag complexes [@flagser], or to provide other functionality [@lockfreeripser; @ripserpp].
-With increasing use of persistent homology, effective incorporation of Ripser and Ripser-based engines in data analysis pipelines would serve a useful purpose.
-The R programming language [@rlang] has been popular with data scientists [@cite-something].
-Here, we introduce `ripserr`, a software package that wraps Ripser and Ripser-based C++ libraries to calculate persistent homology in the R programming language.
+Calculating persistent homology presents a computationally expensive challenge, particularly for large and high-dimensional datasets.
+Ripser, a C++ library, addresses this obstacle and significantly reduces processing time and memory usage compared to contemporary persistent homology engines [@ripser].
+Although Ripser calculates persistent homology of a Vietoris-Rips complex, other libraries have built upon its foundation [@cubicalripser; @flagser; @lockfreeripser; @ripserpp].
+With the increasing popularity of persistent homology, wrapping Ripser and related engines in the R programming language [@rlang] would permit easier incorporation into data analysis and machine learning pipelines.
+Here, we introduce `ripserr`, an R package that wraps the Ripser and Cubical Ripser C++ libraries, allowing efficient persistent homology computation of Vieoris-Rips and cubical complexes.
 
 # PHom S3 class
 
