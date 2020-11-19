@@ -19,9 +19,11 @@ authors:
 abstract: |
   Enter the text of your abstract here.
 keywords:
-  - blah
-  - blee
-  - bloo
+  - persistent homology
+  - topological data analysis
+  - simplicial complex
+  - R programming language
+  - Ripser
 bibliography: references.bib
 output: rticles::arxiv_article
 ---
@@ -34,11 +36,19 @@ Although Ripser calculates persistent homology of a Vietoris-Rips complex, other
 With the increasing popularity of persistent homology, wrapping Ripser and related engines in the R programming language [@rlang] would permit easier incorporation into data analysis and machine learning pipelines.
 Here, we introduce `ripserr`, an R package that wraps the Ripser and Cubical Ripser C++ libraries, allowing efficient persistent homology computation of Vieoris-Rips and cubical complexes.
 
-# PHom S3 class
+# `PHom` S3 class
 
-## structure
+When incorporating persistent homology in R pipelines, we must consider the best container to hold persistence data.
+`ripserr` uses the `PHom` (portmanteau of persistent homology) S3 class to manage persistence data.
+Note that more complex forms of persistence (e.g. extended persistence [@ext-persist]) are not discussed.
 
-## basic functions
+At its core, the `PHom` class simply encompasses a data frame storing persistence feature details.
+Each data frame row represents a single feature and each column represents a single feature property.
+Structurally, the data frame within a `PHom` object has three columns named `"dimension"`, `"birth"`, and `"death"` (in that order) of class `integer`, `numeric`, and `numeric`, respectively.
+Although `PHom`-specific S3 generic methods have been implemented, users may also benefit by using `data.frame`-specific S3 generic methods; for this reason, `PHom` objects have class `PHom` and `data.frame`.
+
+To get a better intuition for `PHom` objects, the following code blocks demonstrate the class's basic functionality.
+
 
 # vietoris_rips
 
@@ -65,5 +75,9 @@ Here, we introduce `ripserr`, an R package that wraps the Ripser and Cubical Rip
 ## comparison to TDAstats and TDA
 
 ## future directions
+
+# Acknowledgments
+
+The authors thank Jason Cory Brunson, PhD for advice regarding `ripserr` package design.
 
 # References
