@@ -33,7 +33,7 @@ output: rticles::arxiv_article
 Calculating persistent homology presents a computationally expensive challenge, particularly for large and high-dimensional datasets.
 Ripser, a C++ library, addresses this obstacle and significantly reduces processing time and memory usage compared to contemporary persistent homology engines [@ripser].
 Although Ripser calculates persistent homology of a Vietoris-Rips complex, other libraries have built upon its foundation [@cubicalripser; @flagser; @lockfreeripser; @ripserpp].
-With the increasing popularity of persistent homology, wrapping Ripser and related engines in the R programming language [@rlang] would permit easier incorporation into data analysis and machine learning pipelines.
+With the increasing popularity of persistent homology, wrapping Ripser and related C++ engines in the R programming language would permit easier incorporation into data analysis and machine learning pipelines [@rlang;@rcpp].
 Here, we introduce `ripserr`, an R package that wraps the Ripser and Cubical Ripser C++ libraries, allowing efficient persistent homology computation of Vieoris-Rips and cubical complexes.
 
 Before we explore the `ripserr` package, we load the required libraries and set a PRNG seed for reproducibility.
@@ -201,11 +201,11 @@ all.equal(image_phom, image_phom2)
 
 Due to intrinsic properties of the underlying C++ Cubical Ripser library, `array`s passed to `cubical` have the following size limitations: 2-dimensional `array`s must be smaller than `2000x1000` elements; 3-dimensional `array`s must be smaller than `512x512x512`; and 4-dimensional `array`s must be smaller than `64x64x64x64`.
 
-# Discussion and future directions
+# Discussion
 
-## role in TDA pipelines
-
-## extending `vietoris_rips` and `cubical`
+As a low-level topological data analysis package, `ripserr` provides the basic tools necessary to calculate persistent homology.
+By providing the `PHom` class as a container for persistence data that preserves data frame functionality, `ripserr` can be easily integrated in an exploratory manner in data analysis pipelines, for feature extraction in machine learning pipelines, and for early calculation in topological inference pipelines.
+Future directions for `ripserr` could involve inclusion of more Ripser-based engines, refinement of the `PHom` class, and improved integration with other R packages implementing topological data analysis [@simplextree;@tdaunif;@tdamapper;@mapper;@tdastats].
 
 # Acknowledgments
 
