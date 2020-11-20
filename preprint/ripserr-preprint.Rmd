@@ -17,7 +17,12 @@ authors:
     location: Cleveland, OH 44195, United States
     email: ScottJ10@ccf.org
 abstract: |
-  Enter the text of your abstract here.
+  We introduce ripserr, an R package that enables efficient persistent homology computation by wrapping Ripser-based C++ libraries via Rcpp.
+  The PHom S3 class provides a container for calculated persistence data and will serve as a means for integrating ripserr with other R packages that implement functionality related to topological data analysis.
+  The vietoris_rips generic wraps the Ripser library, which computes Vietoris-Rips simplicial homology and the cubical generic wraps the Cubical Ripser library, which computes cubical simplicial homology.
+  Currently, the Comprehensive R Archive Network hosts ripserr v0.1.1.
+  We hope that ripserr will be used by researchers to incorporate topological insight into data analysis and machine learning pipelines.
+  The open source code for ripserr and for this reproducible report can be found at http://github.com/rrrlw/ripserr.
 keywords:
   - persistent homology
   - topological data analysis
@@ -115,7 +120,9 @@ circ_phom <- vietoris_rips(circ_mat)
 print(circ_phom)
 head(circ_phom)
 tail(circ_phom)
+```
 
+```{r vr-phom-2, fig.height=2}
 # plot topological barcode of persistence data
 ggplot(circ_phom, aes(start = birth, end = death, colour = as.factor(dimension))) +
   geom_barcode() + theme_barcode() +
@@ -133,7 +140,7 @@ all.equal(circ_phom, vietoris_rips(circ_dist))
 By adjusting the `max_dim` parameter, `vietoris_rips` can calculate persistence data including higher dimensional features.
 We demonstrate this by sampling points from the surface of a sphere.
 
-```{r vr-maxdim}
+```{r vr-maxdim, fig.height=2.5}
 # sample points from surface of unit sphere
 sphere <- sample_sphere(100, dim = 2)
 
@@ -180,7 +187,7 @@ par(mar = rep(0, 4))
 graphics::image(sample_image, useRaster = TRUE, axes = FALSE)
 ```
 
-```{r cubical-2,fig.height=2}
+```{r cubical-2,fig.height=2.5}
 # calculate cubical homology
 image_phom <- cubical(sample_image)
 
