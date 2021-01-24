@@ -35,6 +35,16 @@ brazilStateCodeLookup <- hash(
 # Set the default sleep delay as required by the Nominatim API documentation to not make more than one request per second.
 nominatimSleepDelay = 1.1
 
+#' Pre-pends a message with a timestamp.
+#'
+#' @param message The message to print.
+#' 
+#' @examples
+#' printMessageWithTimestamp("This is my example message.")
+printMessageWithTimestamp <- function(message) {
+  print(paste0(Sys.time(), " ", message))
+}
+
 #' Reverse geocode a coordinate pair.
 #' 
 #' This converts the coordinates into state and country names.
@@ -95,24 +105,23 @@ reverseGeocode <- function (longitude, latitude, email)
 #' processFile("path/to/input.csv", "path/to/output.csv", "test@@asdf.com")
 processFile <- function(inputFilePath, outputFilePath, email)
 {
-  print("Reverse geocoding has started.")
-  
   if (file.exists(outputFilePath)) {
     # Remove past run results
-    print("Warning: deleting previous run results.")
+    printMessageWithTimestamp("Warning: deleting previous run results.")
     file.remove(outputFilePath)
   }
   
   lineCount = countLines(inputFilePath)
   estimatedProcessingMinutes = lineCount * nominatimSleepDelay / 60
-  print(paste0("Based on your file size, this process is expected to take no more than ", round(estimatedProcessingMinutes, 2), " minutes. This is almost guaranteed to be a drastic over-estimate."))
+  printMessageWithTimestamp(paste0("Based on your file size, this process is expected to take no more than ", round(estimatedProcessingMinutes, 2), " minutes. This is likely a significant over-estimate."))
   
   header <- read.csv(inputFilePath, nrows=1, header=FALSE)
   headerNeedsWriting = TRUE
-
+  
+  printMessageWithTimestamp("Reverse geocoding has started.")
   for (rowIndex in 1:lineCount) {
-    if (0 == rowIndex %% 15) {
-      print(paste0("   Progress: ", rowIndex, " rows of ", lineCount, " have been processed."))
+    if (0 == rowIndex %% 10) {
+      printMessageWithTimestamp(paste0("Progress: ", rowIndex, " rows of ", lineCount, " have been processed."))
     }
     
     outputRow <- read.csv(inputFilePath, skip=rowIndex, nrows=1, header=FALSE, col.names=header)
@@ -147,7 +156,7 @@ processFile <- function(inputFilePath, outputFilePath, email)
     headerNeedsWriting = FALSE
   }
   
-  print("Reverse geocoding has completed.")
+  printMessageWithTimestamp("Reverse geocoding has completed.")
 }
 
 #' Run the script in interactive mode.
@@ -161,7 +170,7 @@ executeInteractiveScript <- function() {
   downloadDryadData = readline("do you want to download a fresh copy of the data? Y = download the data directly from datadryad.org, N = enter your own file path:\n")
   
   if ("Y" == downloadDryadData || "y" == downloadDryadData) {
-    print("downloading from datadryad.org is not implemented at this time. exiting.")
+    printMessageWithTimestamp("downloading from datadryad.org is not implemented at this time. exiting.")
     
     # download.file(url, destfile)
   } else {
@@ -173,8 +182,8 @@ executeInteractiveScript <- function() {
     
     outputPath = paste0(tools::file_path_sans_ext(filepath), "_annotated.csv")
     
-    print(paste0("Processing data in ", filepath))
-    print(paste0("Writing results to ", outputPath))
+    printMessageWithTimestamp(paste0("Processing data in ", filepath))
+    printMessageWithTimestamp(paste0("Writing results to ", outputPath))
     
     processFile(filepath, outputPath, email)
   }
