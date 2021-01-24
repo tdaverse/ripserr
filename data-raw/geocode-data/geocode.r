@@ -260,6 +260,8 @@ executeInteractiveScript <- function() {
   printMessageWithTimestamp(paste0("Writing results to ", outputPath))
   
   processFile(inputPath, outputPath, email)
+  
+  printMessageWithTimestamp(paste0("Results were written to ", outputPath))
 }
 
 executeInteractiveScript()
