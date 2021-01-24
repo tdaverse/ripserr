@@ -32,10 +32,12 @@ brazilStateCodeLookup <- hash(
   "Tocantins"="TO"
 )
 
+nominatimSleepDelay = 1.1
+
 reverseGeocode <- function (longitude, latitude) 
 {
   # Pause for 1.1 seconds, to honor the request of the Nominatim API documentation to not make more than one request per second.
-  Sys.sleep(1.1)
+  Sys.sleep(nominatimSleepDelay)
   
   url <- paste0(
     "https://nominatim.openstreetmap.org/reverse?format=json&zoom=5&addressdetails=1&lon=",
@@ -64,8 +66,18 @@ processFile <- function(inputFilePath, outputFilePath)
 {
   print("Reverse geocoding has started.")
   
+  if (file.exists(outputFilePath)) {
+    # Remove past run results
+    print("Warning: deleting previous run results.")
+    file.remove(outputFilePath)
+  }
+  
   header <- read.csv(inputFilePath, nrows=1, header=FALSE)
-  for (rowIndex in 1:countLines(inputFilePath)) {
+  lineCount = countLines(inputFilePath)
+  estimatedProcessingMinutes = lineCount * nominatimSleepDelay / 60
+  print(paste0("Based on your file size, this process will take approximately ", round(estimatedProcessingMinutes, 2), " minutes"))
+  
+  for (rowIndex in 1:lineCount) {
     outputRow <- read.csv(inputFilePath, skip=rowIndex, nrows=1, header=FALSE, col.names=header)
     
     x  <- outputRow$X
@@ -76,7 +88,7 @@ processFile <- function(inputFilePath, outputFilePath)
     }
     
     if (0 == rowIndex %% 10) {
-      print(paste0("Progress: row ", rowIndex, " of ", nrow(data), "."))
+      print(paste0("   Progress: ", rowIndex, " rows of ", lineCount, " have been processed."))
     }
     
     geocodeResult <- reverseGeocode(x, y)
@@ -104,23 +116,30 @@ processFile <- function(inputFilePath, outputFilePath)
   print("Reverse geocoding has completed.")
 }
 
-# 
-# defaultDownloadUrl = "https://uc3-s3mrt1001-prd.s3.us-west-2.amazonaws.com/3877a3a1-b8e2-4c47-9a55-a03572325842/data?response-content-disposition=attachment%3B%20filename%3Ddoi_10.5061_dryad.47v3c__v2.zip&response-content-type=application%2Fzip&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEAkaCXVzLXdlc3QtMiJGMEQCIBlmS%2BIAICmW%2BvTf3T1YWxfKrEwYkEc%2B6cSG2qd7RFQ4AiBSSYe%2FqdipxraYzrBFrFZaaEoFOIoVyIcLXhfLdVMonCq9Awji%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDQ1MTgyNjkxNDE1NyIMm3ggoLpzburLHPUCKpEDmWo5kdDO1aDXQNyTEWMFuZ2SVN0reDp927Zd30Da2ec3Zba9avwI33%2FWXr2ArvD4VWN%2Be%2BIbFv9O6Hhmpzvl91US9o2j6txctIc1OK%2FQaX%2Bnzu1NC1tGmSXr6Rqj5aaErPQIzLX5MY1FQClfldW%2BBi035mEqhCjMnV%2FyKKLR0ITXx%2FSaN0JQi55Vl2u2lH1B%2FyypLx5Rd5HDI1%2BrXmgqjCKUhELAcdT2YsHHSTeYnz%2BUQOOx6wTdZ2qh%2F%2Fvk3VSORLl%2BLBFz9kTncy0vVhalr4YvhDy8pvyVWRZ415idY7qp0wpPKiOq1k%2Bj5p9QC8stfo53sIvzLZXXdoFDy8iR84Y0qZ9dFEL4AViMm2oqHt8AaUBhVfJkZsH0mFefqKP%2BVdFeBj1WMrkkIo4Ng8lczrwBNGnkSxZewu1FoPUjnQdHashzPwtFTan9vY7V494FCHQU9g%2FLJ94NDvPnkxa8lS1GQHCt1taWhzBuiLwm9aBwJedEEkpRSwtPnBnwdhNf61kJ3YSRfKIOOzuQvrimiQkwjJGzgAY67AHCOcfTdMsYE3fdn9fIXITTZp6v%2BYdY4BzJU63gncyrlEi1Vwr%2B5ispDEmzTaudzgE3LxSSe%2BCLaeic3iZGN6qbN16fplGI%2BFwB9LOld%2BGlcEcYH0WICE7mqQNS5lWkGbnqVZtCiapHPkkzXUMPEmhZKduZ97mgdS5yiP%2F2B2Yt3XKLVueDjU9b%2BKA24n2q%2BwIHtsRrbd8CQ738Ev6op12WKYGmbe7r7wmhYWPGCM1KxiBk6b5%2BVbJV0iKmzRxseb621wGP6l%2F4AOAkg%2FnKxcgaH3t6OMKQPXW5dXJw4v27ZcXpcu52gKqEFBrHhg%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20210124T022835Z&X-Amz-SignedHeaders=host&X-Amz-Expires=14400&X-Amz-Credential=ASIAWSMX3SNWSKQ7Z4XT%2F20210124%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Signature=c683f06894332a60da509cf935ef198efa0308e35cbb7f99f9be498f9daeda32"
-# 
-# email = readline("Please provide your email (used to comply with TOS for the Nominatim geocoder):\n")  
-# downloadDryadData = readline("Do you want to download a fresh copy of the data? Y = download the data directly from datadryad.org, N = enter your own file path:\n")
-# 
-# print(email)
-# print(downloadDryadData)
-# 
-# if ("Y" == downloadDryadData || "y" == downloadDryadData) {
-#   print("Downloading from datadryad.org is not implemented at this time. Exiting.")
-#   
-#   # download.file(url, destfile)
-# } else {
-#   filePath = readline("Please provide the fully-qualified path to your local csv file:\n") 
-#   
-#   print(filePath)
-# }
 
-processFile("./data-raw/geocode_data/sample_zika_data.csv", "./data-raw/geocode_data/sample_zika_data_annotated.csv")
+defaultdownloadurl = "https://uc3-s3mrt1001-prd.s3.us-west-2.amazonaws.com/3877a3a1-b8e2-4c47-9a55-a03572325842/data?response-content-disposition=attachment%3b%20filename%3ddoi_10.5061_dryad.47v3c__v2.zip&response-content-type=application%2fzip&x-amz-security-token=iqojb3jpz2lux2vjeakacxvzlxdlc3qtmijgmeqciblms%2biaicmw%2bvtf3t1ywxfkrewykec%2b6csg2qd7rfq4aibssye%2fqdipxrayzrbfrfzaaeofoiovyiclxhfldvmoncq9awji%2f%2f%2f%2f%2f%2f%2f%2f%2f%2f8beaaaddq1mtgynjkxnde1nyimm3ggolpzburlhpuckpedmwo5kddo1adxqnytewmfuz2svn0redp927zd30da2ec3zba9avwi33%2fwxr2arvd4vwn%2be%2bibfv9o6hhmpzvl91us9o2j6txctic1ok%2fqax%2bnzu1nc1tgmsxr6rqj5aaerpqizlx5my1fqclfldw%2bbi035meqhcjmnv%2fykklr0itxx%2fsan0jqi55vl2u2lh1b%2fyyplx5rd5hdi1%2brxmgqjckuhelacdt2yshhsteynz%2buqoox6wtdz2qh%2f%2fvk3vsorll%2blbfz9ktncy0vvhalr4yvhdy8pvyvwrz415idy7qp0wppkioq1k%2bj5p9qc8stfo53sivzlzxxdofdy8ir84y0qz9dfel4avimm2oqht8aaubhvfjkzsh0mfefqkp%2bvdfebj1wmrkkio4ng8lczrwbngnksxzewu1fopujnqdhashzpwtftan9vy7v494fchqu9g%2flj94ndvpnkxa8ls1gqhct1tawhzbuilwm9abwjedeekprswtpnbnwdhnf61kj3ysrfkioozuqvrimiqkwjjgzgay67ahcocftdmsye3fdn9fixittzp6v%2bydy4bzju63gncyrlei1vwr%2b5ispdemztaudzge3lxsse%2bclaeic3izgn6qbn16fplgi%2bfwb9lold%2bglcecyh0wice7mqqns5lwkgbnqvztciaphpkkzxumpemhzkduz97mgds5yip%2f2b2yt3xklvuedju9b%2bka24n2q%2bwihtsrrbd8cq738ev6op12wkygmbe7r7wmhywpgcm1kxibk6b5%2bvbjv0ikmzrxseb621wgp6l%2f4aoakg%2fnkxcgah3t6omkqpxw5dxjw4v27zcxpcu52gkqefbrhhg%3d%3d&x-amz-algorithm=aws4-hmac-sha256&x-amz-date=20210124t022835z&x-amz-signedheaders=host&x-amz-expires=14400&x-amz-credential=asiawsmx3snwskq7z4xt%2f20210124%2fus-west-2%2fs3%2faws4_request&x-amz-signature=c683f06894332a60da509cf935ef198efa0308e35cbb7f99f9be498f9daeda32"
+
+email = readline("please provide your email (used to comply with terms of service for the nominatim geocoder):\n")
+downloadDryadData = readline("do you want to download a fresh copy of the data? Y = download the data directly from datadryad.org, N = enter your own file path:\n")
+
+print(email)
+print(downloadDryadData)
+
+if ("Y" == downloadDryadData || "y" == downloadDryadData) {
+  print("downloading from datadryad.org is not implemented at this time. exiting.")
+
+  # download.file(url, destfile)
+} else {
+  filepath = readline("please provide the fully-qualified path to your local csv file. Leave blank to use the smaller sample data set.\n")
+
+  if ("" == filepath) {
+    filepath = "data-raw/geocode_data/sample_zika_data.csv"
+  }
+  
+  outputPath = paste0(tools::file_path_sans_ext(filepath), "_annotated.csv")
+  
+  print(paste0("Processing data in ", filepath))
+  print(paste0("Writing results to ", outputPath))
+  
+  processFile(filepath, outputPath)
+}
