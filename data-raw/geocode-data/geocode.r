@@ -1,6 +1,8 @@
 library(RJSONIO)
 library(hash)
 library(R.utils)
+library(rdryad)
+library(tools)
 
 brazilStateCodeLookup <- hash(
   "Acre" = "AC",
@@ -202,36 +204,62 @@ processFile <- function(inputFilePath, outputFilePath, email)
 #'
 #' Interactive mode will prompt the user for input files and email.
 executeInteractiveScript <- function() {
-  defaultdownloadurl = "https://uc3-s3mrt1001-prd.s3.us-west-2.amazonaws.com/3877a3a1-b8e2-4c47-9a55-a03572325842/data?response-content-disposition=attachment%3b%20filename%3ddoi_10.5061_dryad.47v3c__v2.zip&response-content-type=application%2fzip&x-amz-security-token=iqojb3jpz2lux2vjeakacxvzlxdlc3qtmijgmeqciblms%2biaicmw%2bvtf3t1ywxfkrewykec%2b6csg2qd7rfq4aibssye%2fqdipxrayzrbfrfzaaeofoiovyiclxhfldvmoncq9awji%2f%2f%2f%2f%2f%2f%2f%2f%2f%2f8beaaaddq1mtgynjkxnde1nyimm3ggolpzburlhpuckpedmwo5kddo1adxqnytewmfuz2svn0redp927zd30da2ec3zba9avwi33%2fwxr2arvd4vwn%2be%2bibfv9o6hhmpzvl91us9o2j6txctic1ok%2fqax%2bnzu1nc1tgmsxr6rqj5aaerpqizlx5my1fqclfldw%2bbi035meqhcjmnv%2fykklr0itxx%2fsan0jqi55vl2u2lh1b%2fyyplx5rd5hdi1%2brxmgqjckuhelacdt2yshhsteynz%2buqoox6wtdz2qh%2f%2fvk3vsorll%2blbfz9ktncy0vvhalr4yvhdy8pvyvwrz415idy7qp0wppkioq1k%2bj5p9qc8stfo53sivzlzxxdofdy8ir84y0qz9dfel4avimm2oqht8aaubhvfjkzsh0mfefqkp%2bvdfebj1wmrkkio4ng8lczrwbngnksxzewu1fopujnqdhashzpwtftan9vy7v494fchqu9g%2flj94ndvpnkxa8ls1gqhct1tawhzbuilwm9abwjedeekprswtpnbnwdhnf61kj3ysrfkioozuqvrimiqkwjjgzgay67ahcocftdmsye3fdn9fixittzp6v%2bydy4bzju63gncyrlei1vwr%2b5ispdemztaudzge3lxsse%2bclaeic3izgn6qbn16fplgi%2bfwb9lold%2bglcecyh0wice7mqqns5lwkgbnqvztciaphpkkzxumpemhzkduz97mgds5yip%2f2b2yt3xklvuedju9b%2bka24n2q%2bwihtsrrbd8cq738ev6op12wkygmbe7r7wmhywpgcm1kxibk6b5%2bvbjv0ikmzrxseb621wgp6l%2f4aoakg%2fnkxcgah3t6omkqpxw5dxjw4v27zcxpcu52gkqefbrhhg%3d%3d&x-amz-algorithm=aws4-hmac-sha256&x-amz-date=20210124t022835z&x-amz-signedheaders=host&x-amz-expires=14400&x-amz-credential=asiawsmx3snwskq7z4xt%2f20210124%2fus-west-2%2fs3%2faws4_request&x-amz-signature=c683f06894332a60da509cf935ef198efa0308e35cbb7f99f9be498f9daeda32"
-  
   email = readline(
-    "please provide your email (used to comply with terms of service for the nominatim geocoder):\n"
+    "Please provide your email. We need this to comply with terms of service for the nominatim geocoder). "
   )
   
   downloadDryadData = readline(
-    "do you want to download a fresh copy of the data? Y = download the data directly from datadryad.org, N = enter your own file path:\n"
+    "Do you want to download data from Dryad Data? Y = download the data directly from datadryad.org, N = enter your own file path. "
   )
   
+  inputPath = "data-raw/geocode-data/sample_zika_data.csv"
+  
   if ("Y" == downloadDryadData || "y" == downloadDryadData) {
-    printMessageWithTimestamp("downloading from datadryad.org is not implemented at this time. exiting.")
+    dryad_doi = "10.5061/dryad.47v3c"
+    downloaded_documents = dryad_download(dryad_doi)
     
-    # download.file(url, destfile)
-  } else {
-    filepath = readline(
-      "please provide the fully-qualified path to your local csv file. Leave blank to use the smaller sample data set.\n"
-    )
-    
-    if ("" == filepath) {
-      filepath = "data-raw/geocode_data/sample_zika_data.csv"
+    printMessageWithTimestamp("Downloaded the following CSV files from dryad:")
+    for (filePath in downloaded_documents[[dryad_doi]]) {
+      if ("csv" != file_ext(basename(filePath))){
+        next
+      }
+      
+      print(paste0("- ", basename(filePath)))
     }
     
-    outputPath = paste0(tools::file_path_sans_ext(filepath), "_annotated.csv")
+    for (filePath in downloaded_documents[[dryad_doi]]) {
+      if ("csv" != file_ext(basename(filePath))){
+        next
+      }
+      
+      shouldProcess = readline(paste0(
+        "Do you want to process this file? Y/n: ",
+        basename(filePath),
+        " "
+      ))
+      
+      if ("Y" == shouldProcess || "y" == shouldProcess) {
+        inputPath = filePath
+        
+        break
+      }
+    }
+  } else {
+    filepath = readline(
+      "Please provide the fully-qualified path to your local csv file. Leave blank to use the smaller sample data set. "
+    )
     
-    printMessageWithTimestamp(paste0("Processing data in ", filepath))
-    printMessageWithTimestamp(paste0("Writing results to ", outputPath))
-    
-    processFile(filepath, outputPath, email)
+    if ("" != filepath) {
+      inputPath = filepath
+    }
   }
+  
+  outputPath = paste0(tools::file_path_sans_ext(inputPath), "_annotated.csv")
+  
+  printMessageWithTimestamp(paste0("Processing data in ", inputPath))
+  printMessageWithTimestamp(paste0("Writing results to ", outputPath))
+  
+  processFile(inputPath, outputPath, email)
 }
 
 executeInteractiveScript()
