@@ -219,7 +219,7 @@ processFile <- function(inputFilePath, outputFilePath, email)
 executeInteractiveScript <- function() {
   cat(
     "Please provide your email.\n",
-    "We need this to comply with terms of service for the nominatim geocoder).",
+    "We need this to comply with terms of service for the nominatim geocoder.",
     sep = ""
   )
   email <- readline("Email: ")
@@ -230,7 +230,7 @@ executeInteractiveScript <- function() {
     "N = enter your own file path.",
     sep = ""
   )
-  downloadDryadData <- readline("Downlead? ")
+  downloadDryadData <- readline("Download? ")
   
   if ("y" == tolower(downloadDryadData)) {
     dryad_doi = "10.5061/dryad.47v3c"
