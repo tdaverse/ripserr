@@ -34,7 +34,8 @@ brazilStateCodeLookup <- hash(
   "Tocantins" = "TO"
 )
 
-# Set the default sleep delay as required by the Nominatim API documentation to not make more than one request per second.
+# Set the default sleep delay as required by the Nominatim API documentation to
+# not make more than one request per second.
 nominatimSleepDelay = 1.1
 
 #' Pre-pends a message with a timestamp.
@@ -51,11 +52,15 @@ printMessageWithTimestamp <- function(message) {
 #'
 #' This converts the coordinates into state and country names.
 #'
-#' @param longitude Longitude of the coordinate. Sometimes labeled as the "X" coordinate.
-#' @param latitude Latitude of the coordinate. Sometimes labeled as the "Y" coordinate.
-#' @param email Email address of the person running this script. Required by the Nominatim API Terms of Service.
+#' @param longitude Longitude of the coordinate. Sometimes labeled as the "X"
+#'   coordinate.
+#' @param latitude Latitude of the coordinate. Sometimes labeled as the "Y"
+#'   coordinate.
+#' @param email Email address of the person running this script. Required by the
+#'   Nominatim API Terms of Service.
 #'
-#' @return This will return a list with names "state_name", "state_code", "country_name", and "country_code"
+#' @return This will return a list with names "state_name", "state_code",
+#'   "country_name", and "country_code"
 #'
 #' @examples
 #' reverseGeocode(-32.21, -52.38, "test@@asdf.com")
@@ -65,7 +70,8 @@ reverseGeocode <- function (longitude, latitude, email)
   Sys.sleep(nominatimSleepDelay)
   
   url <- paste0(
-    "https://nominatim.openstreetmap.org/reverse?format=json&zoom=5&addressdetails=1&lon=",
+    "https://nominatim.openstreetmap.org/reverse",
+    "?format=json&zoom=5&addressdetails=1&lon=",
     longitude,
     "&lat=",
     latitude,
@@ -73,9 +79,13 @@ reverseGeocode <- function (longitude, latitude, email)
     email
   )
   
-  # Request URL with user agent settings, as required by the Nominatim API documentation.
-  userAgent = paste0("R library ripserr demonstration script. One time geocoding of data requested by ",
-                     email)
+  # Request URL with user agent settings, as required by the Nominatim API
+  # documentation.
+  userAgent = paste0(
+    "R library ripserr demonstration script. ",
+    "One time geocoding of data requested by ",
+    email
+  )
   withr::with_options(
     list(HTTPUserAgent = userAgent),
     response <- readLines(url, encoding = "UTF-8", warn = FALSE)
@@ -103,7 +113,7 @@ reverseGeocode <- function (longitude, latitude, email)
   
   result <- list()
   result["state_name"] <- state
-  result["state_code"] <- brazilStateCodeLookup[[state]]
+  result["state_code"] <- if (! is.null(state)) brazilStateCodeLookup[[state]]
   result["country_name"] <- country
   result["country_code"] <- country_code
   
@@ -117,8 +127,10 @@ reverseGeocode <- function (longitude, latitude, email)
 #' to "Brasil" will be geocoded. All others will be ignored.
 #'
 #' @param inputFilePath CSV file to read lat/lon data from.
-#' @param outputFilePath CSV file path to write geocoded results to. If this file exists, it will be deleted.
-#' @param email Email address of the person running this script. Required by the Nominatim API Terms of Service.
+#' @param outputFilePath CSV file path to write geocoded results to. If this
+#'   file exists, it will be deleted.
+#' @param email Email address of the person running this script. Required by the
+#'   Nominatim API Terms of Service.
 #'
 #' @examples
 #' processFile("path/to/input.csv", "path/to/output.csv", "test@@asdf.com")
@@ -140,8 +152,9 @@ processFile <- function(inputFilePath, outputFilePath, email)
     )
   )
   
-  header <- read.csv(inputFilePath, nrows = 1, header = FALSE)
+  header <- as.character(unlist(read.csv(inputFilePath, nrows = 1, header = FALSE)))
   headerNeedsWriting = TRUE
+  lineCount <- lineCount - 1L
   
   printMessageWithTimestamp("Reverse geocoding has started.")
   for (rowIndex in 1:lineCount) {
@@ -164,7 +177,7 @@ processFile <- function(inputFilePath, outputFilePath, email)
         col.names = header
       )
     
-    if (!identical(outputRow$COUNTRY, "Brazil")) {
+    if (! outputRow$COUNTRY == "Brazil") {
       next
     }
     
@@ -204,17 +217,22 @@ processFile <- function(inputFilePath, outputFilePath, email)
 #'
 #' Interactive mode will prompt the user for input files and email.
 executeInteractiveScript <- function() {
-  email = readline(
-    "Please provide your email. We need this to comply with terms of service for the nominatim geocoder). "
+  cat(
+    "Please provide your email.\n",
+    "We need this to comply with terms of service for the nominatim geocoder.",
+    sep = ""
   )
+  email <- readline("Email: ")
   
-  downloadDryadData = readline(
-    "Do you want to download data from Dryad Data? Y = download the data directly from datadryad.org, N = enter your own file path. "
+  cat(
+    "Do you want to download data from Dryad Data?\n",
+    "Y = download the data directly from datadryad.org,\n",
+    "N = enter your own file path.",
+    sep = ""
   )
+  downloadDryadData <- readline("Download? ")
   
-  inputPath = "data-raw/geocode-data/sample_zika_data.csv"
-  
-  if ("Y" == downloadDryadData || "y" == downloadDryadData) {
+  if ("y" == tolower(downloadDryadData)) {
     dryad_doi = "10.5061/dryad.47v3c"
     downloaded_documents = dryad_download(dryad_doi)
     
@@ -238,20 +256,16 @@ executeInteractiveScript <- function() {
         " "
       ))
       
-      if ("Y" == shouldProcess || "y" == shouldProcess) {
+      if ("y" == tolower(shouldProcess)) {
         inputPath = filePath
         
         break
       }
     }
   } else {
-    filepath = readline(
-      "Please provide the fully-qualified path to your local csv file. Leave blank to use the smaller sample data set. "
-    )
-    
-    if ("" != filepath) {
-      inputPath = filepath
-    }
+    cat("Please locate your local csv file.")
+    Sys.sleep(.1)
+    inputPath <- file.choose()
   }
   
   outputPath = paste0(tools::file_path_sans_ext(inputPath), "_annotated.csv")
