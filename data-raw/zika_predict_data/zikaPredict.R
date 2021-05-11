@@ -1,11 +1,11 @@
 zikaPredict <- data.frame()
 zikaPredict[26, 1] <- NA
 stateList <- structure(list(name = c("Acre", "Alagoas", "Amapá", "Amazonas", 
-                                     "Bahia", "Ceará", "Espírito Santo", "Goiás", "Maranhão", "Mato Grosso", 
+                                     "Bahia", "Ceará", "Espírito Santo", "Goiás", "Maranhao", "Mato Grosso", 
                                      "Mato Grosso do Sul", "Minas Gerais", "Pará", "Paraíba", "Paraná", 
                                      "Pernambuco", "Piauí", "Rio de Janeiro", "Rio Grande do Norte", 
                                      "Rio Grande do Sul", "Rondônia", "Roraima", "Santa Catarina", 
-                                     "São Paulo", "Sergipe", "Tocantins"), abb = c("AC", "AL", "AP", 
+                                     "Sao Paulo", "Sergipe", "Tocantins"), abb = c("AC", "AL", "AP", 
                                                                                    "AM", "BA", "CE", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", 
                                                                                    "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", 
                                                                                    "TO")), row.names = c(15L, 17L, 26L, 21L, 10L, 23L, 8L, 9L, 18L, 
@@ -70,7 +70,7 @@ Temperature <- read.csv("Temperature.csv")
 removeRows <- vector()
 
 for(i in 1 : nrow(Temperature)){ ##remove empty rows
-  if(Temperature[i,7] == "#DIV/0!"){
+  if(Temperature[i,6] == "#DIV/0!"){
     removeRows <- c(removeRows, c(i))
   }
 }
@@ -83,7 +83,7 @@ TempAverage <- data.frame()
 for(val in stateAbbSort){
   for(i in curRow_T : nrow(Temperature)){
     if(Temperature[i, 1] == val){
-      curTemp_Sum <- curTemp_Sum + as.double(Temperature[i, 7])
+      curTemp_Sum <- curTemp_Sum + as.double(Temperature[i, 6])
       if(i == nrow(Temperature)){
         curTemp_Ave <- curTemp_Sum/(i - curRow_T)
         TempAverage <- rbind(TempAverage, c(curTemp_Ave))
@@ -114,6 +114,5 @@ zikaPredict <- cbind(zikaPredict, Cases[,2])
 colnames(zikaPredict)[3]<- "CaseNum"
 remove(Cases, stateList)
 
-usethis::use_data(zikaPredict)
-
+usethis::use_data(zikaPredict, overwrite = TRUE)
 
