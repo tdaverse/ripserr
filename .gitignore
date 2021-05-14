@@ -1,7 +1,6 @@
 # R/Rstudio files
 .Rhistory
 .Rproj.user
-*.Rproj
 .DS_*
 
 # images/test runs
