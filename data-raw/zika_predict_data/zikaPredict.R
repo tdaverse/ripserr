@@ -24,7 +24,7 @@ Area <- read.csv("State Area 2020.csv", header = FALSE)
 colnames(Area) <- c("State", "Area")
 head(Area)
 
-Population <- read.csv("Brazil Population 2014.csv", header = FALSE, fileEncoding="UTF-8-BOM")
+Population <- read.csv("Brazil Population 2013.csv", header = FALSE, fileEncoding="UTF-8-BOM")
 colnames(Population) <- c("State", "Population")
 
 curArea <- 0
@@ -104,15 +104,55 @@ colnames(zikaPredict)[2] <- "TEMP"
 
 remove(curTemp_Sum, curTemp_Ave, curRow_T, TempAverage, Temperature)
 
+#------------------------Precipitation------------------------#
+Precipitation <- read.csv("Precipitation.csv")
+removeRows <- vector()
 
+for(i in 1 : nrow(Precipitation)){ ##remove empty rows
+  if(Precipitation[i,7] == "#DIV/0!"){
+    removeRows <- c(removeRows, c(i))
+  }
+}
+Precipitation <- Precipitation[-removeRows,]
+
+curPrecip_Sum <- 0
+curRow_P <- 1
+PrecipAverage <- data.frame()
+
+for(val in stateAbbSort){
+  for(i in curRow_P : nrow(Precipitation)){
+    if(Precipitation[i, 1] == val){
+      curPrecip_Sum <- curPrecip_Sum + as.double(Precipitation[i, 7])
+      if(i == nrow(Precipitation)){
+        curPrecip_Ave <- curPrecip_Sum/(i - curRow_P)
+        PrecipAverage <- rbind(PrecipAverage, c(curPrecip_Ave))
+      }
+    }else{
+      curPrecip_Ave <- curPrecip_Sum/(i - curRow_P)
+      PrecipAverage <- rbind(PrecipAverage, c(curPrecip_Ave))
+      curRow_P <- i
+      curPrecip_Sum <- 0
+      break
+    }
+  }
+}
+colnames(PrecipAverage) <- c("Average Precip")
+rownames(PrecipAverage) <- stateAbbSort
+zikaPredict <- cbind(zikaPredict, c(PrecipAverage[,1]))
+colnames(zikaPredict)[3] <- "Precip"
+
+remove(curPrecip_Sum, curPrecip_Ave, curRow_P, PrecipAverage, Precipitation)
 
 #----------------------------Cases----------------------------#
-Cases <- read.csv(("Dengue Cases 2014.csv"), header = FALSE)
+
+#Transform statenames to Abbreviations (For Dengue Cases 2014)
 Cases <- cbind(Cases, stateList[,2])
 Cases <- Cases[order(Cases[,3]),]
+#
+
+Cases <- read.csv(("Dengue Cases 2013.csv"), header = FALSE)
 zikaPredict <- cbind(zikaPredict, Cases[,2])
-colnames(zikaPredict)[3]<- "CaseNum"
+colnames(zikaPredict)[4]<- "CaseNum"
 remove(Cases, stateList)
 
 usethis::use_data(zikaPredict, overwrite = TRUE)
-
