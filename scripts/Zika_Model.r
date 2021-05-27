@@ -1,4 +1,4 @@
-devtools::load_all("ripserr")
+devtools::load_all()
 data(aegypti)
 data(zikaPredict)
 
@@ -7,6 +7,7 @@ stateList <- data.frame(
   abb =  aegypti$state_code[!duplicated(aegypti$state_code)]
 )
 
+#Temporarily remove state "DF"
 library(dplyr)
 stateList <- filter(stateList, abb != "DF") 
 
@@ -44,8 +45,9 @@ rownames(zikaModel) <- stateAbbSort
 
 
 #-----Plot of Cases Across States-----#
-library(ggplot2)
-qplot(rownames(zikaModel), zikaModel$CaseNum, xlab = "States", ylab = "Number of Cases")
+plot(zikaModel$CaseNum, xaxt = "n", xlab = "States", ylab = "Number of Cases")
+axis(1, at = 1:26, labels = stateAbbSort)
+
 hist(log(zikaModel$CaseNum), main = "Distribution of Cases with Log Transformation")
 
 #-----Linear Regression zikaModel----#
