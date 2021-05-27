@@ -8,7 +8,6 @@ stateList <- data.frame(
 )
 
 #Temporarily remove state "DF"
-library(dplyr)
 stateList <- filter(stateList, abb != "DF") 
 
 stateList <- stateList[order(stateList$name),]#sorted by state names
