@@ -10,7 +10,7 @@ stateList <- structure(list(name = c("Acre", "Alagoas", "Amapá", "Amazonas",
                                                                                    "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", 
                                                                                    "TO")), row.names = c(15L, 17L, 26L, 21L, 10L, 23L, 8L, 9L, 18L, 
                                                                                                          11L, 5L, 7L, 19L, 22L, 3L, 20L, 16L, 6L, 24L, 1L, 12L, 25L, 2L, 
-                                                                                                         4L, 14L, 13L), class = "data.frame")
+                                                                                         4L, 14L, 13L), class = "data.frame")
 library(dplyr)
 stateList <- filter(stateList, abb != "DF") 
 
