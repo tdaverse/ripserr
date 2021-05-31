@@ -2,20 +2,11 @@ devtools::load_all()
 data(aegypti)
 data(zikaPredict)
 
-stateList <- data.frame(
-  name = aegypti$state_name[!duplicated(aegypti$state_name)],
-  abb =  aegypti$state_code[!duplicated(aegypti$state_code)]
-)
-
-#Temporarily remove state "DF"
-stateList <- subset(stateList, abb != "DF")
-
-stateList <- stateList[order(stateList$name),]#sorted by state names
-stateAbbSort <-sort(stateList$abb) #sorted vector of abbreviation
+stateAbbSort <- sort(aegypti$state_code[!duplicated(aegypti$state_code)]) #sorted vector of abbreviation
+stateAbbSort <- stateAbbSort[stateAbbSort != "DF"]
 
 zikaModel <- data.frame()
 
-#-----Calculate Numbers of H0/H1------#
 topologicalFeatures <- function(state_rips){
   H0_H1 <- ifelse(state_rips$dimension == 0, 0, 1)
   numH0 <- length(which(H0_H1 == 0))
