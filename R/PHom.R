@@ -246,8 +246,13 @@ print.PHom <- function(x, ...) {
     ans2 <- paste(ans2, curr, sep = "\n")
   }
   
-  ans3 <- paste0("Radius/diameter: min = ", signif(min(x$birth), digits = 5),
-                 "; max = ", signif(max(x$death), digits = 5), ".")
+  ans3 <- ifelse(nrow(x) > 0,
+                 paste0("Radius/diameter: min = ",
+                        signif(min(x$birth), digits = 5),
+                        "; max = ",
+                        signif(max(x$death), digits = 5),
+                        "."),
+                 "")
   
   cat(paste(ans1, ans2, ans3, sep = "\n\n"))
 }

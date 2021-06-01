@@ -72,6 +72,11 @@ vietoris_rips.data.frame <- function(dataset, ...) {
 vietoris_rips.matrix <- function(dataset,
                                  max_dim = 1L, threshold = -1, p = 2L,
                                  ...) {
+  # shortcut for special case (only 1 row should return empty PHom)
+  if (nrow(dataset) == 1) {
+    return(new_PHom())
+  }
+  
   # ensure valid arguments passed
   validate_params_vr(max_dim = max_dim,
                      threshold = threshold,
