@@ -171,8 +171,8 @@ validate_mat_vr <- function(dataset) {
   error_class(dataset, "dataset", "matrix")
   
   # min size
-  if (nrow(dataset) < 2) {
-    stop(paste("dataset parameter must have at least 2 rows, number of rows in",
+  if (nrow(dataset) < 1) {
+    stop(paste("dataset parameter must have at least 1 row, number of rows in",
                "passed dataset =", nrow(dataset)))
   } else if (ncol(dataset) < 2) {
     stop(paste("dataset parameter must have at least 2 columns, number of",
