@@ -1,18 +1,17 @@
 zikaPredict <- data.frame()
-zikaPredict[26, 1] <- NA
+zikaPredict[27, 1] <- NA
 stateList <- structure(list(name = c("Acre", "Alagoas", "Amapá", "Amazonas", 
-                                     "Bahia", "Ceará", "Espírito Santo", "Goiás", "Maranhao", "Mato Grosso", 
+                                     "Bahia", "Ceará", "Distrito Federal", "Espírito Santo", "Goiás", "Maranhao", "Mato Grosso", 
                                      "Mato Grosso do Sul", "Minas Gerais", "Pará", "Paraíba", "Paraná", 
                                      "Pernambuco", "Piauí", "Rio de Janeiro", "Rio Grande do Norte", 
                                      "Rio Grande do Sul", "Rondônia", "Roraima", "Santa Catarina", 
                                      "Sao Paulo", "Sergipe", "Tocantins"), abb = c("AC", "AL", "AP", 
-                                                                                   "AM", "BA", "CE", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", 
+                                                                                   "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", 
                                                                                    "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", 
                                                                                    "TO")), row.names = c(15L, 17L, 26L, 21L, 10L, 23L, 8L, 9L, 18L, 
                                                                                                          11L, 5L, 7L, 19L, 22L, 3L, 20L, 16L, 6L, 24L, 1L, 12L, 25L, 2L, 
-                                                                                         4L, 14L, 13L), class = "data.frame")
-library(dplyr)
-stateList <- filter(stateList, abb != "DF") 
+                                                                                         4L, 14L, 13L, 27L), class = "data.frame")
+
 
 stateList <- stateList[order(stateList$name),]#sorted by state names
 stateAbbSort <-sort(stateList$abb) #sorted vector of abbreviation
@@ -22,7 +21,6 @@ rownames(zikaPredict) <- stateAbbSort
 #----------------------Density = POP/Area----------------------#
 Area <- read.csv("State Area 2020.csv", header = FALSE)
 colnames(Area) <- c("State", "Area")
-head(Area)
 
 Population <- read.csv("Brazil Population 2013.csv", header = FALSE, fileEncoding="UTF-8-BOM")
 colnames(Population) <- c("State", "Population")
@@ -142,10 +140,9 @@ zikaPredict <- cbind(zikaPredict, c(PrecipAverage[,1]))
 colnames(zikaPredict)[3] <- "Precip"
 
 remove(curPrecip_Sum, curPrecip_Ave, curRow_P, PrecipAverage, Precipitation)
-
 #----------------------------Cases----------------------------#
 
-#Transform statenames to Abbreviations (For Dengue Cases 2014)
+#Transform statenames to Abbreviations (Only used for Dengue Cases 2014)
 Cases <- cbind(Cases, stateList[,2])
 Cases <- Cases[order(Cases[,3]),]
 #
