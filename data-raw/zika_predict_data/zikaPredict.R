@@ -137,19 +137,14 @@ for(val in stateAbbSort){
 colnames(PrecipAverage) <- c("Average Precip")
 rownames(PrecipAverage) <- stateAbbSort
 zikaPredict <- cbind(zikaPredict, c(PrecipAverage[,1]))
-colnames(zikaPredict)[3] <- "Precip"
+colnames(zikaPredict)[3] <- "PRECIP"
 
 remove(curPrecip_Sum, curPrecip_Ave, curRow_P, PrecipAverage, Precipitation)
 #----------------------------Cases----------------------------#
-
-#Transform statenames to Abbreviations (Only used for Dengue Cases 2014)
-Cases <- cbind(Cases, stateList[,2])
-Cases <- Cases[order(Cases[,3]),]
-#
-
 Cases <- read.csv(("Dengue Cases 2013.csv"), header = FALSE)
 zikaPredict <- cbind(zikaPredict, Cases[,2])
-colnames(zikaPredict)[4]<- "CaseNum"
+colnames(zikaPredict)[4]<- "CASE"
 remove(Cases, stateList)
 
 usethis::use_data(zikaPredict, overwrite = TRUE)
+
