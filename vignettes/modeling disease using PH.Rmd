@@ -1,10 +1,10 @@
 ---
 title: "Modeling Cases of Mosquito-Borne Disease Using Persistent Homology"
-author: "Xinyi Zhang, Jason Cory Brunson"
+author: "Xinyi Zhang, Jason C. Brunson"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Modeling Cases of Mosquito-Borne Disease Using Persistent Homology}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
