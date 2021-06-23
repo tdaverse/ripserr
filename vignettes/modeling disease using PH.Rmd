@@ -1,6 +1,6 @@
 ---
 title: "Modeling Cases of Mosquito-Borne Disease Using Persistent Homology"
-author: "Xinyi Zhang, Jason C. Brunson"
+author: "Xinyi Zhang, Jason Cory Brunson"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
