@@ -50,7 +50,7 @@ zikaModel <- data.frame()
 
 Before building the model, following code provides an example of using Vietoris--Rips filtration on the mosquito occurrence patterns for a single state. First, we retrieve occurrence coordinates in the state of Acre (AC) from the _Aedes aegypti_ dataset. Applying the `vietoris_rips` function to these coordinates, we receive a data frame that contains the birth and death information of every 0-dimensional (H0) and 1-dimensional (H1) feature. We plot these _persistence data_ in the following graph, where the x-axis and y-axis represent the birth and death of each feature.
 
-```{r}
+```{r, fig.width = 4, fig.height = 4}
 AC_coord <- aegypti[aegypti$state_code == "AC", c("x", "y"), drop = FALSE]
 AC_rips <- vietoris_rips(AC_coord) ##filtration
 
@@ -69,7 +69,7 @@ points(AC_rips[AC_rips$dimension == 1L, c("birth", "death")], pch = 17L)
 
 For reference, we can also plot the mosquito occurrences based on their latitudes and longitudes in the _aegypti_ dataset. Note, however, that the plot is not exactly faithful to the geography, since the distances between longitude lines vary from location to location. (This also means that our PH calculations are not exactly right. The same limitation applies to the analysis of Lo and Park.)
 
-```{r}
+```{r, fig.width = 4, fig.height = 4}
 plot(x = AC_coord$x, y = AC_coord$y, asp = 1, xlab = "X", ylab = "Y",
      main = "Aedes Aegypti Occurrences in AC")
 ```
@@ -121,7 +121,7 @@ head(zikaModel)
 ### Cases Visualization
 
 Plots below visualize the number of cases within each state. To reproduce the model by Lo and Park, we will use the log-transformation on the number of cases to reduce skewness of the data and the influence of outliers. 
-```{r}
+```{r, fig.width = 8, fig.height = 4}
 par(mfrow = c(1L, 2L))
 
 hist(zikaModel$CASE, main = "Distribution of Case Counts")
@@ -132,7 +132,7 @@ hist(log(zikaModel$CASE),
 
 We use the following plot to check if there is any correlation between predictors. We see that H0 and H1 are linearly related to each other, so H1 may not be a necessary predictor. During the model selection process, there will be a comparison about whether or not to include H1 as a predictor, and decisions will be made there. 
 
-```{r}
+```{r, fig.width = 5, fig.height = 5}
 pairs(zikaModel, pch = 16L)
 ```
 
@@ -147,7 +147,7 @@ summary(fit.1)
 
 To check error assumptions for linear regression, we plot residuals vs. fitted values and theoretical quantiles vs. standardized residuals. We observe that residuals for each fitted values are evenly distributed above and below the mean 0, and the relationship between residuals and fitted values seem to have a linear relation. In the qauntile-quantile plot, standardized residuals closely line up with normal values, with a few outliers. Therefore, the normal distribution assumption on error term is satisfied. 
 
-```{r}
+```{r, fig.width = 8, fig.height = 4}
 par(mfrow = c(1L, 2L))
 plot(fit.1, which = 1)
 plot(fit.1, which = 2)
@@ -174,7 +174,7 @@ summary(fit.2)
 
 Similarly, two plots below exhibit that error terms from the regression model are centered around 0 and normally distributed. There are a few outliers from the Q-Q plot, but their effects are trivial in our regression model. 
 
-```{r}
+```{r, fig.width = 8, fig.height = 4}
 par(mfrow = c(1L, 2L))
 plot(fit.2, which = 1)
 plot(fit.2, which = 2)
@@ -230,7 +230,7 @@ colnames(Coord_Example) <- c("H0", "H1ML", "CASE");Coord_Example
 
 While controlling `H0`, we want to give a visualized interpretation of how `H1ML` positively relates to the number of cases. To achieve this, we plot _Aedes aegypti_ occurrences on an xy-axis. We also limit the range of the x-axis to 10 in all three plots to fix the geographic dimension, in order to have a fair comparison between _aegypti_ distributions.
 
-```{r}
+```{r, fig.width = 9, fig.height = 3}
 par(mfrow = c(1L, 3L))
 
 PE_coord <- aegypti[aegypti$state_code == "PE", c("x", "y"), drop = FALSE]
