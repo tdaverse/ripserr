@@ -37,7 +37,11 @@ Authors@R:
              role = c("cph", "ctb"),
              comment = paste("Ulrich Bauer holds the copyright to Ripser",
                              "(MIT license), which was refactored prior",
-                             "to inclusion in ripserr.")))
+                             "to inclusion in ripserr."))),
+      person(given = "Xinyi", 
+             family = "Zhang",
+             role = "aut",
+             email = "ezhang0927@gmail.com")
 Description: Ports the Ripser <arXiv:1908.02518> and Cubical Ripser
     <arXiv:2005.12692> persistent homology calculation engines from C++. Can
     be used as a rapid calculation tool in topological data analysis
