@@ -9,28 +9,42 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
 ### Background
 
-In 2015, Zika virus (ZIKV) was first introduced and spread across Brazil due to a plethora of _Aedes aegypti_ mosquitoes.[^Gatherer2016] These species transmit ZIKV to people, which can cause mild symptoms or even severe health conditions such as Guillain-Barre’ Syndrome and microcephaly.[^Winer2014][^Johansson2016] Derek Lo and Briton Park (2018) modeled the spread of ZIKV using linear regression, while comparing results between two models — one with predictors calculated from persistent homology (PH) and one without.[^Lo2018] They show that using the number of 0-dimensional and 1-dimensional homological features and the maximum lifetime (persistence) of any 1-dimensional feature can better predict the number of ZIKV cases in Brazil.
+In 2015, the Zika virus (ZIKV) was first introduced and spread across Brazil due to a plethora of _Aedes aegypti_ mosquitoes.[^Gatherer2016]
+This species transmits ZIKV to humans, which can cause mild symptoms or even severe health conditions such as Guillain-Barré Syndrome and microcephaly.[^Winer2014][^Johansson2016]
+Lo and Park (2018) modeled the spread of ZIKV using linear regression, while comparing results between two models — one with predictors calculated from persistent homology (PH) and one without.[^Lo2018]
+They show that using the number of 0-dimensional and 1-dimensional homological features and the maximum lifetime (persistence) of any 1-dimensional feature can better predict the number of ZIKV cases in Brazil.
 
-In our example, we will demonstrate how to use these topological features to model disease transmission by _Aedes aegypti_, similar to the ZIKV model built by Lo and Park.
+Here, we demonstrate how to use topological features to model disease transmission by _A. aegypti_, similar to the ZIKV model built by Lo and Park.
 
 ### Methods
 
-To imitate the model from Lo and Park with available data, we will predict the number of ZIKV cases confirmed in each state through linear regression. However, data points of _aegypti_ mosquitoes in Brazil are only available for the year 2013, while documented ZIKV cases are available only since 2015. Instead of using the number of ZIKV cases as the response variable in our regression model, we obtained the number of Dengue cases in Brazil for the year 2013,[^dengue] since Dengue is also transmitted by _Aedes aegypti_ mosquitoes. Predictions of number of cases in each state will be made using average temperatures, precipitation levels,[^weather] and human population densities.[^population][^area] Notice that the source for temperature data provided by Lo and Park is no longer available. The accessible dataset for temperatures and precipitations are averaged throughout multiple years, thus it may not be completely accurate for 2013.
+To imitate the model from Lo and Park with available data, we will predict the number of ZIKV cases confirmed in each state using linear regression.
+However, data points of _A. aegypti_ mosquitoes in Brazil are only available for the year 2013, while documented ZIKV cases are available only since 2015.
+Instead of using the number of ZIKV cases as the response variable in our regression model, we obtained the number of Dengue cases in Brazil for the year 2013,[^dengue] since Dengue is also transmitted by _A. aegypti_ mosquitoes.
+Predictions of number of cases in each state will be made using average temperatures, precipitation levels,[^weather] and human population densities.[^population][^area]
+Notice that the source for temperature data provided by Lo and Park is no longer available.
+The accessible dataset for temperatures and precipitations are averaged throughout multiple years, thus it may not be completely accurate for 2013.
 
-In addition to these state-level attributes, we will utilize spatial information on _Aedes aegypti_ occurrences.[^aegypti] We include the number of 0-dimensional features (H0) as a predictor since a higher value of H0 indicates that a state harbors more mosquitoes. We also include the number of 1-dimensional features (H1) in our model, as we interpret a larger value of H1 to mean that _Aedes aegypti_ mosquitoes are more spread out. In addition, extending the analysis of Lo and Park, we include the maximum lifetime (H1ML) and the median lifetime (H1MD) of the 1-dimensinoal features, which we expect give additional insight into the statewide connectivity of _Aedes aegypti_ distributions. A high H1ML indicates mosquitoes have a wider spread and are less clustered at a small number of specific regions. Also, we are curious about whether the median of H1 lifetime can improve upon the effect of H1ML demonstrated by Lo and Park.
+In addition to these state-level attributes, we will utilize spatial information on _A. aegypti_ occurrences.[^aegypti]
+We include the number of 0-dimensional features (H0) as a predictor since a higher value of H0 indicates that a state harbors more mosquitoes.
+We also include the number of 1-dimensional features (H1) in our model, as we interpret a larger value of H1 to mean that _A. aegypti_ mosquitoes are more spread out.
+In addition, extending the analysis of Lo and Park, we include the maximum lifetime (H1ML) and the median lifetime (H1MD) of the 1-dimensinoal features, which we expect give additional insight into the statewide connectivity of _A. aegypti_ distributions.
+A high H1ML indicates mosquitoes have a wider spread and are less clustered at a small number of specific regions.
+We are also curious about whether the median of H1 lifetime can improve upon the effect of H1ML demonstrated by Lo and Park.
 
 ### Datasets
 
-First, we load the dataset `aegypti` containing geographic locations of _aegypti_ mosquitoes. Also, we load the `zikaPredict` data to obtain human population density, average temperature, precipitation level, and the number of cases in each state.
+First, we load the `aegypti` dataset containing geographic locations of _A. aegypti_ mosquitoes.
+Also, we load the `zikaPredict` dataset to obtain human population density, average temperature, precipitation level, and the number of cases in each state.
 
-We will use state abbreviations to join elements from these two data sets, and from the PH calculations. The vector `stateAbbSort`, de-duplicated from the _aegypti_ dataset, provides a convenient tool for these tasks.
+We will use state abbreviations to join elements from these two data sets and from the PH calculations.
+The vector `stateAbbSort`, de-duplicated from the _A. aegypti_ dataset, provides a convenient tool for these tasks.
 
 ```{r}
 devtools::load_all()
@@ -48,7 +62,10 @@ zikaModel <- data.frame()
 
 ### Persistent homology
 
-Before building the model, following code provides an example of using Vietoris--Rips filtration on the mosquito occurrence patterns for a single state. First, we retrieve occurrence coordinates in the state of Acre (AC) from the _Aedes aegypti_ dataset. Applying the `vietoris_rips` function to these coordinates, we receive a data frame that contains the birth and death information of every 0-dimensional (H0) and 1-dimensional (H1) feature. We plot these _persistence data_ in the following graph, where the x-axis and y-axis represent the birth and death of each feature.
+Before building the model, the following code provides an example of using Vietoris-Rips filtration on the mosquito occurrence patterns for a single state.
+First, we retrieve occurrence coordinates in the state of Acre (AC) from the _A. aegypti_ dataset.
+Applying the `vietoris_rips` function to these coordinates, we receive a data frame that contains the birth and death information of every 0-dimensional (H0) and 1-dimensional (H1) feature.
+We plot these _persistence data_ in the following graph, where the horizontal and vertical axes represent the birth and death of each feature, respectively.
 
 ```{r, fig.width = 4, fig.height = 4}
 AC_coord <- aegypti[aegypti$state_code == "AC", c("x", "y"), drop = FALSE]
@@ -67,7 +84,10 @@ points(AC_rips[AC_rips$dimension == 0L, c("birth", "death")], pch = 16L)
 points(AC_rips[AC_rips$dimension == 1L, c("birth", "death")], pch = 17L)
 ```
 
-For reference, we can also plot the mosquito occurrences based on their latitudes and longitudes in the _aegypti_ dataset. Note, however, that the plot is not exactly faithful to the geography, since the distances between longitude lines vary from location to location. (This also means that our PH calculations are not exactly right. The same limitation applies to the analysis of Lo and Park.)
+For reference, we can also plot the mosquito occurrences based on their latitudes and longitudes in the _aegypti_ dataset.
+Note, however, that the plot is not exactly faithful to the geography, since the distances between longitude lines vary from location to location.
+This also means that our PH calculations are not exactly right.
+The same limitation applies to the analysis of Lo and Park.
 
 ```{r, fig.width = 4, fig.height = 4}
 plot(x = AC_coord$x, y = AC_coord$y, asp = 1, xlab = "X", ylab = "Y",
@@ -110,7 +130,9 @@ colnames(zikaModel) <-  c("H0", "H1", "H1MD","H1ML")
 rownames(zikaModel) <- stateAbbSort
 ```
 
-We merge `zikaModel` with `zikaPredict`, matched by state code. Now we have loaded all potential predictors to our model. The following code prints out first few lines of the `zikaModel` to demonstrate how states and their variables lie within this data frame.
+We merge `zikaModel` with `zikaPredict`, matched by state code.
+We have now loaded all potential predictors to our model.
+The following code prints out first few lines of the `zikaModel` to demonstrate how states and their variables lie within this data frame.
 
 ```{r}
 zikaModel <- merge(zikaModel, zikaPredict, by = "row.names")[, -1]
@@ -120,9 +142,11 @@ head(zikaModel)
 
 ### Cases Visualization
 
-Plots below visualize the number of cases within each state. To reproduce the model by Lo and Park, we will use the log-transformation on the number of cases to reduce skewness of the data and the influence of outliers. 
-```{r, fig.width = 8, fig.height = 4}
-par(mfrow = c(1L, 2L))
+The plots below visualize the number of cases within each state.
+To reproduce the model by Lo and Park, we will log-transform the number of cases to reduce data skew and the influence of outliers.
+
+```{r, fig.width = 6, fig.height = 6}
+par(mfrow = c(2L, 1L))
 
 hist(zikaModel$CASE, main = "Distribution of Case Counts")
 
@@ -130,7 +154,9 @@ hist(log(zikaModel$CASE),
      main = "Distribution of Log-Transformed Case Counts")
 ```
 
-We use the following plot to check if there is any correlation between predictors. We see that H0 and H1 are linearly related to each other, so H1 may not be a necessary predictor. During the model selection process, there will be a comparison about whether or not to include H1 as a predictor, and decisions will be made there. 
+We use the following plot to check if there is any correlation between predictors.
+We see that H0 and H1 are linearly related to each other, so H1 may not be a necessary predictor.
+During the model selection process, there will be a comparison testing inclusion of H1 as a predictor and decisions will be made at that point.
 
 ```{r, fig.width = 5, fig.height = 5}
 pairs(zikaModel, pch = 16L)
@@ -138,14 +164,18 @@ pairs(zikaModel, pch = 16L)
 
 ### First fit: Model without Topological Features
 
-First, we fit a linear model to log-transformed case counts predicted by population, temperature, precipitation, and H0 (the number of _aegypti_ occurrences). Based on the summary output, the null hypothesis of no predictive value is rejected ($p = 0.0199$).
+First, we fit a linear model to log-transformed case counts predicted by population, temperature, precipitation, and H0 (the number of _aegypti_ occurrences).
+We reject the null hypothesis of no predictive value ($p = 0.0199$).
 
 ```{r}
 fit.1 <- lm(log(CASE) ~ POP + TEMP + PRECIP + H0, data = zikaModel)
 summary(fit.1)
 ```
 
-To check error assumptions for linear regression, we plot residuals vs. fitted values and theoretical quantiles vs. standardized residuals. We observe that residuals for each fitted values are evenly distributed above and below the mean 0, and the relationship between residuals and fitted values seem to have a linear relation. In the qauntile-quantile plot, standardized residuals closely line up with normal values, with a few outliers. Therefore, the normal distribution assumption on error term is satisfied. 
+To check error assumptions for linear regression, we plot residuals versus fitted values and theoretical quantiles versus standardized residuals.
+We observe that residuals for each fitted values are evenly distributed above and below the mean 0, and the relationship between residuals and fitted values seem to have a linear relation.
+In the quantile-quantile plot, standardized residuals closely line up with normal values, with a few outliers.
+Therefore, the normality assumption on the error term is satisfied. 
 
 ```{r, fig.width = 8, fig.height = 4}
 par(mfrow = c(1L, 2L))
@@ -153,7 +183,11 @@ plot(fit.1, which = 1)
 plot(fit.1, which = 2)
 ```
 
-Next, we use the likelihood ratio test (LRT) to assess if we should drop the precipitation predictor `PRECIP`. In the LRT, $p = 0.8135$, which fails to reject the nested model. This result suggests that the simpler model without `PRECIP` is better. We therefore replace the original model with this more parsimonious one. Even though `TEMP` is not statistically significant, we keep it to the model as temperature is an effectual predictor in most epidemiology modeling, and one whose point estimate we may want to be able to report.
+Next, we use the likelihood ratio test (LRT) to assess if we should drop the precipitation predictor `PRECIP`.
+In the LRT, $p = 0.8135$, which fails to reject the nested model.
+This result suggests that the simpler model without `PRECIP` is better.
+We therefore replace the original model with this more parsimonious one.
+Even though `TEMP` is not statistically significant, we preserve it in the model as temperature is an effectual predictor in most epidemiology modeling, and one whose point estimate we may want to be able to report.
 
 ```{r}
 fit.nested <- lm(log(CASE) ~ POP + TEMP + H0, data = zikaModel)
@@ -164,7 +198,11 @@ summary(fit.1)
 
 ### Second fit: Model with Topological Features
 
-Let's add `H1`, `H1ML`, and `H1MD` to our current regression model and name it as `fit.2`.  From the summary output of the second model, $F = 3.268$ and $p = 0.01878$. We know that coefficients of these predictors are not all 0. However, We might overfit the data as many predictors are not statistically significant. Thus, we want to leave out variables that are irrelevant.
+Let's add `H1`, `H1ML`, and `H1MD` to our current regression model and name it `fit.2`.
+From the summary output of the second model, $F = 3.268$ and $p = 0.01878$.
+We know that coefficients of these predictors are not all 0.
+However, we might overfit the data as many predictors are not statistically significant.
+Thus, we prefer to exclude irrelevant variables.
 
 ```{r}
 fit.2 <- lm(log(CASE) ~ POP + TEMP + H0 + H1 + H1ML + H1MD,
@@ -172,7 +210,8 @@ fit.2 <- lm(log(CASE) ~ POP + TEMP + H0 + H1 + H1ML + H1MD,
 summary(fit.2)
 ```
 
-Similarly, two plots below exhibit that error terms from the regression model are centered around 0 and normally distributed. There are a few outliers from the Q-Q plot, but their effects are trivial in our regression model. 
+Similarly, the two plots below exhibit that error terms from the regression model are normally distributed and centered at zero.
+There are a few outliers from the Q-Q plot, but their effects are trivial in our regression model. 
 
 ```{r, fig.width = 8, fig.height = 4}
 par(mfrow = c(1L, 2L))
@@ -180,7 +219,8 @@ plot(fit.2, which = 1)
 plot(fit.2, which = 2)
 ```
 
-Using LRT to see if `H1MD` is a useful predictor, we fail to reject the nested model when H1MD is absent ($p = 0.4126$). Therefore, we leave out `H1MD` in our model.
+Using LRT to see if `H1MD` is a useful predictor, we fail to reject the nested model when H1MD is absent ($p = 0.4126$).
+Therefore, we leave out `H1MD` in our model.
 
 ```{r}
 fit.test0 <- lm(log(CASE) ~ POP + TEMP + H0 + H1 + H1ML,
@@ -189,7 +229,9 @@ summary(fit.test0)
 lmtest::lrtest(fit.test0, fit.2)
 ```
 
-We observe that coefficients of both H0 and H1 are not statistically significant. Also, it is concerning because the coefficient of H0 in the nested model above is negative, which means more mosquito occurrences tend to decrease the number of cases. We decide to test the model without `H1`, as it seems to correlate with H0 and cause confounding.
+We observe that coefficients of both H0 and H1 are not statistically significant.
+Also, it is concerning because the coefficient of H0 in the nested model above is negative, which means more mosquito occurrences tend to decrease the number of cases.
+We decide to test the model without `H1`, as it seems to correlate with H0 and cause confounding.
 
 ```{r}
 fit.test1 <- lm(log(CASE) ~ POP + TEMP + H0 + H1ML, data = zikaModel)
@@ -197,7 +239,8 @@ summary(fit.test1)
 lmtest::lrtest(fit.test1, fit.test0)
 ```
 
-The likelihood ratio test suggests that we need to choose the simpler model without `H1` ($p = 0.2161$). In this case, we only need H1ML as our topological predictor.
+The likelihood ratio test suggests that we need to choose the simpler model without `H1` ($p = 0.2161$).
+In this case, we only need H1ML as our topological predictor.
 
 ```{r}
 fit.2 <- lm(log(CASE) ~ POP + TEMP + H0 + H1ML, data = zikaModel)
@@ -212,9 +255,14 @@ summary(fit.1)
 summary(fit.2)
 ```
 
-`H0` and `H1ML` are both positively related to the number of cases in each state. A higher value of `H0` indicates more _Aedes aegypti_ occurrences within the given state, so it leads to more confirmed cases. Since we include both `H0` and `H1ML` in the model, given a fixed number of _Aedes aegypti_ occurrences, a more persistent cycle would predict more cases as disease outbreaks can involve more locations. To interpret this, we select three states with similar `H0` but different `H1ML` and compare their number of cases.
+`H0` and `H1ML` are both positively related to the number of cases in each state.
+A higher value of `H0` indicates more _A. aegypti_ occurrences within the given state, so it leads to more confirmed cases.
+Since we include both `H0` and `H1ML` in the model, given a fixed number of _A. aegypti_ occurrences, a more persistent cycle would predict more cases as disease outbreaks can involve more locations.
+To interpret this, we select three states with similar `H0` but different `H1ML` and compare the number of cases in each.
 
-We choose states Pernambuco, Ceará, and Goiás for this example and print out `H0`, `H1ML`, `POP`, and `CASE` for each state. We observe that state Goiás has the largest `H1ML` and the most cases, while Pernambuco has the smallest `H1ML` and the least number of cases. To reduce the effect of `H0` on case numbers and `H1ML`, `H0` is fixed since `H0` for three selected states all fall into the range around 200.
+We choose states Pernambuco, Ceará, and Goiás for this example and print out `H0`, `H1ML`, `POP`, and `CASE` for each state.
+We observe that Goiás has the largest `H1ML` and the most cases, while Pernambuco has the smallest `H1ML` and the least number of cases.
+To reduce the effect of `H0` on case numbers and `H1ML`, `H0` is fixed since `H0` for three selected states all fall into the range around 200.
 
 ```{r}
 Example_States <- c("PE", "CE", "GO")
@@ -228,7 +276,9 @@ rownames(Coord_Example) <- Example_States
 colnames(Coord_Example) <- c("H0", "H1ML", "CASE");Coord_Example
 ```
 
-While controlling `H0`, we want to give a visualized interpretation of how `H1ML` positively relates to the number of cases. To achieve this, we plot _Aedes aegypti_ occurrences on an xy-axis. We also limit the range of the x-axis to 10 in all three plots to fix the geographic dimension, in order to have a fair comparison between _aegypti_ distributions.
+While controlling `H0`, we want to give a visualized interpretation of how `H1ML` positively relates to the number of cases.
+To achieve this, we plot _A. aegypti_ occurrences on an xy-axis.
+We also limit the range of the x-axis to 10 in all three plots to fix the geographic dimension, in order to have a fair comparison between _aegypti_ distributions.
 
 ```{r, fig.width = 9, fig.height = 3}
 par(mfrow = c(1L, 3L))
@@ -251,11 +301,25 @@ plot(x = GO_coord$x, y = GO_coord$y, asp = 1, col = "red",
 par(mfrow = c(1L, 1L))
 ```
 
-Distributions of _aegypti_ populations serves as a guidance map for interpreting `H1ML`: a bigger `H1ML` comes from sparse and wider range of occurrences where infections can extend to more locations. In Pernambuco, which has the tiniest `H1ML`, most occurrences appear to form a single cluster. Hence, the spread of disease in Pernambuco may be easier to prevent and contain in the population close to this _aegypti_ cluster, such as by applying pesticides and increasing predators. This may be part of the reason that Pernambuco, with the tiniest `H1ML`, has a small number of cases. In Ceará, occurrences are not clustered in one chunk but are separated into two clusters, one to the north and the other to the south. Based on the _aegypti_ distribution in Goiás, we observe that multiple _aegypti_ points are sparsely located instead of tightly attached to one another, which can lead to a higher value of `H1ML`. Comparing the shape of distributions among state Ceará and Goiás, occurrences in Goiás have a larger spread and are more uniformly distributed across the state, so the disease in Goiás can be transmitted across a wider range to reach more distant locations. More uniformed occurrences of _aegypti_ species can increase the number of infections as it bridges more neighboring communities. Overall, predictor `H1ML` effectively detects patterns among clusters of occurrences and explains that the increase in cases may be due to a wider range of disease spread.
+Distributions of _aegypti_ populations serve as a guidance map for interpreting `H1ML`: a bigger `H1ML` comes from sparse and wider range of occurrences where infections can extend to more locations.
+In Pernambuco, which has the tiniest `H1ML`, most occurrences appear to form a single cluster.
+Hence, the spread of disease in Pernambuco may be easier to prevent and contain in the population close to this _aegypti_ cluster, such as by applying pesticides and increasing predators.
+This may be part of the reason that Pernambuco, with the tiniest `H1ML`, has a small number of cases.
+In Ceará, occurrences are not clustered in one chunk but are separated into two clusters, one to the north and the other to the south.
+Based on the _aegypti_ distribution in Goiás, we observe that multiple _aegypti_ points are sparsely located instead of tightly attached to one another, which can lead to a higher value of `H1ML`.
+Comparing the shape of distributions among state Ceará and Goiás, occurrences in Goiás have a larger spread and are more uniformly distributed across the state, so the disease in Goiás can be transmitted across a wider range to reach more distant locations.
+More uniformed occurrences of _aegypti_ species can increase the number of infections as it bridges more neighboring communities.
+Overall, predictor `H1ML` effectively detects patterns among clusters of occurrences and explains that the increase in cases may be due to a wider range of disease spread.
 
-### Discussions
+### Discussion
 
-We have shown that using topological features from _Aedes aegypti_ occurrences, in conjunction with standard epidemiology variables, could better use the spatial information of existing data to benefit the prediction of ZIKV cases. Compared to using different years' datasets by Lo and Park, we have kept all our datasets to 2013 so our model leads to a different result. Also, improvements in our regression model after using topological features are not extraordinarily significant. In addition to variables included in our model, it is possible to further involve interaction terms, quadratic predictors, and log transformation of topological features when they are contextually and statistically appropriate. We have tested our model while incorporating the interaction between `H1` and `H1ML` as an additional predictor, in order to follow the approach by Lo and Park. But this interaction term is not significant and does not contribute to the overall fitness of our model. Even though variable selections and results seem a little to deviate from the regression model built by Lo and Park, our model demonstrates how to take advantage of topological features generated by the Vietoris-Rips filtration.
+We have shown that using topological features from _A. aegypti_ occurrences in conjunction with standard epidemiology variables could better use the spatial information of existing data to benefit the prediction of ZIKV cases.
+Compared to using different years' datasets by Lo and Park, we have kept all our datasets to 2013 so our model leads to a different result.
+Also, improvements in our regression model after using topological features are not extraordinarily significant.
+In addition to variables included in our model, it is possible to further involve interaction terms, quadratic predictors, and log transformation of topological features when they are contextually and statistically appropriate.
+We have tested our model while incorporating the interaction between `H1` and `H1ML` as an additional predictor, in order to follow the approach by Lo and Park.
+However, this interaction term is not significant and does not contribute to the overall fitness of our model.
+Even though variable selections and results deviate somewhat from the regression model built by Lo and Park, our model successfully demonstrates how to take advantage of topological features generated by the Vietoris-Rips filtration.
 
 ### References
 
