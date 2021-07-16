@@ -65,5 +65,7 @@ Suggests:
     covr (>= 3.5),
     knitr (>= 1.29),
     rmarkdown (>= 2.3),
-    testthat (>= 2.3)
+    testthat (>= 2.3),
+    devtools,
+    lmtest
 VignetteBuilder: knitr
