@@ -1,10 +1,10 @@
-zikaPredict <- data.frame()
-zikaPredict[27, 1] <- NA
-stateList <- structure(list(name = c("Acre", "Alagoas", "Amapá", "Amazonas", 
-                                     "Bahia", "Ceará", "Distrito Federal", "Espírito Santo", "Goiás", "Maranhao", "Mato Grosso", 
-                                     "Mato Grosso do Sul", "Minas Gerais", "Pará", "Paraíba", "Paraná", 
-                                     "Pernambuco", "Piauí", "Rio de Janeiro", "Rio Grande do Norte", 
-                                     "Rio Grande do Sul", "Rondônia", "Roraima", "Santa Catarina", 
+case_predictors <- data.frame()
+case_predictors[27, 1] <- NA
+stateList <- structure(list(name = c("Acre", "Alagoas", "Amap?", "Amazonas", 
+                                     "Bahia", "Cear?", "Distrito Federal", "Esp?rito Santo", "Goi?s", "Maranhao", "Mato Grosso", 
+                                     "Mato Grosso do Sul", "Minas Gerais", "Par?", "Para?ba", "Paran?", 
+                                     "Pernambuco", "Piau?", "Rio de Janeiro", "Rio Grande do Norte", 
+                                     "Rio Grande do Sul", "Rond?nia", "Roraima", "Santa Catarina", 
                                      "Sao Paulo", "Sergipe", "Tocantins"), abb = c("AC", "AL", "AP", 
                                                                                    "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", 
                                                                                    "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", 
@@ -16,7 +16,7 @@ stateList <- structure(list(name = c("Acre", "Alagoas", "Amapá", "Amazonas",
 stateList <- stateList[order(stateList$name),]#sorted by state names
 stateAbbSort <-sort(stateList$abb) #sorted vector of abbreviation
 
-rownames(zikaPredict) <- stateAbbSort
+rownames(case_predictors) <- stateAbbSort
 
 #----------------------Density = POP/Area----------------------#
 Area <- read.csv("State Area 2020.csv", header = FALSE)
@@ -58,8 +58,8 @@ for(val in stateAbbSort){
 }
 
 colnames(pop_Density) <- c("Area", "Population", "Density")
-zikaPredict[,1] <- pop_Density[,3]
-colnames(zikaPredict) <- "POP"
+case_predictors[,1] <- pop_Density[,3]
+colnames(case_predictors) <- "POP"
 
 remove(pop_Density, Area, Population, curArea, curPop, curRow_A, curRow_P, curDensity)
 
@@ -97,13 +97,13 @@ for(val in stateAbbSort){
 }
 colnames(TempAverage) <- c("Average Temp")
 rownames(TempAverage) <- stateAbbSort
-zikaPredict <- cbind(zikaPredict, c(TempAverage[,1]))
-colnames(zikaPredict)[2] <- "TEMP"
+case_predictors <- cbind(case_predictors, c(TempAverage[,1]))
+colnames(case_predictors)[2] <- "TEMP"
 
 remove(curTemp_Sum, curTemp_Ave, curRow_T, TempAverage, Temperature)
 
 #------------------------Precipitation------------------------#
-Precipitation <- read.csv("Precipitation.csv")
+Precipitation <- read.csv("Precipitation.csv", fileEncoding = "latin1")
 removeRows <- vector()
 
 for(i in 1 : nrow(Precipitation)){ ##remove empty rows
@@ -136,15 +136,14 @@ for(val in stateAbbSort){
 }
 colnames(PrecipAverage) <- c("Average Precip")
 rownames(PrecipAverage) <- stateAbbSort
-zikaPredict <- cbind(zikaPredict, c(PrecipAverage[,1]))
-colnames(zikaPredict)[3] <- "PRECIP"
+case_predictors <- cbind(case_predictors, c(PrecipAverage[,1]))
+colnames(case_predictors)[3] <- "PRECIP"
 
 remove(curPrecip_Sum, curPrecip_Ave, curRow_P, PrecipAverage, Precipitation)
 #----------------------------Cases----------------------------#
 Cases <- read.csv(("Dengue Cases 2013.csv"), header = FALSE)
-zikaPredict <- cbind(zikaPredict, Cases[,2])
-colnames(zikaPredict)[4]<- "CASE"
+case_predictors <- cbind(case_predictors, Cases[,2])
+colnames(case_predictors)[4]<- "CASE"
 remove(Cases, stateList)
 
-usethis::use_data(zikaPredict, overwrite = TRUE)
-
+usethis::use_data(case_predictors, overwrite = TRUE)

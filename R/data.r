@@ -38,3 +38,21 @@
 #' points(acre_rips[acre_rips$dim == 0L, c("birth", "death")], pch = 16L)
 #' points(acre_rips[acre_rips$dim == 1L, c("birth", "death")], pch = 17L)
 "aegypti"
+
+#' @title State-level predictors of mosquito-borne illness in Brazil
+#'
+#' @description A data set of numbers of cases of Dengue in each state of Brazil
+#'   in 2013 and three state-level variables used in a predictive model.
+#'
+#' @format A data frame of 27 observations and 4 variables:
+
+#' \describe{
+#'   \item{POP}{state population in 2013}
+#'   \item{TEMP}{average temperature across state municipalities}
+#'   \item{PRECIP}{average precipitation across state municipalities}
+#'   \item{CASE}{number of state Dengue cases in 2013}
+#' }
+
+#'   
+#' @source \url{<multiple URLs>}
+"case_predictors"
