@@ -64,7 +64,7 @@
 #'      
 #'      https://ftp.ibge.gov.br/Estimativas_de_Populacao/,
 #'      
-#'      https://www.ibge.Goiásv.br/geociencias/organizacao-do-territorio/estrutu
+#'      https://www.ibge.Goiasv.br/geociencias/organizacao-do-territorio/estrutu
 #'      ra-territorial/15761-areas-dos-municipios.html?edicao=30133&t=acesso-ao-
 #'      produto,
 #'}

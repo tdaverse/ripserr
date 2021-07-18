@@ -14,7 +14,28 @@ A data frame of 27 observations and 4 variables:
 }
 }
 \source{
-\url{<multiple URLs>}
+\url{
+     https://web.archive.org/web/20210209122713/https://www.gov.br/saude/pt-b
+     r/assuntos/boletins-epidemiologicos-1/por-assunto,
+     
+     http://www.ipeadata.gov.br/Default.aspx,
+     
+     https://ftp.ibge.gov.br/Estimativas_de_Populacao/,
+     
+     https://www.ibge.Goiasv.br/geociencias/organizacao-do-territorio/estrutu
+     ra-territorial/15761-areas-dos-municipios.html?edicao=30133&t=acesso-ao-
+     produto,
+}
+
+\describe{
+Data pre-processing:
+After acquiring data from above links, we converted any dataset
+embedded in PDF format to CSV. Using carried functionalities in the CSV
+file, we sorted all datasets alphabetically based on state names to make
+later iterations more convenient. Also, we calculated the annual average
+temperature and added to the original dataset where it was documented by
+quarter.
+}
 }
 \usage{
 case_predictors
