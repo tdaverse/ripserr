@@ -24,7 +24,7 @@ Here, we demonstrate how to use topological features to model disease transmissi
 
 ### Methods
 
-To imitate the model from Lo and Park with available data, we will predict the number of ZIKV cases confirmed in each state using linear regression.
+To imitate the model from Lo and Park with available data, we would predict the number of ZIKV cases confirmed in each state using linear regression.
 However, data points of _A. aegypti_ mosquitoes in Brazil are only available for the year 2013, while documented ZIKV cases are available only since 2015.
 Instead of using the number of ZIKV cases as the response variable in our regression model, we obtained the number of Dengue cases in Brazil for the year 2013,[^dengue] since Dengue is also transmitted by _A. aegypti_ mosquitoes.
 Predictions of number of cases in each state will be made using average temperatures, precipitation levels,[^weather] and human population densities.[^population][^area]
@@ -41,7 +41,7 @@ We are also curious about whether the median of H1 lifetime can improve upon the
 ### Datasets
 
 First, we load the `aegypti` dataset containing geographic locations of _A. aegypti_ mosquitoes.
-Also, we load the `zikaPredict` dataset to obtain human population density, average temperature, precipitation level, and the number of cases in each state.
+Also, we load the `case_predictors` dataset to obtain human population density, average temperature, precipitation level, and the number of cases in each state.
 
 We will use state abbreviations to join elements from these two data sets and from the PH calculations.
 The vector `stateAbbSort`, de-duplicated from the _A. aegypti_ dataset, provides a convenient tool for these tasks.
@@ -49,15 +49,15 @@ The vector `stateAbbSort`, de-duplicated from the _A. aegypti_ dataset, provides
 ```{r}
 devtools::load_all()
 data(aegypti)
-data(zikaPredict)
+data(case_predictors)
 
 stateAbbSort <- sort(aegypti$state_code[!duplicated(aegypti$state_code)]) 
 ```
 
-We will incrementally add the predictive variables to the data frame `zikaModel`. 
+We will incrementally add the predictive variables to the data frame `caseModel`. 
 
 ```{r}
-zikaModel <- data.frame()
+caseModel <- data.frame()
 ```
 
 ### Persistent homology
@@ -112,7 +112,7 @@ topologicalFeatures <- function(state_rips){
 }
 ```
 
-Iterating over all the states in Brazil, we bind every state's topological features to `zikaModel`.
+Iterating over all the states in Brazil, we bind every state's topological features to `caseModel`.
 
 ```{r}
 for(val in stateAbbSort) {
@@ -121,23 +121,23 @@ for(val in stateAbbSort) {
   state_rips$persistence<-(state_rips$death - state_rips$birth)
   
   features <- topologicalFeatures(state_rips)
-  zikaModel <- rbind(
-    zikaModel,
+  caseModel <- rbind(
+    caseModel,
     c(features[1], features[2], features[3], features[4])
   )
 }
-colnames(zikaModel) <-  c("H0", "H1", "H1MD","H1ML")
-rownames(zikaModel) <- stateAbbSort
+colnames(caseModel) <-  c("H0", "H1", "H1MD","H1ML")
+rownames(caseModel) <- stateAbbSort
 ```
 
-We merge `zikaModel` with `zikaPredict`, matched by state code.
+We merge `caseModel` with `case_predictors`, matched by state code.
 We have now loaded all potential predictors to our model.
-The following code prints out first few lines of the `zikaModel` to demonstrate how states and their variables lie within this data frame.
+The following code prints out first few lines of the `caseModel` to demonstrate how states and their variables lie within this data frame.
 
 ```{r}
-zikaModel <- merge(zikaModel, zikaPredict, by = "row.names")[, -1]
-rownames(zikaModel) <- stateAbbSort
-head(zikaModel)
+caseModel <- merge(caseModel, case_predictors, by = "row.names")[, -1]
+rownames(caseModel) <- stateAbbSort
+head(caseModel)
 ```
 
 ### Cases Visualization
@@ -148,9 +148,9 @@ To reproduce the model by Lo and Park, we will log-transform the number of cases
 ```{r, fig.width = 6, fig.height = 6}
 par(mfrow = c(2L, 1L))
 
-hist(zikaModel$CASE, main = "Distribution of Case Counts")
+hist(caseModel$CASE, main = "Distribution of Case Counts")
 
-hist(log(zikaModel$CASE), 
+hist(log(caseModel$CASE), 
      main = "Distribution of Log-Transformed Case Counts")
 ```
 
@@ -159,7 +159,7 @@ We see that H0 and H1 are linearly related to each other, so H1 may not be a nec
 During the model selection process, there will be a comparison testing inclusion of H1 as a predictor and decisions will be made at that point.
 
 ```{r, fig.width = 5, fig.height = 5}
-pairs(zikaModel, pch = 16L)
+pairs(caseModel, pch = 16L)
 ```
 
 ### First fit: Model without Topological Features
@@ -168,7 +168,7 @@ First, we fit a linear model to log-transformed case counts predicted by populat
 We reject the null hypothesis of no predictive value ($p = 0.0199$).
 
 ```{r}
-fit.1 <- lm(log(CASE) ~ POP + TEMP + PRECIP + H0, data = zikaModel)
+fit.1 <- lm(log(CASE) ~ POP + TEMP + PRECIP + H0, data = caseModel)
 summary(fit.1)
 ```
 
@@ -190,9 +190,9 @@ We therefore replace the original model with this more parsimonious one.
 Even though `TEMP` is not statistically significant, we preserve it in the model as temperature is an effectual predictor in most epidemiology modeling, and one whose point estimate we may want to be able to report.
 
 ```{r}
-fit.nested <- lm(log(CASE) ~ POP + TEMP + H0, data = zikaModel)
+fit.nested <- lm(log(CASE) ~ POP + TEMP + H0, data = caseModel)
 lmtest::lrtest(fit.nested, fit.1)
-fit.1 <- lm(log(CASE) ~ POP + TEMP + H0, data = zikaModel)
+fit.1 <- lm(log(CASE) ~ POP + TEMP + H0, data = caseModel)
 summary(fit.1)
 ```
 
@@ -206,7 +206,7 @@ Thus, we prefer to exclude irrelevant variables.
 
 ```{r}
 fit.2 <- lm(log(CASE) ~ POP + TEMP + H0 + H1 + H1ML + H1MD,
-            data = zikaModel)
+            data = caseModel)
 summary(fit.2)
 ```
 
@@ -224,7 +224,7 @@ Therefore, we leave out `H1MD` in our model.
 
 ```{r}
 fit.test0 <- lm(log(CASE) ~ POP + TEMP + H0 + H1 + H1ML,
-                data = zikaModel)
+                data = caseModel)
 summary(fit.test0)
 lmtest::lrtest(fit.test0, fit.2)
 ```
@@ -234,7 +234,7 @@ Also, it is concerning because the coefficient of H0 in the nested model above i
 We decide to test the model without `H1`, as it seems to correlate with H0 and cause confounding.
 
 ```{r}
-fit.test1 <- lm(log(CASE) ~ POP + TEMP + H0 + H1ML, data = zikaModel)
+fit.test1 <- lm(log(CASE) ~ POP + TEMP + H0 + H1ML, data = caseModel)
 summary(fit.test1)
 lmtest::lrtest(fit.test1, fit.test0)
 ```
@@ -243,7 +243,7 @@ The likelihood ratio test suggests that we need to choose the simpler model with
 In this case, we only need H1ML as our topological predictor.
 
 ```{r}
-fit.2 <- lm(log(CASE) ~ POP + TEMP + H0 + H1ML, data = zikaModel)
+fit.2 <- lm(log(CASE) ~ POP + TEMP + H0 + H1ML, data = caseModel)
 ```
 
 ### Results
@@ -268,7 +268,7 @@ To reduce the effect of `H0` on case numbers and `H1ML`, `H0` is fixed since `H0
 Example_States <- c("PE", "CE", "GO")
 Coord_Example <- data.frame()
 for(val in Example_States){
-  targetRow <- zikaModel[rownames(zikaModel) == val,]
+  targetRow <- caseModel[rownames(caseModel) == val,]
   Coord_Example <- rbind(Coord_Example,
                          c(targetRow$H0, targetRow$H1ML, targetRow$CASE))
 }
