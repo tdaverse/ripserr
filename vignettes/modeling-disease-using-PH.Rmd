@@ -24,7 +24,7 @@ Here, we demonstrate how to use topological features to model disease transmissi
 
 ### Methods
 
-To imitate the model from Lo and Park with available data, we will predict the number of ZIKV cases confirmed in each state using linear regression.
+To imitate the model from Lo and Park with available data, we would predict the number of ZIKV cases confirmed in each state using linear regression.
 However, data points of _A. aegypti_ mosquitoes in Brazil are only available for the year 2013, while documented ZIKV cases are available only since 2015.
 Instead of using the number of ZIKV cases as the response variable in our regression model, we obtained the number of Dengue cases in Brazil for the year 2013,[^dengue] since Dengue is also transmitted by _A. aegypti_ mosquitoes.
 Predictions of number of cases in each state will be made using average temperatures, precipitation levels,[^weather] and human population densities.[^population][^area]
