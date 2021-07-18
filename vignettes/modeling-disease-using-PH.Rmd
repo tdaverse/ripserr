@@ -31,7 +31,7 @@ Predictions of number of cases in each state will be made using average temperat
 Notice that the source for temperature data provided by Lo and Park is no longer available.
 The accessible dataset for temperatures and precipitations are averaged throughout multiple years, thus it may not be completely accurate for 2013.
 
-In addition to these state-level attributes, we will utilize spatial information on _A. aegypti_ occurrences.[^aegypti]
+Besides these state-level attributes, we will also utilize spatial information on _A. aegypti_ occurrences to model the disease.[^aegypti]
 We include the number of 0-dimensional features (H0) as a predictor since a higher value of H0 indicates that a state harbors more mosquitoes.
 We also include the number of 1-dimensional features (H1) in our model, as we interpret a larger value of H1 to mean that _A. aegypti_ mosquitoes are more spread out.
 In addition, extending the analysis of Lo and Park, we include the maximum lifetime (H1ML) and the median lifetime (H1MD) of the 1-dimensinoal features, which we expect give additional insight into the statewide connectivity of _A. aegypti_ distributions.
