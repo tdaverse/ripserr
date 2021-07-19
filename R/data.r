@@ -54,20 +54,11 @@
 #' }
 
 #'   
-#' @source 
-#' 
-#' \url{
-#'      https://web.archive.org/web/20210209122713/https://www.gov.br/saude/pt-b
-#'      r/assuntos/boletins-epidemiologicos-1/por-assunto,
-#'      
-#'      http://www.ipeadata.gov.br/Default.aspx,
-#'      
-#'      https://ftp.ibge.gov.br/Estimativas_de_Populacao/,
-#'      
-#'      https://www.ibge.Goiasv.br/geociencias/organizacao-do-territorio/estrutu
-#'      ra-territorial/15761-areas-dos-municipios.html?edicao=30133&t=acesso-ao-
-#'      produto,
-#'}
+#' @source
+#' \url{https://web.archive.org/web/20210209122713/https://www.gov.br/saude/pt-br/assuntos/boletins-epidemiologicos-1/por-assunto},
+#' \url{http://www.ipeadata.gov.br/Default.aspx},
+#' \url{https://ftp.ibge.gov.br/Estimativas_de_Populacao/},
+#' \url{https://www.ibge.Goiasv.br/geociencias/organizacao-do-territorio/estrutura-territorial/15761-areas-dos-municipios.html?edicao=30133&t=acesso-ao-produto}
 #'      
 #' \describe{
 #'  Data pre-processing:
