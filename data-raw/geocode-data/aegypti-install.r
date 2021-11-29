@@ -16,4 +16,10 @@ read_csv("ignore/aegypti_annotated.csv") %>%
          -country_name, -country_code) ->
   aegypti
 
-use_data(aegypti)
+# convert state names to ASCII
+aegypti %>%
+  mutate(state_name = iconv(state_name, from = "", to = "ASCII//TRANSLIT")) %>%
+  mutate(state_name = str_remove_all(state_name, "'|~|\\^")) ->
+  aegypti
+
+usethis::use_data(aegypti)

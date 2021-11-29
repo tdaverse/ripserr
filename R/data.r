@@ -38,3 +38,35 @@
 #' points(acre_rips[acre_rips$dim == 0L, c("birth", "death")], pch = 16L)
 #' points(acre_rips[acre_rips$dim == 1L, c("birth", "death")], pch = 17L)
 "aegypti"
+
+#' @title State-level predictors of mosquito-borne illness in Brazil
+#'
+#' @description A data set of numbers of cases of Dengue in each state of Brazil
+#'   in 2013 and three state-level variables used in a predictive model.
+#'
+#' @format A data frame of 27 observations and 4 variables:
+
+#' \describe{
+#'   \item{POP}{state population in 2013}
+#'   \item{TEMP}{average temperature across state municipalities}
+#'   \item{PRECIP}{average precipitation across state municipalities}
+#'   \item{CASE}{number of state Dengue cases in 2013}
+#' }
+
+#'   
+#' @source
+#' \url{https://web.archive.org/web/20210209122713/https://www.gov.br/saude/pt-br/assuntos/boletins-epidemiologicos-1/por-assunto},
+#' \url{http://www.ipeadata.gov.br/Default.aspx},
+#' \url{https://ftp.ibge.gov.br/Estimativas_de_Populacao/},
+#' \url{https://www.ibge.Goiasv.br/geociencias/organizacao-do-territorio/estrutura-territorial/15761-areas-dos-municipios.html?edicao=30133&t=acesso-ao-produto}
+#'      
+#' \describe{
+#'  Data pre-processing:
+#'  After acquiring data from above links, we converted any dataset 
+#'  embedded in PDF format to CSV. Using carried functionalities in the CSV 
+#'  file, we sorted all datasets alphabetically based on state names to make 
+#'  later iterations more convenient. Also, we calculated the annual average 
+#'  temperature and added to the original dataset where it was documented by 
+#'  quarter.
+#' }
+"case_predictors"
