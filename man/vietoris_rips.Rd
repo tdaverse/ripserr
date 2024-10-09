@@ -14,9 +14,9 @@ vietoris_rips(dataset, ...)
 
 \method{vietoris_rips}{data.frame}(dataset, ...)
 
-\method{vietoris_rips}{matrix}(dataset, max_dim = 1L, threshold = -1, p = 2L, ...)
+\method{vietoris_rips}{matrix}(dataset, max_dim = 1L, threshold = -1, p = 2L, dim = NULL, ...)
 
-\method{vietoris_rips}{dist}(dataset, max_dim = 1L, threshold = -1, p = 2L, ...)
+\method{vietoris_rips}{dist}(dataset, max_dim = 1L, threshold = -1, p = 2L, dim = NULL, ...)
 
 \method{vietoris_rips}{numeric}(
   dataset,
@@ -42,6 +42,9 @@ calculated}
 \item{threshold}{maximum simplicial complex diameter to explore}
 
 \item{p}{prime field in which to calculate persistent homology}
+
+\item{dim}{deprecated; passed to \code{max_dim} or ignored if \code{max_dim} is
+specified}
 
 \item{data_dim}{desired end data dimension}
 

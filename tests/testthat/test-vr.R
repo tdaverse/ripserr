@@ -27,14 +27,14 @@ test_that("basic vietoris-rips works", {
   
 })
 
+# generate dataset (set seed for reproducibility, altho new one would be fine)
+set.seed(42)
+angles <- runif(25, min = 0, max = 2 * pi)
+circle_mat <- cbind(cos(angles), sin(angles))
+circle_df <- as.data.frame(circle_mat)
+circle_dist <- dist(circle_mat)
+
 test_that("consistency across generic methods for tidy data", {
-  # generate dataset (set seed for reproducibility, altho new one would be fine)
-  set.seed(42)
-  angles <- runif(25, min = 0, max = 2 * pi)
-  circle_mat <- cbind(cos(angles), sin(angles))
-  circle_df <- as.data.frame(circle_mat)
-  circle_dist <- dist(circle_mat)
-  
   # calculate persistent homology for each class
   mat_phom <- vietoris_rips(circle_mat)
   df_phom <- vietoris_rips(circle_df)
@@ -43,6 +43,15 @@ test_that("consistency across generic methods for tidy data", {
   # compare persistent homology across classes
   expect_equal(mat_phom, df_phom)
   expect_equal(mat_phom, dist_phom)
+})
+
+test_that("`dim` deprecation warns and replaces", {
+  # use data above, print warnings
+  expect_warning(vietoris_rips(circle_mat, dim = 1L), "max_dim")
+  expect_warning(vietoris_rips(circle_dist, dim = 1L), "max_dim")
+  # use data above, prefer `max_dim`
+  circle_vr <- vietoris_rips(circle_dist, dim = 1L, max_dim = 0L)
+  expect_lt(max(circle_vr$dimension), 1L)
 })
 
 test_that("consistency across generic methods for time series", {
