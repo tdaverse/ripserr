@@ -42,9 +42,10 @@ Authors@R:
              family = "Zhang",
              role = "aut",
              email = "ezhang0927@gmail.com"))
-Description: Ports the Ripser <arXiv:1908.02518> and Cubical Ripser
-    <arXiv:2005.12692> persistent homology calculation engines from C++. Can
-    be used as a rapid calculation tool in topological data analysis
+Description: Ports the Ripser <https://arxiv.org/abs/1908.02518>
+    and Cubical Ripser <https://arxiv.org/abs/2005.12692>
+    persistent homology calculation engines from C++.
+    Can be used as a rapid calculation tool in topological data analysis
     pipelines.
 License: GPL-3
 Encoding: UTF-8
