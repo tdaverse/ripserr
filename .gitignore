@@ -9,3 +9,5 @@ inst/doc
 
 # ignore
 ignore
+/doc/
+/Meta/
