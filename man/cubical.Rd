@@ -20,7 +20,7 @@ cubical(dataset, ...)
 \item{threshold}{maximum simplicial complex diameter to explore}
 
 \item{method}{either \code{"lj"} (for Link Join) or \code{"cp"} (for Compute Pairs);
-see Kaji et al. (2020) \url{arXiv:2005.12692} for details}
+see Kaji et al. (2020) \url{https://arxiv.org/abs/2005.12692} for details}
 }
 \value{
 \code{PHom} object

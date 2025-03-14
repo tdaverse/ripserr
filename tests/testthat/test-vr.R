@@ -50,7 +50,9 @@ test_that("`dim` deprecation warns and replaces", {
   expect_warning(vietoris_rips(circle_mat, dim = 1L), "max_dim")
   expect_warning(vietoris_rips(circle_dist, dim = 1L), "max_dim")
   # use data above, prefer `max_dim`
-  circle_vr <- vietoris_rips(circle_dist, dim = 1L, max_dim = 0L)
+  expect_warning(
+    circle_vr <- vietoris_rips(circle_dist, dim = 1L, max_dim = 0L)
+  )
   expect_lt(max(circle_vr$dimension), 1L)
 })
 
