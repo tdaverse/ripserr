@@ -32,8 +32,8 @@ pipelines.
 # install development version
 devtools::install_github("rrrlw/ripserr")
 
-# install from CRAN (not available yet)
-# install.packages("ripserr")
+# install from CRAN
+install.packages("ripserr")
 ```
 
 ## Sample code

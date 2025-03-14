@@ -1,9 +1,11 @@
 # R/Rstudio files
 .Rhistory
 .Rproj.user
-*.Rproj
 .DS_*
 
 # images/test runs
 *.png
 inst/doc
+
+# ignore
+ignore
