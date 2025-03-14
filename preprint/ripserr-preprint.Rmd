@@ -1,0 +1,221 @@
+---
+title: Calculating persistent homology in R with ripserr
+authors:
+  - name: Raoul R. Wadhwa
+    department: Cleveland Clinic Lerner College of Medicine
+    affiliation: Case Western Reserve University
+    location: Cleveland, OH 44195, United States
+    email: raoul.wadhwa@case.edu
+  - name: Matthew Piekenbrock, MS
+    department: Computational Mathematics, Science, \& Engineering
+    affiliation: Michigan State University
+    location: East Lansing, MI 48824, United States
+    email: matt.piekenbrock@gmail.com
+  - name: Jacob G. Scott, MD, DPhil
+    department: Translational Hematology \& Oncology Research
+    affiliation: Lerner Research Institute, Cleveland Clinic
+    location: Cleveland, OH 44195, United States
+    email: ScottJ10@ccf.org
+abstract: |
+  We introduce ripserr, an R package that enables efficient persistent homology computation by wrapping Ripser-based C++ libraries via Rcpp.
+  The PHom S3 class provides a container for calculated persistence data and will serve as a means for integrating ripserr with other R packages that implement functionality related to topological data analysis.
+  The vietoris_rips generic wraps the Ripser library, which computes Vietoris-Rips simplicial homology and the cubical generic wraps the Cubical Ripser library, which computes cubical simplicial homology.
+  Currently, the Comprehensive R Archive Network hosts ripserr v0.1.1.
+  We hope that ripserr will be used by researchers to incorporate topological insight into data analysis and machine learning pipelines.
+  The open source code for ripserr and for this reproducible report can be found at http://github.com/rrrlw/ripserr.
+keywords:
+  - persistent homology
+  - topological data analysis
+  - simplicial complex
+  - R programming language
+  - Ripser
+bibliography: references.bib
+output: rticles::arxiv_article
+---
+
+# Introduction
+
+Calculating persistent homology presents a computationally expensive challenge, particularly for large and high-dimensional datasets.
+Ripser, a C++ library, addresses this obstacle and significantly reduces processing time and memory usage compared to contemporary persistent homology engines [@ripser].
+Although Ripser calculates persistent homology of a Vietoris-Rips complex, other libraries have built upon its foundation [@cubicalripser; @flagser; @lockfreeripser; @ripserpp].
+With the increasing popularity of persistent homology, wrapping Ripser and related C++ engines in the R programming language would permit easier incorporation into data analysis and machine learning pipelines [@rlang;@rcpp].
+Here, we introduce `ripserr`, an R package that wraps the Ripser and Cubical Ripser C++ libraries, allowing efficient persistent homology computation of Vieoris-Rips and cubical complexes.
+
+Before we explore the `ripserr` package, we load the required libraries and set a PRNG seed for reproducibility.
+
+```{r setup}
+library("ripserr")
+library("tdaunif")
+library("ggplot2")
+library("ggtda")   # remotes::install_github("rrrlw/ggtda")
+
+set.seed(42)
+```
+
+# `PHom` S3 class
+
+When incorporating persistent homology in R pipelines, we must consider the best container to hold persistence data.
+`ripserr` uses the `PHom` (portmanteau of persistent homology) S3 class to manage persistence data.
+Note that more complex forms of persistence (e.g. extended persistence [@ext-persist]) are not discussed.
+
+At its core, the `PHom` class simply encompasses a data frame storing persistence feature details.
+Each data frame row represents a single feature and each column represents a single feature property.
+Structurally, the data frame within a `PHom` object has three columns named `"dimension"`, `"birth"`, and `"death"` (in that order) of class `integer`, `numeric`, and `numeric`, respectively.
+Although `PHom`-specific S3 generic methods have been implemented, users may also benefit by using `data.frame`-specific S3 generic methods; for this reason, `PHom` objects have class `PHom` and `data.frame`.
+
+To get a better intuition for `PHom` objects, the following code block demonstrates the class's basic functionality.
+We first create a data frame containing synthetic persistence data, convert it to a `PHom` instance, then explore how to work with its new form.
+
+```{r basic-ex, error=TRUE}
+# synthetic persistence data
+df <- data.frame(dimension = c(rep(0, 2), rep(1, 3), rep(2, 1)),
+                 birth = rnorm(6),
+                 death = rnorm(6, mean = 15))
+
+# print synthetic persistence data
+print(df)
+
+# convert to PHom
+df_phom <- PHom(df)
+
+# print
+print(df_phom)
+
+# print feature details of PHom object
+print.data.frame(df_phom)
+
+# can convert with PHom or as.PHom
+df_phom2 <- as.PHom(df)
+all.equal(df_phom, df_phom2)
+
+# adjust synthetic data with invalid persistence data (death < birth)
+df$death[1] <- df$birth[1] - 0.1
+print(df)
+
+# error when converting to PHom object
+PHom(df)
+```
+
+# Persistent homology of a Vietoris-Rips complex
+
+The `vietoris_rips` S3 generic enables computation of persistent homology via a Vietoris-Rips complex.
+Within `ripserr`, users can calculate Vietoris-Rips homology of point clouds (stored in `data.frame`, `matrix`, or `dist` objects) or time series (stored in `numeric` vectors or `ts` objects).
+The methodology behind the former can be found in @roadmap-phom and @tda-compute and the quasi-attractor method to calculate persistent homology of time series can be found in @ts-phom.
+
+The following code demonstrates the various point cloud formats that `vietoris_rips` accepts and shows that the same dataset in different formats results in the same persistent data output.
+
+```{r vr-cloud, fig.height=2.5}
+# use tdaunif library for sample dataset
+circ_mat <- sample_circle(25)
+colnames(circ_mat) <- c("x", "y")
+
+# peek at generated point cloud
+ggplot(as.data.frame(circ_mat), aes(x = x, y = y)) +
+  geom_point() + coord_fixed() + theme_bw()
+
+# calculate persistent homology
+circ_phom <- vietoris_rips(circ_mat)
+
+# print persistent homology summary and details
+print(circ_phom)
+head(circ_phom)
+tail(circ_phom)
+```
+
+```{r vr-phom-2, fig.height=2}
+# plot topological barcode of persistence data
+ggplot(circ_phom, aes(start = birth, end = death, colour = as.factor(dimension))) +
+  geom_barcode() + theme_barcode() +
+  scale_color_discrete(name = "dimension")
+
+# calculate persistent homology for other data formats
+circ_df <- as.data.frame(circ_mat)
+circ_dist <- dist(circ_mat)
+
+# confirm equality across formats
+all.equal(circ_phom, vietoris_rips(circ_df))
+all.equal(circ_phom, vietoris_rips(circ_dist))
+```
+
+By adjusting the `max_dim` parameter, `vietoris_rips` can calculate persistence data including higher dimensional features.
+We demonstrate this by sampling points from the surface of a sphere.
+
+```{r vr-maxdim, fig.height=2.5}
+# sample points from surface of unit sphere
+sphere <- sample_sphere(100, dim = 2)
+
+# calculate persistent homology
+sphere_phom <- vietoris_rips(sphere, max_dim = 2L)
+
+# print and plot persistence data
+sphere_phom
+ggplot(sphere_phom, aes(start = birth, end = death, colour = as.factor(dimension))) +
+  geom_barcode() + theme_barcode() +
+  scale_color_manual(name = "dimension", values = c("red", "black", "blue"))
+```
+
+Persistence data can also be calculated in various prime finite fields ($\mathbb{Z}/p\mathbb{Z}$) determined by the `p` parameter; all valid values of `p` should result in the same persistence data output.
+
+```{r primefield}
+# calculate circle persistence in various prime fields
+circ_phom1 <- vietoris_rips(circ_mat, p = 2L)
+circ_phom2 <- vietoris_rips(circ_mat, p = 3L)
+circ_phom3 <- vietoris_rips(circ_mat, p = 5L)
+
+# confirm equality
+all.equal(circ_phom1, circ_phom2)
+all.equal(circ_phom1, circ_phom3)
+```
+
+# Persistent homology of a cubical complex
+
+The `cubical` S3 generic enables computation of persistent homology via a cubical complex.
+Users can calculate simplicial homology of 2-dimensional (e.g. image), 3-dimensional (e.g. video), or 4-dimensional (e.g. multiple videos over time) `array` objects.
+More details on cubical complexes can be found in @cubical-phom.
+The following code block illustrates basic use of `cubical`, including the `method` parameter.
+
+```{r cubical, fig.height=2.5, fig.width=2.5}
+# create synthetic dataset
+sample_image <- array(data = 0, dim = rep(10, 2))
+i <- c(2, 9)
+j <- 2:9
+sample_image[i, j] <- rnorm(n = 16, mean = 10)
+sample_image[j, i] <- rnorm(n = 16, mean = 10)
+
+# view image
+par(mar = rep(0, 4))
+graphics::image(sample_image, useRaster = TRUE, axes = FALSE)
+```
+
+```{r cubical-2,fig.height=2.5}
+# calculate cubical homology
+image_phom <- cubical(sample_image)
+
+# print homology
+print(image_phom)
+print.data.frame(image_phom)
+
+# plot homology
+ggplot(image_phom, aes(start = birth, end = death, color = as.factor(dimension))) +
+  geom_barcode() + theme_barcode() +
+  scale_color_discrete(name = "dimension")
+
+# compare output from two methods
+# "lj" = Link Join; "cp" = Compute Pairs
+image_phom2 <- cubical(sample_image, method = "cp")
+all.equal(image_phom, image_phom2)
+```
+
+Due to intrinsic properties of the underlying C++ Cubical Ripser library, `array`s passed to `cubical` have the following size limitations: 2-dimensional `array`s must be smaller than `2000x1000` elements; 3-dimensional `array`s must be smaller than `512x512x512`; and 4-dimensional `array`s must be smaller than `64x64x64x64`.
+
+# Discussion
+
+As a low-level topological data analysis package, `ripserr` provides the basic tools necessary to calculate persistent homology.
+By providing the `PHom` class as a container for persistence data that preserves data frame functionality, `ripserr` can be easily integrated in an exploratory manner in data analysis pipelines, for feature extraction in machine learning pipelines, and for early calculation in topological inference pipelines.
+Future directions for `ripserr` could involve inclusion of more Ripser-based engines, refinement of the `PHom` class, and improved integration with other R packages implementing topological data analysis [@simplextree;@tdaunif;@tdamapper;@mapper;@tdastats].
+
+# Acknowledgments
+
+The authors thank Jason Cory Brunson, PhD for advice regarding `ripserr` package design.
+
+# References

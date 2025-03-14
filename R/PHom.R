@@ -28,7 +28,8 @@ validate_PHom <- function(x, error = TRUE) {
   if (!("PHom" %in% class(x) & "data.frame" %in% class(x))) {
     if (error) {
       stop(paste("PHom objects must have classes `PHom` and `data.frame`;",
-                 "paseed value has class =", class(x)))
+                 "paseed value has class =", class(x)),
+           call. = FALSE)
     } else {
       return(FALSE)
     }
@@ -36,7 +37,8 @@ validate_PHom <- function(x, error = TRUE) {
   if (ncol(x) != 3) {
     if (error) {
       stop(paste("PHom objects must be data frames with exactly 3 columns;",
-                 "passed object has", ncol(x), "columns."))
+                 "passed object has", ncol(x), "columns."),
+           call. = FALSE)
     } else {
       return(FALSE)
     }
@@ -45,7 +47,8 @@ validate_PHom <- function(x, error = TRUE) {
     if (error) {
       stop(paste("`dimension` column in PHom objects must have class integer;",
                  "`dimension` column in passed object has class =",
-                 class(x$dimension)))
+                 class(x$dimension)),
+           call. = FALSE)
     } else {
       return(FALSE)
     }
@@ -54,7 +57,8 @@ validate_PHom <- function(x, error = TRUE) {
     if (error) {
       stop(paste("`birth` and `death` columns in PHom objects must have",
                  "class integer; respective columns in passed object have",
-                 "classes =", class(x$birth), "and", class(x$death)))
+                 "classes =", class(x$birth), "and", class(x$death)),
+           call. = FALSE)
     } else {
       return(FALSE)
     }
@@ -64,7 +68,8 @@ validate_PHom <- function(x, error = TRUE) {
   if (!all(x$birth < x$death)) {
     if (error) {
       stop(paste("In PHom objects, all births must be before corresponding",
-                 "deaths."))
+                 "deaths."),
+           call. = FALSE)
     } else {
       return(FALSE)
     }
@@ -85,16 +90,19 @@ valid_colval <- function(df, val, val_name) {
     
     if (!(val %in% seq_len(ncol(df)))) {
       stop(paste(val_name, "parameter must be a valid column index for the",
-                 "provided data frame; passed value =", val))
+                 "provided data frame; passed value =", val),
+           call. = FALSE)
     }
   } else if (is.character(val)) {
     if (!(val %in% colnames(df))) {
       stop(paste(val_name, "parameter must be a valid column name for the",
-                 "provided data frame; passed value =", val))
+                 "provided data frame; passed value =", val),
+           call. = FALSE)
     }
   } else {
     stop(paste(val_name, "parameter must either be a valid column name or",
-               "index; passed value =", val))
+               "index; passed value =", val),
+         call. = FALSE)
   }
 }
 
