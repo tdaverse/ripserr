@@ -6,5 +6,4 @@
 #' @useDynLib ripserr
 #' @importFrom Rcpp sourceCpp
 #' @name ripserr
-#' @docType package
-NULL
+"_PACKAGE"
