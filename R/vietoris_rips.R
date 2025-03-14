@@ -63,6 +63,8 @@ vietoris_rips.data.frame <- function(dataset, ...) {
 
 #' @param max_dim maximum dimension of persistent homology features to be
 #'   calculated
+#' @param dim deprecated; passed to `max_dim` or ignored if `max_dim` is
+#'   specified
 #' @param threshold maximum simplicial complex diameter to explore
 #' @param p prime field in which to calculate persistent homology
 #' @importFrom magrittr %>%
@@ -70,11 +72,23 @@ vietoris_rips.data.frame <- function(dataset, ...) {
 #' @export vietoris_rips.matrix
 #' @export
 vietoris_rips.matrix <- function(dataset,
-                                 max_dim = 1L, threshold = -1, p = 2L,
+                                 max_dim = 1L,
+                                 threshold = -1, p = 2L,
+                                 dim = NULL,
                                  ...) {
   # shortcut for special case (only 1 row should return empty PHom)
   if (nrow(dataset) == 1) {
     return(new_PHom())
+  }
+  
+  # handle `dim` if passed
+  if (! is.null(dim)) {
+    max_dim_use <- "max_dim" %in% names(match.call())
+    warning("`dim` parameter has been deprecated; ",
+            if (max_dim_use) "using" else "use",
+            " `max_dim` instead.",
+            immediate. = TRUE, call. = TRUE)
+    if (! max_dim_use) max_dim <- dim
   }
   
   # ensure valid arguments passed
@@ -98,8 +112,21 @@ vietoris_rips.matrix <- function(dataset,
 #' @export vietoris_rips.dist
 #' @export
 vietoris_rips.dist <- function(dataset,
-                               max_dim = 1L, threshold = -1, p = 2L,
+                               max_dim = 1L,
+                               threshold = -1, p = 2L,
+                               dim = NULL,
                                ...) {
+  
+  # handle `dim` if passed
+  if (! is.null(dim)) {
+    max_dim_use <- "max_dim" %in% names(match.call())
+    warning("`dim` parameter has been deprecated; ",
+            if (max_dim_use) "using" else "use",
+            " `max_dim` instead.",
+            immediate. = TRUE, call. = TRUE)
+    if (! max_dim_use) max_dim <- dim
+  }
+  
   # ensure valid arguments passed
   validate_params_vr(max_dim = max_dim,
                      threshold = threshold,

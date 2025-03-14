@@ -255,6 +255,8 @@ print.PHom <- function(x, ...) {
                  "")
   
   cat(paste(ans1, ans2, ans3, sep = "\n\n"))
+  
+  invisible(x)
 }
 
 #' First Part of PHom Object
