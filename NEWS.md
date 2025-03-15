@@ -1,3 +1,7 @@
+# ripserr 0.3.0
+
+This minor version subsumes several contributions over 4+ years, including invisibly returning persistence data on `print()`, an additional vignette, and debugging & correcting of documentation.
+
 # ripserr 0.2.0
 
 ## Changes
