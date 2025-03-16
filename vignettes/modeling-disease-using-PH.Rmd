@@ -11,6 +11,7 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(ripserr)
 ```
 
 ### Background
@@ -47,7 +48,6 @@ We will use state abbreviations to join elements from these two data sets and fr
 The vector `stateAbbSort`, de-duplicated from the _A. aegypti_ dataset, provides a convenient tool for these tasks.
 
 ```{r}
-devtools::load_all()
 data(aegypti)
 data(case_predictors)
 
