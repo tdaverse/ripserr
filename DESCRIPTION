@@ -4,7 +4,7 @@ Version: 0.3.0
 Authors@R:
     c(person(given = "Raoul",
              family = "Wadhwa",
-             role = c("aut", "cre"),
+             role = "aut",
              email = "raoulwadhwa@gmail.com",
              comment = c(ORCID = "0000-0003-0503-9580")),
       person(given = "Matt",
@@ -17,7 +17,7 @@ Authors@R:
              comment = c(ORCID = "0000-0003-2971-7673")),
       person(given = "Jason Cory",
              family = "Brunson",
-             role = "aut",
+             role = c("aut", "cre"),
              email = "cornelioid@gmail.com",
              comment = c(ORCID = "0000-0003-3126-9494")),
       person(given = "Emily",
@@ -52,12 +52,11 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-URL: https://rrrlw.github.io/ripserr/
-BugReports: https://github.com/rrrlw/ripserr/issues
+URL: https://github.com/tdaverse/ripserr/
+BugReports: https://github.com/tdaverse/ripserr/issues
 LinkingTo: Rcpp
 Depends: R (>= 3.5.0)
 Imports: 
-    magrittr (>= 1.5),
     Rcpp (>= 1.0),
     stats (>= 3.0),
     utils (>= 3.0)

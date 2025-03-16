@@ -12,19 +12,19 @@ from C++ to R using the Rcpp package.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://rrrlw.github.io/ripserr/}
-  \item Report bugs at \url{https://github.com/rrrlw/ripserr/issues}
+  \item \url{https://github.com/tdaverse/ripserr/}
+  \item Report bugs at \url{https://github.com/tdaverse/ripserr/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Raoul Wadhwa \email{raoulwadhwa@gmail.com} (\href{https://orcid.org/0000-0003-0503-9580}{ORCID})
+\strong{Maintainer}: Jason Cory Brunson \email{cornelioid@gmail.com} (\href{https://orcid.org/0000-0003-3126-9494}{ORCID})
 
 Authors:
 \itemize{
+  \item Raoul Wadhwa \email{raoulwadhwa@gmail.com} (\href{https://orcid.org/0000-0003-0503-9580}{ORCID})
   \item Matt Piekenbrock \email{matt.piekenbrock@gmail.com}
   \item Jacob Scott (\href{https://orcid.org/0000-0003-2971-7673}{ORCID})
-  \item Jason Cory Brunson \email{cornelioid@gmail.com} (\href{https://orcid.org/0000-0003-3126-9494}{ORCID})
   \item Xinyi Zhang \email{ezhang0927@gmail.com}
 }
 

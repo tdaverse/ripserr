@@ -46,15 +46,14 @@ vietoris_rips <- function(dataset, ...) {
   UseMethod("vietoris_rips")
 }
 
-#' @importFrom magrittr %>%
 #' @rdname vietoris_rips
 #' @export vietoris_rips.data.frame
 #' @export
 # must be in cloud format, distmat should go to vietoris_rips.dist
 vietoris_rips.data.frame <- function(dataset, ...) {
   # convert to matrix and pass to vietoris_rips.matrix
-  ans <- dataset %>%
-    as.matrix() %>%
+  ans <- dataset |>
+    as.matrix() |>
     vietoris_rips.matrix(...)
   
   # return
@@ -67,7 +66,6 @@ vietoris_rips.data.frame <- function(dataset, ...) {
 #'   specified
 #' @param threshold maximum simplicial complex diameter to explore
 #' @param p prime field in which to calculate persistent homology
-#' @importFrom magrittr %>%
 #' @rdname vietoris_rips
 #' @export vietoris_rips.matrix
 #' @export
@@ -98,16 +96,15 @@ vietoris_rips.matrix <- function(dataset,
   validate_mat_vr(dataset = dataset)
   
   # calculate persistent homology
-  ans <- dataset %>%
-    ripser_cpp(max_dim, threshold, p, 0) %>%
-    ripser_vec_to_df() %>%
+  ans <- dataset |>
+    ripser_cpp(max_dim, threshold, p, 0) |>
+    ripser_vec_to_df() |>
     new_PHom()
   
   # return
   return(ans)
 }
 
-#' @importFrom magrittr %>%
 #' @rdname vietoris_rips
 #' @export vietoris_rips.dist
 #' @export
@@ -134,9 +131,9 @@ vietoris_rips.dist <- function(dataset,
   validate_dist_vr(dataset = dataset)
   
   # calculate persistent homology
-  ans <- dataset %>%
-    ripser_cpp_dist(max_dim, threshold, p) %>%
-    ripser_vec_to_df() %>%
+  ans <- dataset |>
+    ripser_cpp_dist(max_dim, threshold, p) |>
+    ripser_vec_to_df() |>
     new_PHom()
   
   # return
@@ -148,7 +145,6 @@ vietoris_rips.dist <- function(dataset,
 #' @param dim_lag time series lag factor between dimensions
 #' @param sample_lag time series lag factor between samples (rows)
 #' @param method currently only allows `"qa"` (quasi-attractor method)
-#' @importFrom magrittr %>%
 #' @rdname vietoris_rips
 #' @export vietoris_rips.numeric
 #' @export
@@ -178,14 +174,13 @@ vietoris_rips.numeric <- function(dataset,
   return(ans)
 }
 
-#' @importFrom magrittr %>%
 #' @rdname vietoris_rips
 #' @export vietoris_rips.ts
 #' @export
 vietoris_rips.ts <- function(dataset, ...) {
   # convert to numeric and pass to vietoris_rips.numeric
-  ans <- dataset %>%
-    as.numeric() %>%
+  ans <- dataset |>
+    as.numeric() |>
     vietoris_rips.numeric(...)
   
   # return
