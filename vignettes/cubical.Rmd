@@ -69,4 +69,4 @@ Persistence of a feature is generally defined as the length of the interval of t
 This is calculated as the numerical difference between the second (birth) and third (death) columns of the homology data frame
 Confirmed in the output above, the homology data frame is ordered by dimension, with the birth column used to sort features of the same dimension.
 As expected for `sample_image`, the homology data frame contains a single 1-cycle.
-The [ggtda](https://CRAN.R-project.org/package=ggtda) and [TDAstats](https://CRAN.R-project.org/package=TDAstats) R packages can be used to visualize `image_phom` for further insight.
+The [ggtda](https://github.com/tdaverse/ggtda) and [TDAstats](https://CRAN.R-project.org/package=TDAstats) R packages can be used to visualize `image_phom` for further insight.

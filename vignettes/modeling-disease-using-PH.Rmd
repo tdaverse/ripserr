@@ -325,7 +325,7 @@ Even though variable selections and results deviate somewhat from the regression
 
 [^Gatherer2016]: Gatherer D and Kohl A. Zika virus, a previously slow pandemic spreads rapidly through the Americas. Journal of General Virology. 2016 97: 269–273. https://doi.org/10.1099/jgv.0.000381 PMID: 26684466
 
-[^Winer2014]: Winer J. An update in Guillain-Barre´ Syndrome. Autoimmune Diseases. 2014. https://doi.org/10.1155/ 2014/793024 PMID: 24511391 
+[^Winer2014]: Winer J. An update in Guillain-Barre´ Syndrome. Autoimmune Diseases. 2014. https://doi.org/10.1155/2014/793024 PMID: 24511391 
 
 [^Johansson2016]: Johansson MA, Mier-y-Teran-Romero L, Reefhuis J, Gilboa S and Hills S. Zika and the risk of microcephaly. N Engl J Med. 2016 375: 1–4. https://doi.org/10.1056/NEJMp1605367 PMID: 27222919
 

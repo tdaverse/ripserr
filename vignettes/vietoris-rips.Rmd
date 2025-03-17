@@ -74,7 +74,7 @@ Confirmed in the output of the `head` and `tail` functions above, the homology m
 As expected for `circle_df`, the homology matrix contains a single prominent 1-cycle (last line of `tail`'s output).
 Although we suspect the feature to be a persistent 1-cycle, comparison with the other features in the homology matrix is required to confirm that it is sufficiently persistent.
 This task is done far more easily with an appropriate visualization (e.g. topological barcode or persistence diagram) than by eyeballing the contents of `circ_phom`.
-The [ggtda](https://CRAN.R-project.org/package=ggtda) and [TDAstats](https://CRAN.R-project.org/package=TDAstats) R packages could be useful to create such visualizations.
+The [ggtda](https://github.com/tdaverse/ggtda) and [TDAstats](https://CRAN.R-project.org/package=TDAstats) R packages could be useful to create such visualizations.
 
 ## Dataset formats
 
