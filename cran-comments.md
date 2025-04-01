@@ -1,3 +1,49 @@
+## Submission comments for version 0.3.0 (2025 March XX)
+
+This is a minor version in anticipation of an upcoming major version. The goal is to incorporate, stabilize, and make available a variety of contributions made over several years before introducing fundamental changes that will need to be reconciled with the rest of the package.
+Comments from previous submissions are retained below for reference.
+
+### Test environments
+
+The submission version is being tested using the following tools:
+
+* Local OS X install, R v4.4.2
+  * `devtools::check()`
+  * `devtools::check(env_vars = c('_R_CHECK_SUGGESTS_ONLY_' = "true"))`
+  * `devtools::check(env_vars = c('_R_CHECK_DEPENDS_ONLY_' = "true"))`
+* Win-Builder
+  * `devtools::check_win_oldrelease()`
+  * `devtools::check_win_release()`
+  * `devtools::check_win_devel()`
+
+The results are as follows.
+Alerts (ERRORs, WARNINGs, or NOTEs) that appeared in previous checks are not mentioned in the results of subsequent checks.
+Only tests that produced new alerts are discussed.
+
+#### Local OS X install, R v4.4.2
+
+No ERRORs or WARNINGs but one NOTE:
+
+```
+❯ checking C++ specification ... NOTE
+    Specified C++11: please drop specification unless essential
+```
+
+We specify C++11 because it is required by the Cubical Ripser source code as described here: <https://arxiv.org/pdf/2005.12692> (page 5).
+
+#### Win-Builder
+
+...
+
+```
+Maintainer: 'Jason Cory Brunson <cornelioid@gmail.com>'
+
+New maintainer:
+  Jason Cory Brunson <cornelioid@gmail.com>
+Old maintainer(s):
+  Raoul Wadhwa <raoulwadhwa@gmail.com>
+```
+
 ## Submission comments for archived package
 
 ### From fourth resubmission (15 Oct 2020)
