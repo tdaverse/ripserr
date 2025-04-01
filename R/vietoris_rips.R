@@ -52,9 +52,7 @@ vietoris_rips <- function(dataset, ...) {
 # must be in cloud format, distmat should go to vietoris_rips.dist
 vietoris_rips.data.frame <- function(dataset, ...) {
   # convert to matrix and pass to vietoris_rips.matrix
-  ans <- dataset |>
-    as.matrix() |>
-    vietoris_rips.matrix(...)
+  ans <- vietoris_rips.matrix(as.matrix(dataset), ...)
   
   # return
   return(ans)
@@ -96,10 +94,7 @@ vietoris_rips.matrix <- function(dataset,
   validate_mat_vr(dataset = dataset)
   
   # calculate persistent homology
-  ans <- dataset |>
-    ripser_cpp(max_dim, threshold, p, 0) |>
-    ripser_vec_to_df() |>
-    new_PHom()
+  ans <- new_PHom(ripser_vec_to_df(ripser_cpp(dataset, max_dim, threshold, p, 0)))
   
   # return
   return(ans)
@@ -131,10 +126,7 @@ vietoris_rips.dist <- function(dataset,
   validate_dist_vr(dataset = dataset)
   
   # calculate persistent homology
-  ans <- dataset |>
-    ripser_cpp_dist(max_dim, threshold, p) |>
-    ripser_vec_to_df() |>
-    new_PHom()
+  ans <- new_PHom(ripser_vec_to_df(ripser_cpp_dist(dataset, max_dim, threshold, p)))
   
   # return
   return(ans)
@@ -179,9 +171,7 @@ vietoris_rips.numeric <- function(dataset,
 #' @export
 vietoris_rips.ts <- function(dataset, ...) {
   # convert to numeric and pass to vietoris_rips.numeric
-  ans <- dataset |>
-    as.numeric() |>
-    vietoris_rips.numeric(...)
+  ans <- vietoris_rips.numeric(as.numeric(dataset), ...)
   
   # return
   return(ans)

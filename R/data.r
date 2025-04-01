@@ -20,7 +20,7 @@
 #' }
 
 #'   
-#' @source \url{http://dx.doi.org/10.5061/dryad.47v3c}
+#' @source \doi{10.5061/dryad.47v3c}
 #' @examples
 #' 
 #' # calculate persistence data for occurrences in Acre

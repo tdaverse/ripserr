@@ -20,7 +20,7 @@ A \link[tibble:tibble]{tibble} of 4411 observations and 13 variables:
 }
 }
 \source{
-\url{http://dx.doi.org/10.5061/dryad.47v3c}
+\doi{10.5061/dryad.47v3c}
 }
 \usage{
 aegypti

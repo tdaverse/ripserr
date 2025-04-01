@@ -1,4 +1,4 @@
-## Submission comments for version 0.3.0 (2025 March XX)
+## Submission comments for version 0.3.0 (2025 April XX)
 
 This is a minor version in anticipation of an upcoming major version. The goal is to incorporate, stabilize, and make available a variety of contributions made over several years before introducing fundamental changes that will need to be reconciled with the rest of the package.
 Comments from previous submissions are retained below for reference.
@@ -10,7 +10,8 @@ The submission version is being tested using the following tools:
 * Local OS X install, R v4.4.2
   * `devtools::check()`
   * `devtools::check(env_vars = c('_R_CHECK_SUGGESTS_ONLY_' = "true"))`
-  * `devtools::check(env_vars = c('_R_CHECK_DEPENDS_ONLY_' = "true"))`
+  * `devtools::check(env_vars = c('_R_CHECK_DEPENDS_ONLY_' = "true"), vignettes = FALSE)`
+  * `devtools::check(remote = TRUE, manual = TRUE)`
 * Win-Builder
   * `devtools::check_win_oldrelease()`
   * `devtools::check_win_release()`
@@ -22,7 +23,7 @@ Only tests that produced new alerts are discussed.
 
 #### Local OS X install, R v4.4.2
 
-No ERRORs or WARNINGs but one NOTE:
+All checks produced no ERRORs or WARNINGs but the following NOTE:
 
 ```
 ❯ checking C++ specification ... NOTE
@@ -31,18 +32,50 @@ No ERRORs or WARNINGs but one NOTE:
 
 We specify C++11 because it is required by the Cubical Ripser source code as described here: <https://arxiv.org/pdf/2005.12692> (page 5).
 
+The last check, `devtools::check(remote = TRUE, manual = TRUE)`, produces the following NOTE:
+
+```
+❯ checking CRAN incoming feasibility ... [4s/18s] NOTE
+  Maintainer: ‘Jason Cory Brunson <cornelioid@gmail.com>’
+  
+  New maintainer:
+    Jason Cory Brunson <cornelioid@gmail.com>
+  Old maintainer(s):
+    Raoul Wadhwa <raoulwadhwa@gmail.com>
+  
+  Found the following (possibly) invalid URLs:
+    URL: https://www.ibge.Goiásv.br/geociencias/organizacao-do-territorio/estrutura-territorial/15761-areas-dos-municipios.html?edicao=30133&t=acesso-ao-produto
+      From: inst/doc/modeling-disease-using-PH.html
+      Status: Error
+      Message: libcurl error code 6:
+        	Could not resolve host: www.ibge.Goiásv.br
+```
+
+The URL is no longer accessible, and we mention this where it is cited. However, we wish to include it because we do not know where the data we obtained there can now be found.
+
 #### Win-Builder
 
-...
+Some Win-Builder checks produced no additional alerts.
+
+The current release check produced the following extra component to the "incoming feasibility" NOTE:
 
 ```
-Maintainer: 'Jason Cory Brunson <cornelioid@gmail.com>'
-
-New maintainer:
-  Jason Cory Brunson <cornelioid@gmail.com>
-Old maintainer(s):
-  Raoul Wadhwa <raoulwadhwa@gmail.com>
+Possibly misspelled words in DESCRIPTION:
+  arxiv (45:32, 46:25)
 ```
+
+I believe the string is capitalized ("arXiv") every place it should be.
+
+The development check produced the following extra component to the "incoming feasibility" NOTE:
+
+```
+The Description field contains
+  Ports the Ripser <arxiv:1908.02518> and Cubical Ripser
+  <arxiv:2005.12692> persistent homology calculation engines from C++.
+Please refer to arXiv e-prints via their arXiv DOI <doi:10.48550/arXiv.YYMM.NNNNN>.
+```
+
+This is out of keeping with other instructions, but i'll be glad to switch standards if this is the one to follow.
 
 ## Submission comments for archived package
 
