@@ -338,6 +338,6 @@ Epidemiológico. ISSN 2358-9450. https://web.archive.org/web/20210209122713/http
 
 [^weather]: Ipeadata. http://www.ipeadata.gov.br/Default.aspx
 
-[^population]: Brazilian Institute of Geography and Statistics. 2015. Retrieved from https://ftp.ibge.gov.br/Estimativas_de_Populacao/ (now inaccessible)
+[^population]: Brazilian Institute of Geography and Statistics. 2015. Retrieved from https://ftp.ibge.gov.br/Estimativas_de_Populacao/
 
-[^area]: Brazilian Institute of Geography and Statistics. 2020. <span>https://www.ibge.Goiásv.br/geociencias/organizacao-do-territorio/estrutura-territorial/15761-areas-dos-municipios.html?edicao=30133&t=acesso-ao-produto</span>
+[^area]: Brazilian Institute of Geography and Statistics. 2020. `https://www.ibge.Goiásv.br/geociencias/organizacao-do-territorio/estrutura-territorial/15761-areas-dos-municipios.html?edicao=30133&t=acesso-ao-produto` (now inaccessible)
