@@ -32,7 +32,7 @@ All checks produced no ERRORs or WARNINGs but the following NOTE:
 
 We specify C++11 because it is required by the Cubical Ripser source code as described here: <https://arxiv.org/pdf/2005.12692> (page 5).
 
-The last check, `devtools::check(remote = TRUE, manual = TRUE)`, produces the following NOTE:
+The last check, `devtools::check(remote = TRUE, manual = TRUE)`, produced the following NOTE:
 
 ```
 ❯ checking CRAN incoming feasibility ... [4s/18s] NOTE
@@ -75,7 +75,8 @@ The Description field contains
 Please refer to arXiv e-prints via their arXiv DOI <doi:10.48550/arXiv.YYMM.NNNNN>.
 ```
 
-This is out of keeping with other instructions, but i'll be glad to switch standards if this is the one to follow.
+The current standard is based on other instructions from a previous check.
+We will change to this standard if requested.
 
 ## Submission comments for archived package
 
