@@ -36,7 +36,7 @@ All checks produced no ERRORs or WARNINGs but the following NOTE:
 
 We specify C++11 because it is required by the Cubical Ripser source code as described here: <https://arxiv.org/pdf/2005.12692> (page 5).
 
-The last check, `devtools::check(remote = TRUE, manual = TRUE)`, produced the following NOTE:
+The last check, `devtools::check(remote = TRUE, manual = TRUE)`, produced the following NOTE, reflecting the transfer of maintenance:
 
 ```
 ❯ checking CRAN incoming feasibility ... [4s/18s] NOTE
@@ -46,22 +46,25 @@ The last check, `devtools::check(remote = TRUE, manual = TRUE)`, produced the fo
     Jason Cory Brunson <cornelioid@gmail.com>
   Old maintainer(s):
     Raoul Wadhwa <raoulwadhwa@gmail.com>
-  
-  Found the following (possibly) invalid URLs:
-    URL: https://www.ibge.Goiásv.br/geociencias/organizacao-do-territorio/estrutura-territorial/15761-areas-dos-municipios.html?edicao=30133&t=acesso-ao-produto
-      From: inst/doc/modeling-disease-using-PH.html
-      Status: Error
-      Message: libcurl error code 6:
-        	Could not resolve host: www.ibge.Goiásv.br
 ```
 
-The URL is no longer accessible, and we mention this where it is cited. However, we wish to include it because we do not know where the data we obtained there can now be found.
+It also produced many notes regarding the HTML manual, beginning with the following:
+
+```
+❯ checking HTML version of manual ... NOTE
+  Found the following HTML validation problems:
+  PHom.html:15:44 (PHom.Rd:5): Error: <main> is not recognized!
+  PHom.html:15:44 (PHom.Rd:5): Warning: discarding unexpected <main>
+```
+
+I don't know how to resolve these.
+They do not arise from the Win-Builder checks and are not flagged for the previous CRAN version, so i presume that they do not pose a problem for CRAN.
 
 #### Win-Builder
 
 Some Win-Builder checks produced no additional alerts.
 
-The current release check produced the following extra component to the "incoming feasibility" NOTE:
+The old release check produced the following extra component to the "incoming feasibility" NOTE:
 
 ```
 Possibly misspelled words in DESCRIPTION:
@@ -69,6 +72,18 @@ Possibly misspelled words in DESCRIPTION:
 ```
 
 I believe the string is capitalized ("arXiv") every place it should be.
+
+The current release check produced the following extra component to the "incoming feasibility" NOTE:
+
+```
+Found the following (possibly) invalid URLs:
+  URL: https://www.ibge.gov.br/geociencias/organizacao-do-territorio/estrutura-territorial/15761-areas-dos-municipios.html?edicao=30133&t=acesso-ao-produto
+    From: inst/doc/modeling-disease-using-PH.html
+    Status: Error
+    Message: Timeout was reached [www.ibge.gov.br]: Operation timed out after 60008 milliseconds with 0 bytes received
+```
+
+This URL is valid; it is in fact an update to a previous URL that became invalid since we acquired the data from it. See the discussion i initiated here: <https://stat.ethz.ch/pipermail/r-package-devel/2025q2/011578.html>
 
 The development check produced the following extra component to the "incoming feasibility" NOTE:
 
@@ -79,8 +94,8 @@ The Description field contains
 Please refer to arXiv e-prints via their arXiv DOI <doi:10.48550/arXiv.YYMM.NNNNN>.
 ```
 
-The current standard is based on other instructions from a previous check.
-We will change to this standard if requested.
+The current format is being used in response to other instructions from a previous check. (arXiv references are not mentioned in the "Writing R Extensions" guide.)
+I will change to this standard if requested, but i felt it better to use the format suggested earlier in the process.
 
 ## Submission comments for archived package
 
