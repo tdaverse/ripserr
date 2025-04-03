@@ -7,7 +7,7 @@ Comments from previous submissions are retained below for reference.
 
 The submission version is being tested using the following tools:
 
-* Local OS X install, R v4.4.2
+* Local OS X installs, R v4.2.3 and v4.4.2
   * `devtools::check()`
   * `devtools::check(env_vars = c('_R_CHECK_SUGGESTS_ONLY_' = "true"))`
   * `devtools::check(env_vars = c('_R_CHECK_DEPENDS_ONLY_' = "true"), vignettes = FALSE)`
@@ -20,6 +20,10 @@ The submission version is being tested using the following tools:
 The results are as follows.
 Alerts (ERRORs, WARNINGs, or NOTEs) that appeared in previous checks are not mentioned in the results of subsequent checks.
 Only tests that produced new alerts are discussed.
+
+#### Local OS X install, R v4.2.3
+
+
 
 #### Local OS X install, R v4.4.2
 
