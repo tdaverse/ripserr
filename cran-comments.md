@@ -19,11 +19,27 @@ The submission version is being tested using the following tools:
 
 The results are as follows.
 Alerts (ERRORs, WARNINGs, or NOTEs) that appeared in previous checks are not mentioned in the results of subsequent checks.
-Only tests that produced new alerts are discussed.
+Only tests that produced alerts not produced by previous alerts are reported and discussed.
 
 #### Local OS X install, R v4.2.3
 
+Some checks produced no alerts.
 
+The `R_CHECK_DEPENDS_ONLY_` check produced the following NOTE:
+
+```
+── R CMD check results ────────────────────────────────────── ripserr 0.3.0 ────
+Duration: 36.2s
+
+❯ checking for future file timestamps ... NOTE
+  unable to verify current time
+
+0 errors ✔ | 0 warnings ✔ | 1 note ✖
+```
+
+This was likely due to a weak Internet connection.
+
+The `remote = TRUE` check was not completed on this machine due to GitHub authentication problems.
 
 #### Local OS X install, R v4.4.2
 
