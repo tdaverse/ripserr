@@ -1,0 +1,242 @@
+---
+title: "Medical Image Draft"
+author: "---"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Medical Image Draft}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ripserr)
+library(TDAstats)
+library(ggplot2)
+library(dplyr)
+library(reshape2)
+```
+
+## Medical Imaging Data Background
+
+Persistent Homology has been applied to a diverse array of research topics including medical imaging. In "Persistent Homology of Tumor CT Scans is Associated with Survival In Lung Cancer" (Somasundaram et. al.), a persistence homology metric calculated using cubical complexes was associated with survival. In this vignette, we will demonstrate how this metric was calculated using imaging data from the original study. 
+
+A Computed Tomography (CT) Scan is often used to diagnose and monitor lung cancer. CT Scans are 3 dimentional gray scale images where the color of a voxel reflects the tissue imaged. For example, air tends to appear darker whereas bone is lighter. Rather than showing the whole CT scan, we used segmentation data to zoom in on the tumor. We store the first patient tumor image from the cohort in the variable `img`. 
+
+```{r load-data, fig.width = 4, fig.height = 4.5}
+#Reading in all of the Cropped Lung Cancer Images
+segment.slices.rds <- c(readRDS("radiomics.segments.rds"), 
+                        readRDS("radiogenomics.segments.rds"))
+
+#Selecting the cropped lung CT Scan of the first patient
+img <- segment.slices.rds[[1]]
+
+#13th slice shows a good view of tumor and a calcification (bright spot in upper right image)
+slice <- img[[13]]
+
+#Viewing Slice 13
+image(slice, col=grey(0:2041/2041), axes=FALSE, xlab="", ylab="", mar = c(0,0,0,0))
+
+#Viewing all of the Slices
+par(mfrow=c(5,5), mar = c(0, 0, 0, 0))
+for (i in 1:length(img)) {
+  image(img[[i]], col=grey(0:2041/2041), axes=FALSE, xlab="", ylab="", mar = c(0,0,0,0))
+}
+
+```
+
+## Calculating the Persistent Homology
+
+We compute the cubical complex using the cubical function after converting our image to an array. Ripserr produces an erraneous feature with dimension -1 that we remove. We can visualize the persistent homology using the barcode diagram from the [TDAstats](https://cran.r-project.org/web/packages/TDAstats/index.html) Package. 
+
+```{r hom_calc, fig.width = 4, fig.height = 4.5}
+#Converting list to array class to make compatible with ripserr:cubical
+img_arr <- simplify2array(img)
+
+#Calculating the persistent homology using cubical
+cubical_phom <- ripserr::cubical(img_arr)
+
+#Ripserr produces a feature with dimension -1 and death Inf, which is erraneous
+#We remove that prior to further processing 
+cubical_phom_corr <- cubical_phom[-which(cubical_phom$dimension == -1), ]
+
+#Displaying the Barcode Diagram using TDAStats and adjusting the plot axes
+#Note, due to medical imaging standards, the gray scale value ranges from -1024 (black) to 3071 (white)
+#So without any scaling, we expect the features to exist in this range
+TDAstats::plot_barcode(as.matrix(cubical_phom_corr)) + 
+  labs(x = "Filtration (HU)",y = " ", color = "Dimension") + 
+  theme(legend.position=c(.8, .5)) +
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 3.55, color = "white"),
+        legend.text = element_text(size = 11*1.2),
+        legend.title = element_text(size = 11*1.2),
+        axis.title=element_text(size=11),
+        axis.line.y = element_line(size = 1, colour = "white", linetype=2),
+        plot.margin = unit(c(5.5, 5.5, 5.5, 20.5), "pt")) +
+  scale_x_continuous(breaks = c(-1500, -1000, -500, 0, 500, 1000, 1500, 2000), 
+                     limits = c(-1500, 2200), expand = c(0,0)) +
+  scale_y_continuous(position = "left", expand = c(0,0))
+
+```
+
+## Creating Feature Curves
+
+For the survival analysis, we needed discrete metrics. For this reason, we converted the bar code diagram into a topological feature curve. For a given feature dimension, we count the number of bars at points along the x axis and plot this curve using the function `featcounter.vector.cubical.act`. In addition, we also calculate a feature curve for the sum of all features using the function `cubical.total.feat.counter`. 
+
+After computing the feature curves, we visualize them for each dimension. 
+
+
+```{r feat_curve, fig.width = 4, fig.height = 4.5}
+#Function to count total features that exist at each threshold value 
+#Phom is the persistence homology object. Min and max are the minimum 
+#and maximum points along the bar code diagram we captured in the curve
+#Res is the number of steps between min and max to count the bar codes
+#For example, if we specify min = 0, max = 10, and res = 2
+#A feature curve will be plotted counting the number of bars 
+#at threshold 0, 2, 4, 6, and 10. 
+cubical.total.feat.counter <- function(phom, min, max, res) {
+  by <- (max-min)/res
+  seq.to.check <- seq(min, max, by)
+  mat <- cbind(rep(0, length(seq.to.check)), seq.to.check)
+  for (i in 1:length(seq.to.check)) {
+    tally <- sum(seq.to.check[i] >= phom[,2] & 
+                   seq.to.check[i] <= phom[,3])
+    
+    mat[i, 1] <- tally
+  }
+  return(mat[,c(2,1)])
+}
+
+#Creating a function to count based on individual dim feat
+#The variables are the same as in the previous function
+#Feat refers to which dimension's bar we wish to count
+featcounter.vector.cubical.act <- function(phom, min, max, res, feat) {
+  
+  phom <- phom[which(phom[,1] == feat),]
+  
+  by <- (max-min)/res
+  seq.to.check <- seq(min, max, by)
+  mat <- cbind(rep(0, length(seq.to.check)), seq.to.check)
+  for (i in 1:length(seq.to.check)) {
+    tally <- sum(seq.to.check[i] >= phom[,2] & 
+                   seq.to.check[i] <= phom[,3])
+    
+    mat[i, 1] <- tally
+  }
+  return(mat[,c(2,1)])
+}
+
+#Calcuating the total feature curve
+tot_feat_cur <- cubical.total.feat.counter(cubical_phom_corr, min = -1024, 
+                                           max = 3071, res = 1000)
+#Calcuating the Zero Dimension Feature Curve
+zero_feat_cur <- featcounter.vector.cubical.act(cubical_phom_corr, min = -1024, 
+                                           max = 3071, res = 1000, feat = 0)
+
+#Calcuating the One Dimension Feature Curve
+one_feat_cur <- featcounter.vector.cubical.act(cubical_phom_corr, min = -1024, 
+                                           max = 3071, res = 1000, feat = 1)
+
+#Calcuating the Two Dimension Feature Curve
+two_feat_cur <- featcounter.vector.cubical.act(cubical_phom_corr, min = -1024, 
+                                           max = 3071, res = 1000, feat = 2)
+
+#Getting all the topological feature curve representation into one data frame
+#We only need the filtration values from the first data frame since all the curves have the 
+topfeatcurv <- cbind(tot_feat_cur, zero_feat_cur[, 2], one_feat_cur[, 2], two_feat_cur[, 2])
+colnames(topfeatcurv) <- c("filtration", "total features", 
+                           "zero features", "one features", "two features")
+
+#Data Wrangling for ggplot
+topfeatcurv.melt <- as.data.frame(topfeatcurv) %>% melt(id.vars = c("filtration"), 
+               measure.vars = c("total features", "zero features", "one features", 
+                                "two features"))
+#Data Wrangling for ggplot
+colnames(topfeatcurv.melt) <- c("filtration", "feature.type", "feature.count")
+
+#Data Wrangling for ggplot
+levels(topfeatcurv.melt$feature.type) <- c("Total Features", "0D Features", "1D Features", "2D Features")
+
+#Data Wrangling for ggplot
+group.colors <- c("#000000", "#f15f36", "#25af35", "#5388fb")
+
+#Plotting...note we high light the 0 dimensional feature curve since 
+#our study focuses on this curve
+ggplot(topfeatcurv.melt, aes(x = filtration, y = feature.count, 
+                                         color = feature.type, alpha = feature.type)) +
+   geom_path(size = 1) + theme_bw() + 
+  scale_color_manual(values = group.colors) +
+  scale_alpha_manual(values = c(0.2, 1, 0.2, 0.2)) +
+  labs(title = NULL, x = "Filtration (HU)", 
+       y = "Number of Features", color = "Feature Dimension") + 
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        axis.title=element_text(size=11),
+        legend.text = element_text(size = 11*1.2),
+        legend.title = element_text(size = 11*1.2),
+        legend.position = c(0.75, 0.65),
+        legend.background=element_blank()) + 
+  guides(alpha = "none") +
+  scale_x_continuous(breaks = c(-1500, -1000, -500, 0, 500, 1000, 1500, 2000), 
+                     limits = c(-1500, 2200), expand = c(0,0)) + 
+  guides(color = guide_legend(override.aes = list(alpha = c(0.2, 1, 0.2, 0.2))))
+
+#Note, we 852 rows reflected data for the x axis > 2000 (since we set the max to 3071). 
+#However, they contain no features so we limited the x axis to 2000
+
+```
+
+## Calculating Moments of the Distribution
+
+In our study, we calculated the raw moments of the feature curves to use in our survival analysis. We found moment 1 of the zero dimensional topological feature curve to be significant in predicting survival using a Cox Proportional Hazards Model. For intuition, this represents the average number of zero dimensional features through filtration of the image. 
+
+To read more about our project, you can read our manuscript on [MedRxiv](https://www.medrxiv.org/content/10.1101/2020.12.06.20244863v2) and see the whole reproducible code at [Github](https://github.com/eashwarsoma/TDA-Lung-Phom-Reproducible). 
+
+```{r moments, fig.width = 4, fig.height = 4.5}
+#Function to calculate raw moments
+#Vec is the feature curve object (second column) and degree is the nth moment 
+raw.moment <- function (vec, degree) {
+  len <- length(vec)
+  val <- sum(vec^degree)
+  
+  return(val/len)
+}
+
+rbind.data.frame(
+#First Raw Moment
+`Moment 1` = cbind(`Total Feat Curve` = raw.moment(tot_feat_cur[,2], 1), 
+`Two Dim Feat Curve` = raw.moment(two_feat_cur[,2], 1), 
+`One Dim Feat Curve` = raw.moment(one_feat_cur[,2], 1), 
+`Zero Dim Feat Curve` = raw.moment(zero_feat_cur[,2], 1)
+), 
+
+#Second Raw Moment
+`Moment 2` = cbind(`Total Feat Curve` = raw.moment(tot_feat_cur[,2], 2), 
+`Two Dim Feat Curve` = raw.moment(two_feat_cur[,2], 2), 
+`One Dim Feat Curve` = raw.moment(one_feat_cur[,2], 2), 
+`Zero Dim Feat Curve` = raw.moment(zero_feat_cur[,2], 2)
+),
+
+#Third Raw Moment
+`Moment 3` = cbind(`Total Feat Curve` = raw.moment(tot_feat_cur[,2], 3), 
+`Two Dim Feat Curve` = raw.moment(two_feat_cur[,2], 3), 
+`One Dim Feat Curve` = raw.moment(one_feat_cur[,2], 3), 
+`Zero Dim Feat Curve` = raw.moment(zero_feat_cur[,2], 3)
+),
+
+#Fourth Raw Moment
+`Moment 4` = cbind(`Total Feat Curve` = raw.moment(tot_feat_cur[,2], 4), 
+`Two Dim Feat Curve` = raw.moment(two_feat_cur[,2], 4), 
+`One Dim Feat Curve` = raw.moment(one_feat_cur[,2], 4), 
+`Zero Dim Feat Curve` = raw.moment(zero_feat_cur[,2], 4)
+)
+) %>% signif(2)
+
+```
