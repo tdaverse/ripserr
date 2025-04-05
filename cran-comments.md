@@ -101,18 +101,6 @@ Found the following (possibly) invalid URLs:
 
 This URL is valid; it is in fact an update to a previous URL that became invalid since we acquired the data from it. See the discussion i initiated here: <https://stat.ethz.ch/pipermail/r-package-devel/2025q2/011578.html>
 
-The development check produced the following extra component to the "incoming feasibility" NOTE:
-
-```
-The Description field contains
-  Ports the Ripser <arxiv:1908.02518> and Cubical Ripser
-  <arxiv:2005.12692> persistent homology calculation engines from C++.
-Please refer to arXiv e-prints via their arXiv DOI <doi:10.48550/arXiv.YYMM.NNNNN>.
-```
-
-The current format is being used in response to other instructions from a previous check. (arXiv references are not mentioned in the "Writing R Extensions" guide.)
-I will change to this standard if requested, but i felt it better to use the format suggested earlier in the process.
-
 ## Submission comments for archived package
 
 ### From fourth resubmission (15 Oct 2020)
