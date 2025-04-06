@@ -1,4 +1,4 @@
-## Submission comments for version 0.3.0 (2025 April XX)
+## Submission comments for version 0.3.0 (2025 April 6)
 
 This is a minor version in anticipation of an upcoming major version. The goal is to incorporate, stabilize, and make available a variety of contributions made over several years before introducing fundamental changes that will need to be reconciled with the rest of the package.
 Comments from previous submissions are retained below for reference.
@@ -43,14 +43,7 @@ The `remote = TRUE` check was not completed on this machine due to GitHub authen
 
 #### Local OS X install, R v4.4.2
 
-All checks produced no ERRORs or WARNINGs but the following NOTE:
-
-```
-❯ checking C++ specification ... NOTE
-    Specified C++11: please drop specification unless essential
-```
-
-We specify C++11 because it is required by the Cubical Ripser source code as described here: <https://arxiv.org/pdf/2005.12692> (page 5).
+All checks produced no ERRORs or WARNINGs.
 
 The last check, `devtools::check(remote = TRUE, manual = TRUE)`, produced the following NOTE, reflecting the transfer of maintenance:
 
@@ -79,15 +72,6 @@ They do not arise from the Win-Builder checks and are not flagged for the previo
 #### Win-Builder
 
 Some Win-Builder checks produced no additional alerts.
-
-The old release check produced the following extra component to the "incoming feasibility" NOTE:
-
-```
-Possibly misspelled words in DESCRIPTION:
-  arxiv (45:32, 46:25)
-```
-
-I believe the string is capitalized ("arXiv") every place it should be.
 
 The current release check produced the following extra component to the "incoming feasibility" NOTE:
 
