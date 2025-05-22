@@ -70,3 +70,50 @@
 #'  quarter.
 #' }
 "case_predictors"
+
+#' @title Black hole in Messier 87 captured by the Event Horizon Telescope
+#'
+#' @description A data set containing a grayscale bitmap of the Messier 87 black 
+#' hole with 250x250 resolution.
+#' 
+#' @format A 250x250 matrix containing pixels of evaluated between 0 and 1.
+#' 
+#' @source 
+#' \urlhttps://commons.wikimedia.org/wiki/File:Black_hole_-_Messier_87_crop_max_res.jpg
+#' 
+#' \describe{
+#' Data pre-processing:
+#' After acquiring the 250x250 image from the above link we used the 
+#' {[magick](https://cran.r-project.org/package=magick)} for processing. We 
+#' first convert the image from RGB to grayscale using the default 
+#' "perceptually-weighted" conversion. We then acquired the raw 3D array, 
+#' converted the data type to numerical, and dropped the singleton channel 
+#' dimension. We then transposed the matrix and vertically flipped it to align 
+#' with how `image()` reads a matrix.
+#' }
+#' 
+#' @examples
+#' # compute the persistence homology of the Messier 87 black hole 
+#' m87bh <- m87_black_hole
+#' image(m87bh)
+#' ph <- cubical(m87bh)
+#' # based on the image, we expect one especially prominent persistent feature in 1D
+#' ph$persistence <- ph$death - ph$birth
+#' ph_1 <- ph[ph$dimension == 1, ]
+#' ph_1 <- ph_1[order(-ph_1$persistence), ]
+#' head(ph_1)
+#' 
+#' plot.new()
+#' plot.window(
+#'   xlim = c(0, max(ph$death)),
+#'   ylim = c(0, max(ph$death)),
+#'   asp = 1
+#' )
+#' axis(1L)
+#' axis(2L)
+#' abline(a = 0, b = 1)
+#' points(ph[ph$dim == 0L, c("birth", "death")], pch = 16L)
+#' points(ph[ph$dim == 1L, c("birth", "death")], pch = 17L)
+"m87_black_hole"
+
+
