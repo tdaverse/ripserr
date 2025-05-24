@@ -79,7 +79,8 @@
 #' @format A 250x250 matrix containing pixels of evaluated between 0 and 1.
 #' 
 #' @source 
-#' \urlhttps://commons.wikimedia.org/wiki/File:Black_hole_-_Messier_87_crop_max_res.jpg
+#' \url{https://commons.wikimedia.org/wiki/File:Black_hole_-_Messier_87_crop_max_res.jpg}
+#' \url{https://joss.theoj.org/papers/10.21105/joss.02614}
 #' 
 #' \describe{
 #' Data pre-processing:
@@ -89,19 +90,20 @@
 #' "perceptually-weighted" conversion. We then acquired the raw 3D array, 
 #' converted the data type to numerical, and dropped the singleton channel 
 #' dimension. We then transposed the matrix and vertically flipped it to align 
-#' with how `image()` reads a matrix.
+#' with how {graphics} reads matrices.
 #' }
 #' 
 #' @examples
 #' # compute the persistence homology of the Messier 87 black hole 
 #' m87bh <- m87_black_hole
-#' image(m87bh)
+#' 
+#' # contour lines connect regions of equal brightness, revealing the structure of the glowing gas 
+#' # surrounding the black hole
+#' filled.contour(m87bh, color.palette = terrain.colors, asp = 1)
+#' title(main = "Messier 87's Black Hole: filled contour map")
+#' 
+#' #' # based on the image, we expect one especially prominent persistent feature in 1D
 #' ph <- cubical(m87bh)
-#' # based on the image, we expect one especially prominent persistent feature in 1D
-#' ph$persistence <- ph$death - ph$birth
-#' ph_1 <- ph[ph$dimension == 1, ]
-#' ph_1 <- ph_1[order(-ph_1$persistence), ]
-#' head(ph_1)
 #' 
 #' plot.new()
 #' plot.window(

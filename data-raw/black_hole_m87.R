@@ -7,7 +7,7 @@ img <- image_read(url_img) |> image_convert(colorspace = "gray")
 
 # make the image into a bitmap matrix
 img_mat <- as.numeric(image_data(img)) |> drop() |> t()
-img_mat <- img_mat[, ncol(img_mat):1]
+m87_black_hole <- img_mat[, ncol(img_mat):1]
 # image(img_mat, col = gray.colors(256))
 
 # as.numeric() needed to change from raw datatype
@@ -15,4 +15,4 @@ img_mat <- img_mat[, ncol(img_mat):1]
 #`image()` plots where the x-axis is row index and the y-axis is the column index
 # see ?image
 
-save(img_mat, file = "Black_Hole-Messier_87.rda")
+save(m87_black_hole, file = "Black_Hole-Messier_87.rda")
