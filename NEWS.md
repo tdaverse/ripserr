@@ -1,3 +1,7 @@
+# ripserr 0.4.0
+
+This minor edition includes the `blackhole` data set along with its accompanying documentation and R script.
+
 # ripserr 0.3.0
 
 This minor version subsumes several contributions over 4+ years, including invisibly returning persistence data on `print()`, an additional vignette, and debugging & correcting of documentation.

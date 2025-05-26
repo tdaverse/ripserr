@@ -99,7 +99,7 @@
 #' 
 #' # contour lines connect regions of equal brightness, revealing the structure of the glowing gas 
 #' # surrounding the black hole
-#' image(blackhole, col = hcl.colors(256, palette = "inferno", alpha = NULL, rev = FALSE, fixup = TRUE))
+#' image(blackhole, col = hcl.colors(256, palette = "inferno", alpha = NULL, rev = FALSE, fixup = TRUE), axes = FALSE)
 #' title(main = "Messier 87's Black Hole")
 #' 
 #' #' # based on the image, we expect one especially prominent persistent feature in 1D
