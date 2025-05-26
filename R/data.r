@@ -76,34 +76,34 @@
 #' @description A data set containing a grayscale bitmap of the Messier 87 black 
 #' hole with 250x250 resolution.
 #' 
-#' @format A 250x250 matrix containing pixels of evaluated between 0 and 1.
+#' @format A 250x250 matrix containing pixels evaluated between 0 and 1.
 #' 
-#' @source 
+#' @source
 #' \url{https://commons.wikimedia.org/wiki/File:Black_hole_-_Messier_87_crop_max_res.jpg}
-#' \url{https://joss.theoj.org/papers/10.21105/joss.02614}
+#' \url{https://mtsch.github.io/Ripserer.jl/v0.10/generated/sublevelset/}
 #' 
 #' \describe{
 #' Data pre-processing:
-#' After acquiring the 250x250 image from the above link we used the 
-#' {[magick](https://cran.r-project.org/package=magick)} for processing. We 
-#' first convert the image from RGB to grayscale using the default 
-#' "perceptually-weighted" conversion. We then acquired the raw 3D array, 
+#' First, we obtained the image from {[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Black_hole_-_Messier_87_crop_max_res.jpg)}
+#' We then utilize {[{magick}](https://cran.r-project.org/package=magick)} to   
+#' convert the image from RGB to grayscale using the default 
+#' "perceptually-weighted" conversion. Next we acquired the raw 3D array, 
 #' converted the data type to numerical, and dropped the singleton channel 
 #' dimension. We then transposed the matrix and vertically flipped it to align 
-#' with how {graphics} reads matrices.
+#' with how [{graphics}](https://rdocumentation.org/packages/graphics/versions/3.6.2) 
+#' reads matrices.
 #' }
 #' 
 #' @examples
 #' # compute the persistence homology of the Messier 87 black hole 
-#' m87bh <- m87_black_hole
 #' 
 #' # contour lines connect regions of equal brightness, revealing the structure of the glowing gas 
 #' # surrounding the black hole
-#' filled.contour(m87bh, color.palette = terrain.colors, asp = 1)
-#' title(main = "Messier 87's Black Hole: filled contour map")
+#' image(blackhole, col = hcl.colors(256, palette = "inferno", alpha = NULL, rev = FALSE, fixup = TRUE))
+#' title(main = "Messier 87's Black Hole")
 #' 
 #' #' # based on the image, we expect one especially prominent persistent feature in 1D
-#' ph <- cubical(m87bh)
+#' ph <- cubical(blackhole)
 #' 
 #' plot.new()
 #' plot.window(
@@ -116,6 +116,6 @@
 #' abline(a = 0, b = 1)
 #' points(ph[ph$dim == 0L, c("birth", "death")], pch = 16L)
 #' points(ph[ph$dim == 1L, c("birth", "death")], pch = 17L)
-"m87_black_hole"
+"blackhole"
 
 

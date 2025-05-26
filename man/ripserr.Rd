@@ -24,16 +24,16 @@ Authors:
 \itemize{
   \item Raoul Wadhwa \email{raoulwadhwa@gmail.com} (\href{https://orcid.org/0000-0003-0503-9580}{ORCID})
   \item Matt Piekenbrock \email{matt.piekenbrock@gmail.com}
-  \item Jacob Scott (\href{https://orcid.org/0000-0003-2971-7673}{ORCID})
   \item Xinyi Zhang \email{ezhang0927@gmail.com}
 }
 
 Other contributors:
 \itemize{
   \item Emily Noble [contributor]
+  \item Jacob Scott (\href{https://orcid.org/0000-0003-2971-7673}{ORCID}) [laboratory director]
+  \item Ulrich Bauer (Ulrich Bauer holds the copyright to Ripser (MIT license), which was refactored prior to inclusion in ripserr.) [copyright holder, contributor]
   \item Takeki Sudo (Takeki Sudo is a copyright holder for Cubical Ripser (GPL-3 license), which was refactored prior to inclusion in ripserr.) [copyright holder, contributor]
   \item Kazushi Ahara (Kazushi Ahara is a copyright holder for Cubical Ripser (GPL-3 license), which was refactored prior to inclusion in ripserr.) [copyright holder, contributor]
-  \item Ulrich Bauer (Ulrich Bauer holds the copyright to Ripser (MIT license), which was refactored prior to inclusion in ripserr.) [copyright holder, contributor]
 }
 
 }
