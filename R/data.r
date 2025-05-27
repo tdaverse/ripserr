@@ -73,8 +73,8 @@
 
 #' @title Black hole in Messier 87 captured by the Event Horizon Telescope
 #'
-#' @description A data set containing a grayscale bitmap of the Messier 87 black 
-#' hole with 250x250 resolution.
+#' @description A data set containing a 250 x 250 grayscale bitmap of the Messier 87 black 
+#' hole with a spatial scale of approximately 800 million km per pixel. 
 #' 
 #' @format A 250x250 matrix containing pixels evaluated between 0 and 1.
 #' 
