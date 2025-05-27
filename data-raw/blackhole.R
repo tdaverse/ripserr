@@ -16,4 +16,3 @@ blackhole <- img_mat[, ncol(img_mat):1]
 # see ?image
 
 save(blackhole, file = "Black_Hole-Messier_87.rda")
-

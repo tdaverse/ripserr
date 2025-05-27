@@ -83,26 +83,23 @@
 #' \url{https://mtsch.github.io/Ripserer.jl/v0.10/generated/sublevelset/}
 #' 
 #' \describe{
-#' Data pre-processing:
 #' First, we obtained the image from {[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Black_hole_-_Messier_87_crop_max_res.jpg)}
-#' We then utilize {[{magick}](https://cran.r-project.org/package=magick)} to   
+#' We then utilize [{magick}][magick::magick] to
 #' convert the image from RGB to grayscale using the default 
 #' "perceptually-weighted" conversion. Next we acquired the raw 3D array, 
 #' converted the data type to numerical, and dropped the singleton channel 
 #' dimension. We then transposed the matrix and vertically flipped it to align 
-#' with how [{graphics}](https://rdocumentation.org/packages/graphics/versions/3.6.2) 
-#' reads matrices.
+#' with how [{graphics}][graphics::graphics] reads matrices.
 #' }
 #' 
 #' @examples
-#' # compute the persistence homology of the Messier 87 black hole 
-#' 
-#' # contour lines connect regions of equal brightness, revealing the structure of the glowing gas 
-#' # surrounding the black hole
-#' image(blackhole, col = hcl.colors(256, palette = "inferno", alpha = NULL, rev = FALSE, fixup = TRUE), axes = FALSE)
+#' image(blackhole, 
+#'   col = hcl.colors(256, palette = "inferno", alpha = NULL, rev = FALSE, 
+#'   fixup = TRUE), axes = FALSE, asp = 1)
 #' title(main = "Messier 87's Black Hole")
 #' 
-#' #' # based on the image, we expect one especially prominent persistent feature in 1D
+#' # based on the image, we expect one especially prominent 
+#' # persistent feature in 1D
 #' ph <- cubical(blackhole)
 #' 
 #' plot.new()
@@ -114,8 +111,7 @@
 #' axis(1L)
 #' axis(2L)
 #' abline(a = 0, b = 1)
-#' points(ph[ph$dim == 0L, c("birth", "death")], pch = 16L)
-#' points(ph[ph$dim == 1L, c("birth", "death")], pch = 17L)
+#' points(ph[ph$dim == 1L, c("birth", "death")], pch = 17L, col = "orange")
 "blackhole"
 
 
