@@ -71,36 +71,49 @@
 #' }
 "case_predictors"
 
-#' @title Black hole in Messier 87 captured by the Event Horizon Telescope
-#'
-#' @description A data set containing a 250 x 250 grayscale bitmap of the Messier 87 black 
-#' hole with a spatial scale of approximately 800 million km per pixel. 
+#' @title Images of black holes: Sagettarius A* and Pōwehi
 #' 
-#' @format A 250x250 matrix containing pixels evaluated between 0 and 1.
+#' @name blackholes
+#' @aliases sagA powehi
+#'
+#' @description These data sets contain grayscale bitmaps of black holes 
+#' Sagettarius A* and Pōwehi (the unoffical name of Messier 87's black hole).
+#' `sagA` contains a 240x240 matrix with a spatial scale of approximately 1.3 millon
+#' km per cell (calculated by dividing the length of the shadow by the number of 
+#' cells it covers in the image: 50 million km / 38).
+#' `powehi` contains a 250x250 matrix of Pōwehi with a spatial scale of 
+#' approximately 800 million km per cell (calculated the same way as above: 
+#' 40 billion km / 50).
+#' 
+#' @format A 240x240 and 250x250 matrix containing cells evaluated between 0 and 1.
 #' 
 #' @source
 #' \url{https://commons.wikimedia.org/wiki/File:Black_hole_-_Messier_87_crop_max_res.jpg}
+#' \url{https://commons.wikimedia.org/wiki/File:EHT_Saggitarius_A_black_hole.tif}
 #' \url{https://mtsch.github.io/Ripserer.jl/v0.10/generated/sublevelset/}
 #' 
-#' \describe{
-#' First, we obtained the image from {[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Black_hole_-_Messier_87_crop_max_res.jpg)}
-#' We then utilize [{magick}][magick::magick] to
-#' convert the image from RGB to grayscale using the default 
-#' "perceptually-weighted" conversion. Next we acquired the raw 3D array, 
+#' **Image Processing Details**
+#' 
+#' For both images we used the same proccess as follows.
+#' First, we obtained our images from \href{https://commons.wikimedia.org/wiki/File:EHT_Saggitarius_A_black_hole.tif}{Wikimedia Commons: Sagittarius A*}
+#' \href{https://commons.wikimedia.org/wiki/File:Black_hole_-_Messier_87_crop_max_res.jpg}{Wikimedia Commons: Pōwehi}.
+#' We then utilize \pkg{magick} to
+#' convert the images from RGB to grayscale using the default 
+#' "perceptually-weighted" conversion. Next we acquired the raw 3D arrays, 
 #' converted the data type to numerical, and dropped the singleton channel 
-#' dimension. We then transposed the matrix and vertically flipped it to align 
-#' with how [{graphics}][graphics::graphics] reads matrices.
-#' }
+#' dimension. We then transposed the matrices and vertically flipped it to align 
+#' with how \pkg{graphics} reads matrices.
+#' 
 #' 
 #' @examples
-#' image(blackhole, 
+#' image(powehi, 
 #'   col = hcl.colors(256, palette = "inferno", alpha = NULL, rev = FALSE, 
 #'   fixup = TRUE), axes = FALSE, asp = 1)
-#' title(main = "Messier 87's Black Hole")
+#' title(main = "Messier 87's Black Hole: Pōwehi")
 #' 
 #' # based on the image, we expect one especially prominent 
 #' # persistent feature in 1D
-#' ph <- cubical(blackhole)
+#' ph <- cubical(powehi)
 #' 
 #' plot.new()
 #' plot.window(
@@ -112,6 +125,6 @@
 #' axis(2L)
 #' abline(a = 0, b = 1)
 #' points(ph[ph$dim == 1L, c("birth", "death")], pch = 17L, col = "orange")
-"blackhole"
+NULL
 
 

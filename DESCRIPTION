@@ -41,11 +41,11 @@ Authors@R:
              role = c("cph", "ctb"),
              comment = paste("Kazushi Ahara is a copyright holder for Cubical",
                              "Ripser (GPL-3 license), which was refactored",
-                             "prior to inclusion in ripserr."))
+                             "prior to inclusion in ripserr.")),
       person(given = "Aidan", 
              family = "Bryant",
              role = "ctb",
-             email = "bryant.aidan15@gmail.com")
+             email = "bryant.aidan15@gmail.com"),
       person(given = "James", 
              family = "Golabek",
              role = "ctb",
