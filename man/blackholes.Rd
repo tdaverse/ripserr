@@ -2,7 +2,7 @@
 % Please edit documentation in R/data.r
 \name{blackholes}
 \alias{blackholes}
-\alias{sagA}
+\alias{sagAstar}
 \alias{powehi}
 \title{Images of black holes: Sagettarius A* and Pōwehi}
 \format{
@@ -28,7 +28,7 @@ with how \pkg{graphics} reads matrices.
 \description{
 These data sets contain grayscale bitmaps of black holes
 Sagettarius A* and Pōwehi (the unoffical name of Messier 87's black hole).
-\code{sagA} contains a 240x240 matrix with a spatial scale of approximately 1.3 millon
+\code{sagAstar} contains a 240x240 matrix with a spatial scale of approximately 1.3 millon
 km per cell (calculated by dividing the length of the shadow by the number of
 cells it covers in the image: 50 million km / 38).
 \code{powehi} contains a 250x250 matrix of Pōwehi with a spatial scale of
@@ -39,7 +39,7 @@ approximately 800 million km per cell (calculated the same way as above:
 image(powehi, 
   col = hcl.colors(256, palette = "inferno", alpha = NULL, rev = FALSE, 
   fixup = TRUE), axes = FALSE, asp = 1)
-title(main = "Messier 87's Black Hole: Pōwehi")
+title(main = "Messier 87's Black Hole: Po\u0304wehi")
 
 # based on the image, we expect one especially prominent 
 # persistent feature in 1D
