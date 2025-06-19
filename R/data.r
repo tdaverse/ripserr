@@ -110,7 +110,7 @@
 #' image(powehi, 
 #'   col = hcl.colors(256, palette = "inferno", alpha = NULL, rev = FALSE, 
 #'   fixup = TRUE), axes = FALSE, asp = 1)
-#' title(main = "Messier 87's Black Hole: Po\u0304wehi")
+#' title(main = "Messier 87's Black Hole: Powehi")
 #' 
 #' # based on the image, we expect one especially prominent 
 #' # persistent feature in 1D
