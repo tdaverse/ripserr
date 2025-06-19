@@ -72,9 +72,10 @@ AC_coord <- aegypti[aegypti$state_code == "AC", c("x", "y"), drop = FALSE]
 AC_rips <- vietoris_rips(AC_coord) ##filtration
 
 plot.new()
+max_finite_death <- max(AC_rips$death[is.finite(AC_rips$death)])
 plot.window(
-  xlim = c(0, max(AC_rips$death)),
-  ylim = c(0, max(AC_rips$death)),
+  xlim = c(0, max_finite_death),
+  ylim = c(0, max_finite_death),
   asp = 1
 )
 axis(1L)
