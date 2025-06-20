@@ -1,5 +1,8 @@
 /*
-
+ This file is an altered form of the Ripser software created by Ulrich Bauer.
+ Details of the original software are below the dashed line.
+ -Raoul Wadhwa & Jason Cory Brunson
+ -------------------------------------------------------------------------------
  Ripser: a lean C++ code for computation of Vietoris-Rips persistence barcodes
 
  MIT License
