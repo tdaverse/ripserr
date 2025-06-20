@@ -37,19 +37,13 @@ Authors@R:
              comment = c(ORCID = "0000-0003-2971-7673")),
       person(given = "Ulrich", family = "Bauer",
              role = c("cph", "ctb"),
-             comment = paste("Ulrich Bauer holds the copyright to Ripser",
-                             "(MIT license), which was refactored prior",
-                             "to inclusion in ripserr.")),
+             comment = "Ripser; MIT license"),
       person(given = "Takeki", family = "Sudo",
              role = c("cph", "ctb"),
-             comment = paste("Takeki Sudo is a copyright holder for Cubical",
-                             "Ripser (GPL-3 license), which was refactored",
-                             "prior to inclusion in ripserr.")),
+             comment = "Cubical Ripser; GPL-3 license"),
       person(given = "Kazushi", family = "Ahara",
              role = c("cph", "ctb"),
-             comment = paste("Kazushi Ahara is a copyright holder for Cubical",
-                             "Ripser (GPL-3 license), which was refactored",
-                             "prior to inclusion in ripserr."))
+             comment = "Cubical Ripser; GPL-3 license")
                             )
 Description: Ports the Ripser <doi:10.48550/arXiv.1908.02518>
     and Cubical Ripser <doi:10.48550/arXiv.2005.12692>

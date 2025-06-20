@@ -33,9 +33,9 @@ Other contributors:
   \item Aidan Bryant \email{bryant.aidan15@gmail.com} [contributor]
   \item James Golabek \email{jamesgolabek@gmail.com} [contributor]
   \item Jacob Scott (\href{https://orcid.org/0000-0003-2971-7673}{ORCID}) [laboratory director]
-  \item Ulrich Bauer (Ulrich Bauer holds the copyright to Ripser (MIT license), which was refactored prior to inclusion in ripserr.) [copyright holder, contributor]
-  \item Takeki Sudo (Takeki Sudo is a copyright holder for Cubical Ripser (GPL-3 license), which was refactored prior to inclusion in ripserr.) [copyright holder, contributor]
-  \item Kazushi Ahara (Kazushi Ahara is a copyright holder for Cubical Ripser (GPL-3 license), which was refactored prior to inclusion in ripserr.) [copyright holder, contributor]
+  \item Ulrich Bauer (Ripser; MIT license) [copyright holder, contributor]
+  \item Takeki Sudo (Cubical Ripser; GPL-3 license) [copyright holder, contributor]
+  \item Kazushi Ahara (Cubical Ripser; GPL-3 license) [copyright holder, contributor]
 }
 
 }
