@@ -1,13 +1,16 @@
-## Submission comments for version 0.3.0 (2025 April 6)
+## Submission comments for version 1.0.0 (2025 June ??)
 
-This is a minor version in anticipation of an upcoming major version. The goal is to incorporate, stabilize, and make available a variety of contributions made over several years before introducing fundamental changes that will need to be reconciled with the rest of the package.
-Comments from previous submissions are retained below for reference.
+This is the first major release increment, due to complete replacement of the outdated Ripser C++ library by its most recent version.
+To limit the number of CRAN submissions, v0.4.0 (black hole data sets) is subsumed into this release.
 
 ### Test environments
 
 The submission version is being tested using the following tools:
 
-* Local OS X installs, R v4.2.3 and v4.4.2
+* local OS X install, R v4.2.3
+  * `devtools::check()`
+  * `devtools::check(env_vars = c('_R_CHECK_SUGGESTS_ONLY_' = "true"))`
+* local OS X install, R v4.4.2
   * `devtools::check()`
   * `devtools::check(env_vars = c('_R_CHECK_SUGGESTS_ONLY_' = "true"))`
   * `devtools::check(env_vars = c('_R_CHECK_DEPENDS_ONLY_' = "true"), vignettes = FALSE)`
@@ -23,23 +26,7 @@ Only tests that produced alerts not produced by previous alerts are reported and
 
 #### Local OS X install, R v4.2.3
 
-Some checks produced no alerts.
-
-The `R_CHECK_DEPENDS_ONLY_` check produced the following NOTE:
-
-```
-── R CMD check results ────────────────────────────────────── ripserr 0.3.0 ────
-Duration: 36.2s
-
-❯ checking for future file timestamps ... NOTE
-  unable to verify current time
-
-0 errors ✔ | 0 warnings ✔ | 1 note ✖
-```
-
-This was likely due to a weak Internet connection.
-
-The `remote = TRUE` check was not completed on this machine due to GitHub authentication problems.
+There were no ERRORs or WARNINGs. An occasional NOTE was presumably due to Internet connection speeds.
 
 #### Local OS X install, R v4.4.2
 
