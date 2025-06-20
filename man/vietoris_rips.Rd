@@ -58,11 +58,11 @@ specified}
 \code{PHom} object
 }
 \description{
-This function is an R wrapper for the Ripser C++ library to calculate
-persistent homology. For more information on the C++ library, see
+This function is an R wrapper for the Ripser C++ library to
+calculate persistent homology. For more information on the C++ library, see
 \url{https://github.com/Ripser/ripser}. For more information on how objects of
-different classes are evaluated by \code{vietoris_rips}, read the Details section
-below.
+different classes are evaluated by \code{vietoris_rips}, read the Details
+section below.
 }
 \details{
 \code{vietoris_rips.data.frame} assumes \code{dataset} is a point cloud, with each row

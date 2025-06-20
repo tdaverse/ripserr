@@ -13,11 +13,7 @@ cubical_4dim <- function(image, threshold, method, nx, ny, nz, nt) {
     .Call('_ripserr_cubical_4dim', PACKAGE = 'ripserr', image, threshold, method, nx, ny, nz, nt)
 }
 
-ripser_cpp_dist <- function(dist_r, dim, thresh, p) {
-    .Call('_ripserr_ripser_cpp_dist', PACKAGE = 'ripserr', dist_r, dim, thresh, p)
-}
-
-ripser_cpp <- function(input_points, dim, thresh, p, format) {
-    .Call('_ripserr_ripser_cpp', PACKAGE = 'ripserr', input_points, dim, thresh, p, format)
+ripser_cpp_dist <- function(dataset, dim, thresh, ratio, p) {
+    .Call('_ripserr_ripser_cpp_dist', PACKAGE = 'ripserr', dataset, dim, thresh, ratio, p)
 }
 

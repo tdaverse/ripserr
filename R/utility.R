@@ -264,3 +264,20 @@ numeric_to_quasi_attractor <- function(vec, data_dim,
   # return
   return(ans_mat)
 }
+
+# convert a list of 2-column matrices to a 3-column data frame
+ripser_ans_to_df <- function(x) {
+  w <- which(vapply(x, nrow, 0L) > 0L)
+  if (length(w) == 0L) {
+    return(data.frame(
+      dimension = integer(0),
+      birth = double(0),
+      death = double(0)
+    ))
+  }
+  x <- mapply(cbind, as.list((seq_along(x) - 1L)[w]), x[w], SIMPLIFY = FALSE)
+  x <- lapply(x, as.data.frame)
+  x <- do.call(rbind, x)
+  names(x) <- c("dimension", "birth", "death")
+  x
+}
