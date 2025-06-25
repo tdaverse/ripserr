@@ -104,8 +104,11 @@ vietoris_rips.matrix <- function(
   # convert no-threshold value
   if (threshold == -1) threshold <- Inf
   
+  # convert distance matrix
+  dataset <- lower_to_upper_dist(stats::dist(dataset))
+  
   # calculate persistent homology
-  ans <- ripser_cpp_dist(stats::dist(dataset), max_dim, threshold, 1., p)
+  ans <- ripser_cpp_dist(dataset, max_dim, threshold, 1., p)
   
   # coerce to 'PHom' class
   ans <- new_PHom(ripser_ans_to_df(ans))
@@ -146,6 +149,9 @@ vietoris_rips.dist <- function(
   
   # convert no-threshold value
   if (threshold == -1) threshold <- Inf
+  
+  # convert distance matrix
+  dataset <- lower_to_upper_dist(dataset)
   
   # calculate persistent homology
   ans <- ripser_cpp_dist(dataset, max_dim, threshold, 1., p)

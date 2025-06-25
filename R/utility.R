@@ -219,21 +219,6 @@ validate_dist_vr <- function(dataset) {
 }
 
 #####DATA FORMATTING#####
-# convert Ripser C++/Rcpp output into an appropriate data frame
-ripser_vec_to_df <- function(ans_vec) {
-  # first convert to matrix (easily handled by `matrix` function)
-  ans_mat <- matrix(ans_vec,
-                    byrow = TRUE,
-                    ncol = 3)
-  colnames(ans_mat) <- c("dimension", "birth", "death")
-  
-  # convert to df format and fix col class
-  ans_df <- as.data.frame(ans_mat)
-  ans_df$dimension <- as.integer(ans_df$dimension)
-  
-  # finally return properly formatted object
-  return(ans_df)
-}
 
 # convert numeric vector (time series) to matrix for persistent homology
 #   calculation based on quasi-attractor method in:
@@ -263,6 +248,14 @@ numeric_to_quasi_attractor <- function(vec, data_dim,
   
   # return
   return(ans_mat)
+}
+
+# reorder a distance matrix for lower-triangular Ripser
+# TODO: Revert to using `compressed_upper_distance_matrix` as in v0.5.0.
+lower_to_upper_dist <- function(x) {
+  if (length(x) < 2L) return(x)
+  x <- as.matrix(x)
+  x[upper.tri(x)]
 }
 
 # convert a list of 2-column matrices to a 3-column data frame
