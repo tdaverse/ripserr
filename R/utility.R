@@ -219,21 +219,6 @@ validate_dist_vr <- function(dataset) {
 }
 
 #####DATA FORMATTING#####
-# convert Ripser C++/Rcpp output into an appropriate data frame
-ripser_vec_to_df <- function(ans_vec) {
-  # first convert to matrix (easily handled by `matrix` function)
-  ans_mat <- matrix(ans_vec,
-                    byrow = TRUE,
-                    ncol = 3)
-  colnames(ans_mat) <- c("dimension", "birth", "death")
-  
-  # convert to df format and fix col class
-  ans_df <- as.data.frame(ans_mat)
-  ans_df$dimension <- as.integer(ans_df$dimension)
-  
-  # finally return properly formatted object
-  return(ans_df)
-}
 
 # convert numeric vector (time series) to matrix for persistent homology
 #   calculation based on quasi-attractor method in:
@@ -263,4 +248,21 @@ numeric_to_quasi_attractor <- function(vec, data_dim,
   
   # return
   return(ans_mat)
+}
+
+# convert a list of 2-column matrices to a 3-column data frame
+ripser_ans_to_df <- function(x) {
+  w <- which(vapply(x, nrow, 0L) > 0L)
+  if (length(w) == 0L) {
+    return(data.frame(
+      dimension = integer(0),
+      birth = double(0),
+      death = double(0)
+    ))
+  }
+  x <- mapply(cbind, as.list((seq_along(x) - 1L)[w]), x[w], SIMPLIFY = FALSE)
+  x <- lapply(x, as.data.frame)
+  x <- do.call(rbind, x)
+  names(x) <- c("dimension", "birth", "death")
+  x
 }

@@ -57,31 +57,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // ripser_cpp_dist
-NumericVector ripser_cpp_dist(const NumericVector& dist_r, int dim, float thresh, int p);
-RcppExport SEXP _ripserr_ripser_cpp_dist(SEXP dist_rSEXP, SEXP dimSEXP, SEXP threshSEXP, SEXP pSEXP) {
+Rcpp::List ripser_cpp_dist(const Rcpp::NumericVector& dataset, int dim, double thresh, float ratio, int p);
+RcppExport SEXP _ripserr_ripser_cpp_dist(SEXP datasetSEXP, SEXP dimSEXP, SEXP threshSEXP, SEXP ratioSEXP, SEXP pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const NumericVector& >::type dist_r(dist_rSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type dataset(datasetSEXP);
     Rcpp::traits::input_parameter< int >::type dim(dimSEXP);
-    Rcpp::traits::input_parameter< float >::type thresh(threshSEXP);
+    Rcpp::traits::input_parameter< double >::type thresh(threshSEXP);
+    Rcpp::traits::input_parameter< float >::type ratio(ratioSEXP);
     Rcpp::traits::input_parameter< int >::type p(pSEXP);
-    rcpp_result_gen = Rcpp::wrap(ripser_cpp_dist(dist_r, dim, thresh, p));
-    return rcpp_result_gen;
-END_RCPP
-}
-// ripser_cpp
-NumericVector ripser_cpp(const NumericMatrix& input_points, int dim, float thresh, int p, int format);
-RcppExport SEXP _ripserr_ripser_cpp(SEXP input_pointsSEXP, SEXP dimSEXP, SEXP threshSEXP, SEXP pSEXP, SEXP formatSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const NumericMatrix& >::type input_points(input_pointsSEXP);
-    Rcpp::traits::input_parameter< int >::type dim(dimSEXP);
-    Rcpp::traits::input_parameter< float >::type thresh(threshSEXP);
-    Rcpp::traits::input_parameter< int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< int >::type format(formatSEXP);
-    rcpp_result_gen = Rcpp::wrap(ripser_cpp(input_points, dim, thresh, p, format));
+    rcpp_result_gen = Rcpp::wrap(ripser_cpp_dist(dataset, dim, thresh, ratio, p));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -90,8 +76,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_ripserr_cubical_2dim", (DL_FUNC) &_ripserr_cubical_2dim, 3},
     {"_ripserr_cubical_3dim", (DL_FUNC) &_ripserr_cubical_3dim, 6},
     {"_ripserr_cubical_4dim", (DL_FUNC) &_ripserr_cubical_4dim, 7},
-    {"_ripserr_ripser_cpp_dist", (DL_FUNC) &_ripserr_ripser_cpp_dist, 4},
-    {"_ripserr_ripser_cpp", (DL_FUNC) &_ripserr_ripser_cpp, 5},
+    {"_ripserr_ripser_cpp_dist", (DL_FUNC) &_ripserr_ripser_cpp_dist, 5},
     {NULL, NULL, 0}
 };
 

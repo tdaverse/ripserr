@@ -1,28 +1,32 @@
-#' This function is an R wrapper for the Ripser C++ library to calculate
-#' persistent homology. For more information on the C++ library, see
-#' <https://github.com/Ripser/ripser>. For more information on how objects of
-#' different classes are evaluated by `vietoris_rips`, read the Details section
-#' below.
-#' 
+#' @title Calculate Persistent Homology via a Vietoris-Rips Complex
+#'
+#' @description This function is an R wrapper for the Ripser C++ library to
+#'   calculate persistent homology. For more information on the C++ library, see
+#'   <https://github.com/Ripser/ripser>. For more information on how objects of
+#'   different classes are evaluated by `vietoris_rips`, read the Details
+#'   section below.
+#'
+#'
+#' @details
+#'
 #' `vietoris_rips.data.frame` assumes `dataset` is a point cloud, with each row
 #' representing a point and each column representing a dimension.
-#' 
+#'
 #' `vietoris_rips.matrix` currently assumes `dataset` is a point cloud (similar
 #' to `vietoris_rips.data.frame`). Currently in the process of adding network
 #' representation to this method.
-#' 
+#'
 #' `vietoris_rips.dist` takes a `dist` object and calculates persistent homology
 #' based on pairwise distances. The `dist` object could have been calculated
 #' from a point cloud, network, or any object containing elements from a finite
 #' metric space.
-#' 
+#'
 #' `vietoris_rips.numeric` and `vietoris_rips.ts` both calculate persistent
 #' homology of a time series object. The time series object is converted to a
 #' matrix using the quasi-attractor method detailed in Umeda (2017)
 #' <doi:10.1527/tjsai.D-G72>. Persistent homology of the resulting matrix is
 #' then calculated.
-#' 
-#' @title Calculate Persistent Homology via a Vietoris-Rips Complex
+#'
 #' @param dataset object on which to calculate persistent homology
 #' @param ... other relevant parameters
 #' @rdname vietoris_rips
@@ -49,8 +53,8 @@ vietoris_rips <- function(dataset, ...) {
 #' @rdname vietoris_rips
 #' @export vietoris_rips.data.frame
 #' @export
-# must be in cloud format, distmat should go to vietoris_rips.dist
 vietoris_rips.data.frame <- function(dataset, ...) {
+  
   # convert to matrix and pass to vietoris_rips.matrix
   ans <- vietoris_rips.matrix(as.matrix(dataset), ...)
   
@@ -67,15 +71,17 @@ vietoris_rips.data.frame <- function(dataset, ...) {
 #' @rdname vietoris_rips
 #' @export vietoris_rips.matrix
 #' @export
-vietoris_rips.matrix <- function(dataset,
-                                 max_dim = 1L,
-                                 threshold = -1, p = 2L,
-                                 dim = NULL,
-                                 ...) {
+vietoris_rips.matrix <- function(
+    dataset,
+    max_dim = 1L,
+    threshold = -1,
+    p = 2L,
+    dim = NULL,
+    ...
+) {
+  
   # shortcut for special case (only 1 row should return empty PHom)
-  if (nrow(dataset) == 1) {
-    return(new_PHom())
-  }
+  if (nrow(dataset) == 1L) return(new_PHom())
   
   # handle `dim` if passed
   if (! is.null(dim)) {
@@ -88,13 +94,24 @@ vietoris_rips.matrix <- function(dataset,
   }
   
   # ensure valid arguments passed
-  validate_params_vr(max_dim = max_dim,
-                     threshold = threshold,
-                     p = p)
+  validate_params_vr(
+    max_dim = max_dim,
+    threshold = threshold,
+    p = p
+  )
   validate_mat_vr(dataset = dataset)
   
+  # convert no-threshold value
+  if (threshold == -1) threshold <- Inf
+  
+  # convert distance matrix
+  dataset <- stats::dist(dataset)
+  
   # calculate persistent homology
-  ans <- new_PHom(ripser_vec_to_df(ripser_cpp(dataset, max_dim, threshold, p, 0)))
+  ans <- ripser_cpp_dist(dataset, max_dim, threshold, 1., p)
+  
+  # coerce to 'PHom' class
+  ans <- new_PHom(ripser_ans_to_df(ans))
   
   # return
   return(ans)
@@ -103,11 +120,14 @@ vietoris_rips.matrix <- function(dataset,
 #' @rdname vietoris_rips
 #' @export vietoris_rips.dist
 #' @export
-vietoris_rips.dist <- function(dataset,
-                               max_dim = 1L,
-                               threshold = -1, p = 2L,
-                               dim = NULL,
-                               ...) {
+vietoris_rips.dist <- function(
+    dataset,
+    max_dim = 1L,
+    threshold = -1,
+    p = 2L,
+    dim = NULL,
+    ...
+) {
   
   # handle `dim` if passed
   if (! is.null(dim)) {
@@ -120,13 +140,24 @@ vietoris_rips.dist <- function(dataset,
   }
   
   # ensure valid arguments passed
-  validate_params_vr(max_dim = max_dim,
-                     threshold = threshold,
-                     p = p)
+  validate_params_vr(
+    max_dim = max_dim,
+    threshold = threshold,
+    p = p
+  )
   validate_dist_vr(dataset = dataset)
   
+  # convert no-threshold value
+  if (threshold == -1) threshold <- Inf
+  
+  # convert distance matrix
+  dataset <- dataset
+  
   # calculate persistent homology
-  ans <- new_PHom(ripser_vec_to_df(ripser_cpp_dist(dataset, max_dim, threshold, p)))
+  ans <- ripser_cpp_dist(dataset, max_dim, threshold, 1., p)
+  
+  # coerce to 'PHom' class
+  ans <- new_PHom(ripser_ans_to_df(ans))
   
   # return
   return(ans)
@@ -140,24 +171,32 @@ vietoris_rips.dist <- function(dataset,
 #' @rdname vietoris_rips
 #' @export vietoris_rips.numeric
 #' @export
-vietoris_rips.numeric <- function(dataset,
-                                  data_dim = 2L,
-                                  dim_lag = 1L, sample_lag = 1L,
-                                  method = "qa",
-                                  ...) {
-  # ensure valid arguments passed
-  validate_params_ts_vr(vec_len = length(dataset),
-                        data_dim = data_dim,
-                        dim_lag = dim_lag,
-                        sample_lag = sample_lag,
-                        method = method)
+vietoris_rips.numeric <- function(
+    dataset,
+    data_dim = 2L,
+    dim_lag = 1L, sample_lag = 1L,
+    method = "qa",
+    ...
+) {
   
-  # construct appropriate matrix from numeric vector (time series)
-  converted <- switch(method,
-                      qa = numeric_to_quasi_attractor(dataset, data_dim,
-                                         dim_lag, sample_lag),
-                      stop(paste("invalid method; this line of code should",
-                                 "never be reached")))
+  # ensure valid arguments passed
+  validate_params_ts_vr(
+    vec_len = length(dataset),
+    data_dim = data_dim,
+    dim_lag = dim_lag,
+    sample_lag = sample_lag,
+    method = method
+  )
+  
+  # convert numeric vector (as time series) to appropriate matrix
+  converted <- switch(
+    method,
+    qa = numeric_to_quasi_attractor(
+      dataset, data_dim,
+      dim_lag, sample_lag
+    ),
+    stop(paste("invalid method; this line of code should never be reached"))
+  )
   
   # pass matrix to vietoris_rips.matrix
   ans <- vietoris_rips.matrix(converted, ...)
@@ -170,6 +209,7 @@ vietoris_rips.numeric <- function(dataset,
 #' @export vietoris_rips.ts
 #' @export
 vietoris_rips.ts <- function(dataset, ...) {
+  
   # convert to numeric and pass to vietoris_rips.numeric
   ans <- vietoris_rips.numeric(as.numeric(dataset), ...)
   
