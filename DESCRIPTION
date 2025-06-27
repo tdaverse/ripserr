@@ -2,7 +2,7 @@ Package: ripserr
 Title: Calculate Persistent Homology with Ripser-Based Engines
 Version: 1.0.0
 Authors@R:
-    c(person(given = "Raoul",
+    c(person(given = "Raoul R.",
              family = "Wadhwa",
              role = "aut",
              email = "raoulwadhwa@gmail.com",
@@ -48,7 +48,7 @@ Authors@R:
              family = "Golabek",
              role = "ctb",
              email = "jamesgolabek@gmail.com"),
-      person(given = "Jacob",
+      person(given = "Jacob G.",
              family = "Scott",
              role = "ldr",
              comment = c(ORCID = "0000-0003-2971-7673")),
