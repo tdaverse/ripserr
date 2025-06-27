@@ -250,14 +250,6 @@ numeric_to_quasi_attractor <- function(vec, data_dim,
   return(ans_mat)
 }
 
-# reorder a distance matrix for lower-triangular Ripser
-# TODO: Revert to using `compressed_upper_distance_matrix` as in v0.5.0.
-lower_to_upper_dist <- function(x) {
-  if (length(x) < 2L) return(x)
-  x <- as.matrix(x)
-  x[upper.tri(x)]
-}
-
 # convert a list of 2-column matrices to a 3-column data frame
 ripser_ans_to_df <- function(x) {
   w <- which(vapply(x, nrow, 0L) > 0L)

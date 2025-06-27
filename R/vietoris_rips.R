@@ -105,7 +105,7 @@ vietoris_rips.matrix <- function(
   if (threshold == -1) threshold <- Inf
   
   # convert distance matrix
-  dataset <- lower_to_upper_dist(stats::dist(dataset))
+  dataset <- stats::dist(dataset)
   
   # calculate persistent homology
   ans <- ripser_cpp_dist(dataset, max_dim, threshold, 1., p)
@@ -151,7 +151,7 @@ vietoris_rips.dist <- function(
   if (threshold == -1) threshold <- Inf
   
   # convert distance matrix
-  dataset <- lower_to_upper_dist(dataset)
+  dataset <- dataset
   
   # calculate persistent homology
   ans <- ripser_cpp_dist(dataset, max_dim, threshold, 1., p)

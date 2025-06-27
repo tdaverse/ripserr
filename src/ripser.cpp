@@ -1385,7 +1385,7 @@ int main(int argc, char** argv) {
 Rcpp::List ripser_cpp_dist(const Rcpp::NumericVector &dataset, int dim, double thresh, float ratio, int p) {
   std::vector<value_t> distances(dataset.begin(), dataset.end());
   
-  compressed_lower_distance_matrix dist(std::move(distances));
+  compressed_lower_distance_matrix dist(compressed_upper_distance_matrix(std::move(distances)));
   index_t idx_dim = static_cast<index_t>(dim);
   value_t val_thresh = static_cast<value_t>(thresh);
   coefficient_t coeff_p = static_cast<coefficient_t>(p);
