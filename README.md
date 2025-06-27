@@ -177,7 +177,7 @@ following (based on use):
 - **Calculation using Vietoris-Rips filtrations:** Bauer U (2021).
   Ripser: Efficient computation of Vietoris-Rips persistence barcodes.
   arXiv: 1908.02518.
-- **Calculation using cubical filtrations:** Kaji S, Sudo T, Ahara K.
+- **Calculation using cubical filtrations:** Kaji S, Sudo T, Ahara K
   (2020). Cubical Ripser: Software for computing persistent homology of
   image and volume data. arXiv: 2005.12692.
 
