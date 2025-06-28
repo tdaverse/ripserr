@@ -14,9 +14,25 @@ vietoris_rips(dataset, ...)
 
 \method{vietoris_rips}{data.frame}(dataset, ...)
 
-\method{vietoris_rips}{matrix}(dataset, max_dim = 1L, threshold = -1, p = 2L, dim = NULL, ...)
+\method{vietoris_rips}{matrix}(
+  dataset,
+  max_dim = 1L,
+  threshold = -1,
+  p = 2L,
+  dim = NULL,
+  return_class = c("PHom", "persistence"),
+  ...
+)
 
-\method{vietoris_rips}{dist}(dataset, max_dim = 1L, threshold = -1, p = 2L, dim = NULL, ...)
+\method{vietoris_rips}{dist}(
+  dataset,
+  max_dim = 1L,
+  threshold = -1,
+  p = 2L,
+  dim = NULL,
+  return_class = c("PHom", "persistence"),
+  ...
+)
 
 \method{vietoris_rips}{numeric}(
   dataset,
@@ -46,6 +62,10 @@ calculated}
 \item{dim}{deprecated; passed to \code{max_dim} or ignored if \code{max_dim} is
 specified}
 
+\item{return_class}{class of output object; either \code{"PHom"} (default; legacy)
+or \code{"persistence"} (from the
+\strong{\href{https://cran.r-project.org/package=phutil}{phutil}} package)}
+
 \item{data_dim}{desired end data dimension}
 
 \item{dim_lag}{time series lag factor between dimensions}
@@ -55,7 +75,7 @@ specified}
 \item{method}{currently only allows \code{"qa"} (quasi-attractor method)}
 }
 \value{
-\code{PHom} object
+\code{"PHom"} or \code{"persistence"} object
 }
 \description{
 This function is an R wrapper for the Ripser C++ library to

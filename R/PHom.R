@@ -128,6 +128,8 @@ valid_colval <- function(df, val, val_name) {
 #' # print feature details to confirm accuracy
 #' print.data.frame(df_phom)
 PHom <- function(x, dim_col = 1, birth_col = 2, death_col = 3) {
+  # deprecate_PHom()
+  
   ## basic parameter checks (column nums/names are valid, etc.)
   if (!is.data.frame(x)) {
     x <- as.data.frame(x)
@@ -201,6 +203,8 @@ as.PHom <- function(x, dim_col = 1, birth_col = 2, death_col = 3) {
 #' # confirm that persistence data is NOT valid
 #' is.PHom(df)
 is.PHom <- function(x) {
+  # deprecate_PHom()
+  
   # use validate to implement checks
   return(
     validate_PHom(x = x, error = FALSE)
@@ -307,3 +311,11 @@ tail.PHom <- function(x, ...) {
   x <- as.data.frame(x)
   tail(x, ...)
 }
+
+# deprecate_PHom <- function() {
+#   lifecycle::deprecate_soft(
+#     "1.0.0",
+#     I("'PHom' class"),
+#     with = I("'persistence' from the {phutil} package")
+#   )
+# }

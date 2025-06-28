@@ -27,11 +27,12 @@
 #' <doi:10.1527/tjsai.D-G72>. Persistent homology of the resulting matrix is
 #' then calculated.
 #'
+#' @importFrom phutil as_persistence
 #' @param dataset object on which to calculate persistent homology
 #' @param ... other relevant parameters
 #' @rdname vietoris_rips
 #' @export vietoris_rips
-#' @return `PHom` object
+#' @return `"PHom"` or `"persistence"` object
 #' @examples
 #'
 #' # create a 2-d point cloud of a circle (100 points)
@@ -68,6 +69,9 @@ vietoris_rips.data.frame <- function(dataset, ...) {
 #'   specified
 #' @param threshold maximum simplicial complex diameter to explore
 #' @param p prime field in which to calculate persistent homology
+#' @param return_class class of output object; either `"PHom"` (default; legacy)
+#'   or `"persistence"` (from the
+#'   **[phutil](https://cran.r-project.org/package=phutil)** package)
 #' @rdname vietoris_rips
 #' @export vietoris_rips.matrix
 #' @export
@@ -77,11 +81,18 @@ vietoris_rips.matrix <- function(
     threshold = -1,
     p = 2L,
     dim = NULL,
+    return_class = c("PHom", "persistence"),
     ...
 ) {
   
   # shortcut for special case (only 1 row should return empty PHom)
-  if (nrow(dataset) == 1L) return(new_PHom())
+  if (nrow(dataset) == 1L) {
+    return(switch(
+      match.arg(return_class),
+      PHom = new_PHom(),
+      persistence = as_persistence(matrix(NA_real_, nrow = 0L, ncol = 3L))
+    ))
+  }
   
   # handle `dim` if passed
   if (! is.null(dim)) {
@@ -111,7 +122,11 @@ vietoris_rips.matrix <- function(
   ans <- ripser_cpp_dist(dataset, max_dim, threshold, 1., p)
   
   # coerce to 'PHom' class
-  ans <- new_PHom(ripser_ans_to_df(ans))
+  ans <- switch(
+    match.arg(return_class),
+    PHom = new_PHom(ripser_ans_to_df(ans)),
+    persistence = as_persistence(ans)
+  )
   
   # return
   return(ans)
@@ -126,6 +141,7 @@ vietoris_rips.dist <- function(
     threshold = -1,
     p = 2L,
     dim = NULL,
+    return_class = c("PHom", "persistence"),
     ...
 ) {
   
@@ -157,7 +173,11 @@ vietoris_rips.dist <- function(
   ans <- ripser_cpp_dist(dataset, max_dim, threshold, 1., p)
   
   # coerce to 'PHom' class
-  ans <- new_PHom(ripser_ans_to_df(ans))
+  ans <- switch(
+    match.arg(return_class),
+    PHom = new_PHom(ripser_ans_to_df(ans)),
+    persistence = as_peprsistence(ans)
+  )
   
   # return
   return(ans)

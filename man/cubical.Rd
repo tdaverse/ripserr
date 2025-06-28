@@ -8,7 +8,13 @@
 \usage{
 cubical(dataset, ...)
 
-\method{cubical}{array}(dataset, threshold = 9999, method = "lj", ...)
+\method{cubical}{array}(
+  dataset,
+  threshold = 9999,
+  method = "lj",
+  return_class = c("PHom", "persistence"),
+  ...
+)
 
 \method{cubical}{matrix}(dataset, ...)
 }
@@ -21,9 +27,13 @@ cubical(dataset, ...)
 
 \item{method}{either \code{"lj"} (for Link Join) or \code{"cp"} (for Compute Pairs);
 see Kaji et al. (2020) \url{https://arxiv.org/abs/2005.12692} for details}
+
+\item{return_class}{class of output object; either \code{"PHom"} (default; legacy)
+or \code{"persistence"} (from the
+\strong{\href{https://cran.r-project.org/package=phutil}{phutil}} package)}
 }
 \value{
-\code{PHom} object
+\code{"PHom"} or \code{"persistence"} object
 }
 \description{
 This function is an R wrapper for the CubicalRipser C++ library to calculate

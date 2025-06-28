@@ -18,7 +18,7 @@
 #' @param ... other relevant parameters
 #' @rdname cubical
 #' @export cubical
-#' @return `PHom` object
+#' @return `"PHom"` or `"persistence"` object
 #' @examples 
 #' 
 #' # 2-dim example
@@ -47,9 +47,18 @@ cubical <- function(dataset, ...) {
 #' @param threshold maximum simplicial complex diameter to explore
 #' @param method either `"lj"` (for Link Join) or `"cp"` (for Compute Pairs);
 #'   see Kaji et al. (2020) <https://arxiv.org/abs/2005.12692> for details
+#' @param return_class class of output object; either `"PHom"` (default; legacy)
+#'   or `"persistence"` (from the
+#'   **[phutil](https://cran.r-project.org/package=phutil)** package)
 #' @export cubical.array
 #' @export
-cubical.array <- function(dataset, threshold = 9999, method = "lj", ...) {
+cubical.array <- function(
+    dataset,
+    threshold = 9999,
+    method = "lj",
+    return_class = c("PHom", "persistence"),
+    ...
+) {
   # ensure valid arguments passed
   validate_params_cub(threshold = threshold,
                       method = method)
@@ -103,7 +112,11 @@ cubical.array <- function(dataset, threshold = 9999, method = "lj", ...) {
   }
   
   # convert data frame to a PHom object
-  ans <- new_PHom(ans)
+  ans <- switch(
+    match.arg(return_class),
+    PHom = new_PHom(ans),
+    persistence = as_persistence(ans)
+  )
   
   # return
   return(ans)

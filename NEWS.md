@@ -1,3 +1,6 @@
+The new `return_class` parameter allows the user to specify whether to output persistence data in the legacy `'PHom'` class or the `'persistence'` class from {phutil}.
+It defaults to `'PHom'` but will switch to `'persistence'` when the `'PHom'` class is deprecated in a future version.
+
 # ripserr 1.0.0
 
 This major version replaces an outdated version of the Ripser C++ library with its current version.
