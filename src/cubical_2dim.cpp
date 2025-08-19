@@ -89,7 +89,7 @@ public:
   DenseCubicalGrids2(const Rcpp::NumericMatrix& image, double _threshold) : threshold(_threshold), ax(image.nrow()), ay(image.ncol())
   {
     // assert that dimensions are not too big
-    assert(0 < ax && ax < 2000 && 0 < ay && ay < 1000);
+    assert(0 < ax && ax < 2048 && 0 < ay && ay < 1024);
 
     // copy over data from NumericMatrix into DenseCubicalGrids member var
     for (int y = 0; y < ay + 2; y++)

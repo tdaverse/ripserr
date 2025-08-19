@@ -140,21 +140,26 @@ validate_arr_cub <- function(dataset) {
   
   # make sure dataset is not too large
   if (length(dim(dataset)) == 2) {
-    if (dim(dataset)[1] > 2000 |
-        dim(dataset)[2] > 1000) {
-      stop(paste("Max size for dim 2 = 2000 x 1000; passed size =",
-                 dim(dataset)[1], "x", dim(dataset)[2]))
+    if (dim(dataset)[1] > 2048 |
+        dim(dataset)[2] > 1024) {
+      warning(paste(
+        "Recommended maximum size for dimension 2 is 2000 x 1000;\n",
+        "passed size", paste(dim(dataset), collapse = " x ")
+      ))
     }
   } else if (length(dim(dataset)) == 3) {
     if (sum(dim(dataset) < 512) < 3) {
-      stop(paste("Max size for dim 3 = 512 x 512 x 512; passed size =",
-                 dim(dataset)[1], "x", dim(dataset)[2], "x", dim(dataset)[3]))
+      warning(paste(
+        "Recommended maximum size for dimension 3 is 512 x 512 x 512;\n",
+        "passed size", paste(dim(dataset), collapse = " x ")
+      ))
     }
   } else if (length(dim(dataset)) == 4) {
     if (sum(dim(dataset) < 64) < 4) {
-      stop(paste("Max size for dim 4 = 64 x 64 x 64 x 64; passed size =",
-                 dim(dataset)[1], "x", dim(dataset)[2], "x", dim(dataset)[3],
-                 "x", dim(dataset)[4]))
+      warning(paste(
+        "Recommended maximum size for dimension 4 is 64 x 64 x 64 x 64;\n",
+        "passed size", paste(dim(dataset), collapse = " x ")
+      ))
     }
   }
   
