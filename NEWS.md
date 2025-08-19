@@ -1,3 +1,9 @@
+# next version
+
+## float to double
+
+Ripser stores values of the `value_t` type and `ratio` as floats. This is not incompatible with R, but R users are likely to expect numeric values to be handled as doubles. Both values are now stored as doubles.
+
 # ripserr 1.0.0
 
 This major version replaces an outdated version of the Ripser C++ library with its current version.
