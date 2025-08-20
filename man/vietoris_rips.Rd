@@ -111,5 +111,5 @@ rand.angle <- runif(num.pts, 0, 2*pi)
 pt.cloud <- cbind(cos(rand.angle), sin(rand.angle))
 
 # calculate persistent homology (num.pts by 3 numeric matrix)
-pers.hom <- vietoris_rips(pt.cloud)
+( pers.hom <- vietoris_rips(pt.cloud) )
 }

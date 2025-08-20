@@ -90,7 +90,12 @@ vietoris_rips.matrix <- function(
     return(switch(
       match.arg(return_class),
       PHom = new_PHom(),
-      persistence = as_persistence(matrix(NA_real_, nrow = 0L, ncol = 3L))
+      persistence = as_persistence(
+        matrix(NA_real_, nrow = 0L, ncol = 3L),
+        engine = "ripserr::vietoris_rips",
+        filtration = "Vietoris-Rips",
+        parameters = list(max_dim = max_dim, threshold = threshold, p = p)
+      )
     ))
   }
   
@@ -125,7 +130,12 @@ vietoris_rips.matrix <- function(
   ans <- switch(
     match.arg(return_class),
     PHom = new_PHom(ripser_ans_to_df(ans)),
-    persistence = as_persistence(ans)
+    persistence = as_persistence(
+      ans,
+      engine = "ripserr::vietoris_rips",
+      filtration = "Vietoris-Rips",
+      parameters = list(max_dim = max_dim, threshold = threshold, p = p)
+    )
   )
   
   # return
@@ -176,7 +186,12 @@ vietoris_rips.dist <- function(
   ans <- switch(
     match.arg(return_class),
     PHom = new_PHom(ripser_ans_to_df(ans)),
-    persistence = as_persistence(ans)
+    persistence = as_persistence(
+      ans,
+      engine = "ripserr::vietoris_rips",
+      filtration = "Vietoris-Rips",
+      parameters = list(max_dim = max_dim, threshold = threshold, p = p)
+    )
   )
   
   # return

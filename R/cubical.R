@@ -116,7 +116,12 @@ cubical.array <- function(
   ans <- switch(
     match.arg(return_class),
     PHom = new_PHom(ans),
-    persistence = as_persistence(ans)
+    persistence = as_persistence(
+      ans,
+      engine = "ripserr::cubical",
+      filtration = "cubical",
+      parameters = list(threshold = threshold, method = method)
+    )
   )
   
   # return

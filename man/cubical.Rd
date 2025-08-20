@@ -57,14 +57,15 @@ and persistent homology is then calculated using \code{cubical.array}.
 # 2-dim example
 dataset <- rnorm(10 ^ 2)
 dim(dataset) <- rep(10, 2)
-cubical_hom2 <- cubical(dataset)
+( cubical_hom2 <- cubical(dataset) )
 
 # 3-dim example
 dataset <- rnorm(8 ^ 3)
 dim(dataset) <- rep(8, 3)
-cubical_hom3 <- cubical(dataset)
+( cubical_hom3 <- cubical(dataset) )
 
 # 4-dim example
 dataset <- rnorm(5 ^ 4)
 dim(dataset) <- rep(5, 4)
+( cubical_hom4 <- cubical(dataset) )
 }
