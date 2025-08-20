@@ -41,7 +41,7 @@
 #' pt.cloud <- cbind(cos(rand.angle), sin(rand.angle))
 #'
 #' # calculate persistent homology (num.pts by 3 numeric matrix)
-#' pers.hom <- vietoris_rips(pt.cloud)
+#' ( pers.hom <- vietoris_rips(pt.cloud) )
 # Notes:
 # - figure out format from `dataset`
 # - return_format will be "df" (opinionated) w/ additional "PHom" S3 class

@@ -1,14 +1,14 @@
 context("cubical 4-dim")
 library("ripserr")
 
+# reproducibility
+set.seed(42)
+
+# create dataset to be used
+tester <- rnorm(5 ^ 4)
+dim(tester) <- rep(5, 4)
+
 test_that("basic 4-dim cubical works", {
-  # reproducibility
-  set.seed(42)
-  
-  # create dataset to be used
-  tester <- rnorm(5 ^ 4)
-  dim(tester) <- rep(5, 4)
-  
   # calculate cubical complex for 4-dim voxel data
   cub_comp <- ripserr::cubical(tester)
   
@@ -53,4 +53,14 @@ test_that("4-dim calculation returns same values as validated tests", {
   # check means of births and deaths to ensure close enough
   expect_equal(mean(test_output$birth), mean(output_data$birth), tolerance = 0.025)
   expect_equal(mean(test_output$death), mean(output_data$death), tolerance = 0.025)
+})
+
+test_that("specified class is returned", {
+  # calculate 'PHom' object
+  expect_s3_class(cubical(tester, return_class = "PHom"),
+                  "PHom")
+  
+  # calculate 'persistence' object
+  expect_s3_class(cubical(tester, return_class = "persistence"),
+                  "persistence")
 })
