@@ -1,3 +1,7 @@
+# next version
+
+## output class
+
 The new `return_class` parameter allows the user to specify whether to output persistence data in the legacy `'PHom'` class or the `'persistence'` class from {phutil}.
 It defaults to `'PHom'` but will switch to `'persistence'` when the `'PHom'` class is deprecated in a future version.
 

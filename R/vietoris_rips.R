@@ -63,6 +63,7 @@ vietoris_rips.data.frame <- function(dataset, ...) {
   return(ans)
 }
 
+#' @rdname vietoris_rips
 #' @param max_dim maximum dimension of persistent homology features to be
 #'   calculated
 #' @param dim deprecated; passed to `max_dim` or ignored if `max_dim` is
@@ -72,7 +73,6 @@ vietoris_rips.data.frame <- function(dataset, ...) {
 #' @param return_class class of output object; either `"PHom"` (default; legacy)
 #'   or `"persistence"` (from the
 #'   **[phutil](https://cran.r-project.org/package=phutil)** package)
-#' @rdname vietoris_rips
 #' @export vietoris_rips.matrix
 #' @export
 vietoris_rips.matrix <- function(
@@ -176,19 +176,18 @@ vietoris_rips.dist <- function(
   ans <- switch(
     match.arg(return_class),
     PHom = new_PHom(ripser_ans_to_df(ans)),
-    persistence = as_peprsistence(ans)
+    persistence = as_persistence(ans)
   )
   
   # return
   return(ans)
 }
 
-#' @aliases vietoris_rips.numeric vietoris_rips.ts
+#' @rdname vietoris_rips
 #' @param data_dim desired end data dimension
 #' @param dim_lag time series lag factor between dimensions
 #' @param sample_lag time series lag factor between samples (rows)
 #' @param method currently only allows `"qa"` (quasi-attractor method)
-#' @rdname vietoris_rips
 #' @export vietoris_rips.numeric
 #' @export
 vietoris_rips.numeric <- function(
