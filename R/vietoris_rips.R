@@ -41,6 +41,15 @@
 #'
 #' # calculate persistent homology (num.pts by 3 numeric matrix)
 #' pers.hom <- vietoris_rips(pt.cloud)
+#' 
+#' # sliding window persistent homology
+#' ( ld.phom <- vietoris_rips(ldeaths, data_dim = 12) )
+#' plot(
+#'   ld.phom$birth, ld.phom$death,
+#'   pch = ld.phom$dimension + 1, col = ld.phom$dimension + 1,
+#'   xlim = c(0, 3200), ylim = c(0, 3200), asp = 1
+#' )
+#' abline(a = 0, b = 1)
 # Notes:
 # - figure out format from `dataset`
 # - return_format will be "df" (opinionated) w/ additional "PHom" S3 class
