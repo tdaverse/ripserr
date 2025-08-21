@@ -80,9 +80,11 @@ metric space.
 
 \code{vietoris_rips.numeric} and \code{vietoris_rips.ts} both calculate persistent
 homology of a time series object. The time series object is converted to a
-matrix using the quasi-attractor method detailed in Umeda (2017)
-\url{doi:10.1527/tjsai.D-G72}. Persistent homology of the resulting matrix is
-then calculated.
+matrix using the sliding window embedding introduced in Perea & Harer (2015)
+\url{doi:10.1007/s10208-014-9206-z} and used to obtain quasi-attractors in Umeda
+(2017) \url{doi:10.1527/tjsai.D-G72}. Persistent homology of the resulting matrix
+is then calculated. (NB: If a multi-time series is unclassed, then method
+dispatch will pass it to \code{vietoris_rips.matrix}).
 }
 \examples{
 

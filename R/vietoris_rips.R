@@ -23,10 +23,13 @@
 #'
 #' `vietoris_rips.numeric` and `vietoris_rips.ts` both calculate persistent
 #' homology of a time series object. The time series object is converted to a
-#' matrix using the quasi-attractor method detailed in Umeda (2017)
-#' <doi:10.1527/tjsai.D-G72>. Persistent homology of the resulting matrix is
-#' then calculated.
-#'
+#' matrix using the sliding window embedding introduced in Perea & Harer (2015)
+#' <doi:10.1007/s10208-014-9206-z> and used to obtain quasi-attractors in Umeda
+#' (2017) <doi:10.1527/tjsai.D-G72>. Persistent homology of the resulting matrix
+#' is then calculated. (NB: If a multi-time series is unclassed, then method
+#' dispatch will pass it to `vietoris_rips.matrix`).
+#' 
+
 #' @param dataset object on which to calculate persistent homology
 #' @param ... other relevant parameters
 #' @rdname vietoris_rips
