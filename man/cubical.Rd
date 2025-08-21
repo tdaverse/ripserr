@@ -8,7 +8,13 @@
 \usage{
 cubical(dataset, ...)
 
-\method{cubical}{array}(dataset, threshold = 9999, method = "lj", ...)
+\method{cubical}{array}(
+  dataset,
+  threshold = 9999,
+  method = "lj",
+  return_class = c("PHom", "persistence"),
+  ...
+)
 
 \method{cubical}{matrix}(dataset, ...)
 }
@@ -21,9 +27,13 @@ cubical(dataset, ...)
 
 \item{method}{either \code{"lj"} (for Link Join) or \code{"cp"} (for Compute Pairs);
 see Kaji et al. (2020) \url{https://arxiv.org/abs/2005.12692} for details}
+
+\item{return_class}{class of output object; either \code{"PHom"} (default; legacy)
+or \code{"persistence"} (from the
+\strong{\href{https://cran.r-project.org/package=phutil}{phutil}} package)}
 }
 \value{
-\code{PHom} object
+\code{"PHom"} or \code{"persistence"} object
 }
 \description{
 This function is an R wrapper for the CubicalRipser C++ library to calculate
@@ -47,14 +57,15 @@ and persistent homology is then calculated using \code{cubical.array}.
 # 2-dim example
 dataset <- rnorm(10 ^ 2)
 dim(dataset) <- rep(10, 2)
-cubical_hom2 <- cubical(dataset)
+( cubical_hom2 <- cubical(dataset) )
 
 # 3-dim example
 dataset <- rnorm(8 ^ 3)
 dim(dataset) <- rep(8, 3)
-cubical_hom3 <- cubical(dataset)
+( cubical_hom3 <- cubical(dataset) )
 
 # 4-dim example
 dataset <- rnorm(5 ^ 4)
 dim(dataset) <- rep(5, 4)
+( cubical_hom4 <- cubical(dataset) )
 }

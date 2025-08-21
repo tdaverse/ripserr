@@ -18,22 +18,23 @@
 #' @param ... other relevant parameters
 #' @rdname cubical
 #' @export cubical
-#' @return `PHom` object
+#' @return `"PHom"` or `"persistence"` object
 #' @examples 
 #' 
 #' # 2-dim example
 #' dataset <- rnorm(10 ^ 2)
 #' dim(dataset) <- rep(10, 2)
-#' cubical_hom2 <- cubical(dataset)
+#' ( cubical_hom2 <- cubical(dataset) )
 #' 
 #' # 3-dim example
 #' dataset <- rnorm(8 ^ 3)
 #' dim(dataset) <- rep(8, 3)
-#' cubical_hom3 <- cubical(dataset)
+#' ( cubical_hom3 <- cubical(dataset) )
 #' 
 #' # 4-dim example
 #' dataset <- rnorm(5 ^ 4)
 #' dim(dataset) <- rep(5, 4)
+#' ( cubical_hom4 <- cubical(dataset) )
 # Notes:
 # - figure out format from `dataset`
 # - return_format will be "df" (opinionated) w/ additional "PHom" S3 class
@@ -47,9 +48,18 @@ cubical <- function(dataset, ...) {
 #' @param threshold maximum simplicial complex diameter to explore
 #' @param method either `"lj"` (for Link Join) or `"cp"` (for Compute Pairs);
 #'   see Kaji et al. (2020) <https://arxiv.org/abs/2005.12692> for details
+#' @param return_class class of output object; either `"PHom"` (default; legacy)
+#'   or `"persistence"` (from the
+#'   **[phutil](https://cran.r-project.org/package=phutil)** package)
 #' @export cubical.array
 #' @export
-cubical.array <- function(dataset, threshold = 9999, method = "lj", ...) {
+cubical.array <- function(
+    dataset,
+    threshold = 9999,
+    method = "lj",
+    return_class = c("PHom", "persistence"),
+    ...
+) {
   # ensure valid arguments passed
   validate_params_cub(threshold = threshold,
                       method = method)
@@ -103,7 +113,16 @@ cubical.array <- function(dataset, threshold = 9999, method = "lj", ...) {
   }
   
   # convert data frame to a PHom object
-  ans <- new_PHom(ans)
+  ans <- switch(
+    match.arg(return_class),
+    PHom = new_PHom(ans),
+    persistence = as_persistence(
+      ans,
+      engine = "ripserr::cubical",
+      filtration = "cubical",
+      parameters = list(threshold = threshold, method = method)
+    )
+  )
   
   # return
   return(ans)

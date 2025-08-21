@@ -69,3 +69,21 @@ test_that("consistency across generic methods for time series", {
   # compare persistent homology across classes
   expect_equal(num_phom, ts_phom)
 })
+
+test_that("specified class is returned", {
+  # calculate 'PHom' object for each class
+  expect_s3_class(vietoris_rips(circle_mat, return_class = "PHom"),
+                  "PHom")
+  expect_s3_class(vietoris_rips(circle_df, return_class = "PHom"),
+                  "PHom")
+  expect_s3_class(vietoris_rips(circle_dist, return_class = "PHom"),
+                  "PHom")
+  
+  # calculate 'persistence' object for each class
+  expect_s3_class(vietoris_rips(circle_mat, return_class = "persistence"),
+                  "persistence")
+  expect_s3_class(vietoris_rips(circle_df, return_class = "persistence"),
+                  "persistence")
+  expect_s3_class(vietoris_rips(circle_dist, return_class = "persistence"),
+                  "persistence")
+})

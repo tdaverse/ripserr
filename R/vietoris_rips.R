@@ -27,11 +27,12 @@
 #' <doi:10.1527/tjsai.D-G72>. Persistent homology of the resulting matrix is
 #' then calculated.
 #'
+#' @importFrom phutil as_persistence
 #' @param dataset object on which to calculate persistent homology
 #' @param ... other relevant parameters
 #' @rdname vietoris_rips
 #' @export vietoris_rips
-#' @return `PHom` object
+#' @return `"PHom"` or `"persistence"` object
 #' @examples
 #'
 #' # create a 2-d point cloud of a circle (100 points)
@@ -40,7 +41,7 @@
 #' pt.cloud <- cbind(cos(rand.angle), sin(rand.angle))
 #'
 #' # calculate persistent homology (num.pts by 3 numeric matrix)
-#' pers.hom <- vietoris_rips(pt.cloud)
+#' ( pers.hom <- vietoris_rips(pt.cloud) )
 # Notes:
 # - figure out format from `dataset`
 # - return_format will be "df" (opinionated) w/ additional "PHom" S3 class
@@ -62,13 +63,16 @@ vietoris_rips.data.frame <- function(dataset, ...) {
   return(ans)
 }
 
+#' @rdname vietoris_rips
 #' @param max_dim maximum dimension of persistent homology features to be
 #'   calculated
 #' @param dim deprecated; passed to `max_dim` or ignored if `max_dim` is
 #'   specified
 #' @param threshold maximum simplicial complex diameter to explore
 #' @param p prime field in which to calculate persistent homology
-#' @rdname vietoris_rips
+#' @param return_class class of output object; either `"PHom"` (default; legacy)
+#'   or `"persistence"` (from the
+#'   **[phutil](https://cran.r-project.org/package=phutil)** package)
 #' @export vietoris_rips.matrix
 #' @export
 vietoris_rips.matrix <- function(
@@ -77,11 +81,23 @@ vietoris_rips.matrix <- function(
     threshold = -1,
     p = 2L,
     dim = NULL,
+    return_class = c("PHom", "persistence"),
     ...
 ) {
   
   # shortcut for special case (only 1 row should return empty PHom)
-  if (nrow(dataset) == 1L) return(new_PHom())
+  if (nrow(dataset) == 1L) {
+    return(switch(
+      match.arg(return_class),
+      PHom = new_PHom(),
+      persistence = as_persistence(
+        matrix(NA_real_, nrow = 0L, ncol = 3L),
+        engine = "ripserr::vietoris_rips",
+        filtration = "Vietoris-Rips",
+        parameters = list(max_dim = max_dim, threshold = threshold, p = p)
+      )
+    ))
+  }
   
   # handle `dim` if passed
   if (! is.null(dim)) {
@@ -111,7 +127,16 @@ vietoris_rips.matrix <- function(
   ans <- ripser_cpp_dist(dataset, max_dim, threshold, 1., p)
   
   # coerce to 'PHom' class
-  ans <- new_PHom(ripser_ans_to_df(ans))
+  ans <- switch(
+    match.arg(return_class),
+    PHom = new_PHom(ripser_ans_to_df(ans)),
+    persistence = as_persistence(
+      ans,
+      engine = "ripserr::vietoris_rips",
+      filtration = "Vietoris-Rips",
+      parameters = list(max_dim = max_dim, threshold = threshold, p = p)
+    )
+  )
   
   # return
   return(ans)
@@ -126,6 +151,7 @@ vietoris_rips.dist <- function(
     threshold = -1,
     p = 2L,
     dim = NULL,
+    return_class = c("PHom", "persistence"),
     ...
 ) {
   
@@ -157,18 +183,26 @@ vietoris_rips.dist <- function(
   ans <- ripser_cpp_dist(dataset, max_dim, threshold, 1., p)
   
   # coerce to 'PHom' class
-  ans <- new_PHom(ripser_ans_to_df(ans))
+  ans <- switch(
+    match.arg(return_class),
+    PHom = new_PHom(ripser_ans_to_df(ans)),
+    persistence = as_persistence(
+      ans,
+      engine = "ripserr::vietoris_rips",
+      filtration = "Vietoris-Rips",
+      parameters = list(max_dim = max_dim, threshold = threshold, p = p)
+    )
+  )
   
   # return
   return(ans)
 }
 
-#' @aliases vietoris_rips.numeric vietoris_rips.ts
+#' @rdname vietoris_rips
 #' @param data_dim desired end data dimension
 #' @param dim_lag time series lag factor between dimensions
 #' @param sample_lag time series lag factor between samples (rows)
 #' @param method currently only allows `"qa"` (quasi-attractor method)
-#' @rdname vietoris_rips
 #' @export vietoris_rips.numeric
 #' @export
 vietoris_rips.numeric <- function(
