@@ -61,7 +61,8 @@ validate_PHom <- function(x, error = TRUE) {
   }
   
   # make sure all deaths are after corresponding births
-  if (!all(x$birth < x$death)) {
+  # TODO: Check for consistency with extended persistence.
+  if (!all(x$birth < x$death, na.rm = TRUE)) {
     if (error) {
       stop(paste("In PHom objects, all births must be before corresponding",
                  "deaths."))

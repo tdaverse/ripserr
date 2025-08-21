@@ -36,7 +36,7 @@ and reverse-geocoded to states.
 acre_coord <- aegypti[aegypti$state_code == "AC", c("x", "y"), drop = FALSE]
 acre_rips <- vietoris_rips(acre_coord)
 plot.new()
-xymax <- max(setdiff(acre_rips$death, Inf))
+xymax <- max(setdiff(acre_rips$death, Inf), na.rm = TRUE)
 plot.window(
   xlim = c(0, xymax),
   ylim = c(0, xymax),
