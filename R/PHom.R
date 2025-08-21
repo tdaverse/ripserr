@@ -238,20 +238,22 @@ print.PHom <- function(x, ...) {
   
   ans2 <- "Contains:"
   for (i in sort(unique(x$dimension))) {
+    miss <- sum((is.na(x$birth) | is.na(x$death))[x$dimension == i])
     curr <- paste0("* ", dim_counts[as.character(i)], " ", i,
-                   "-dim feature")
-    if (dim_counts[as.character(i)] != 1) {
-      curr <- paste0(curr, "s")
-    }
-    
+                   "-dim feature",
+                   if (dim_counts[as.character(i)] != 1) "s",
+                   if (miss > 0) paste0(" (", miss, " censored)"))
+
     ans2 <- paste(ans2, curr, sep = "\n")
   }
   
   ans3 <- ifelse(nrow(x) > 0,
                  paste0("Radius/diameter: min = ",
-                        signif(min(x$birth), digits = 5),
+                        signif(min(x$birth[is.finite(x$birth)], na.rm = TRUE),
+                               digits = 5),
                         "; max = ",
-                        signif(max(x$death), digits = 5),
+                        signif(max(x$death[is.finite(x$death)], na.rm = TRUE),
+                               digits = 5),
                         "."),
                  "")
   
