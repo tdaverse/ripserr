@@ -225,29 +225,30 @@ validate_dist_vr <- function(dataset) {
 #     Umeda Y. Time Series Classification via Topological Data Analysis.
 #     Transactions of the Japanese Society for Artificial Intelligence. 2017;
 #     32(3): DG72 1-12. doi: 10.1527/tjsai.D-G72
-numeric_to_quasi_attractor <- function(vec, data_dim,
-                                       dim_lag, sample_lag) {
-  # sequence of terms to be included in final series
-  sample_seq <- seq(from = 1, to = length(vec), by = sample_lag)
+# eventually replace `data_dim` and `dim_lag` with `window_dim` and `window_lag`
+numeric_to_quasi_attractor <- function(
+    x, data_dim, dim_lag, sample_lag
+) {
+  # convert vector to single-column matrix
+  x <- as.matrix(x)
   
-  # setup matrix
-  ans_mat <- matrix(NA,
-                    ncol = data_dim,
-                    nrow = length(sample_seq) - dim_lag * (data_dim - 1))
+  # initialize matrix
+  sample_seq <- seq(from = 1, to = nrow(x), by = sample_lag)
+  res <- matrix(
+    NA_real_,
+    nrow = length(sample_seq) - dim_lag * (data_dim - 1L),
+    ncol = ncol(x) * data_dim
+  )
   
-  # fill in matrix column-wise
-  for (curr_col in seq_len(ncol(ans_mat))) {
-    start_seq <- 1 + dim_lag * (curr_col - 1)
-    end_seq <- start_seq + nrow(ans_mat) - 1
-    
-    curr_seq <- sample_seq[start_seq : end_seq]
-    curr_val <- vec[curr_seq]
-    
-    ans_mat[, curr_col] <- curr_val
+  # fill in matrix window-wise
+  for (col_c in seq_len(data_dim)) {
+    seq_c <- sample_seq[1 + dim_lag * (col_c - 1L) + seq(nrow(res)) - 1L]
+    val_c <- x[seq_c, , drop = FALSE]
+    res[, (col_c - 1L) * ncol(x) + seq(ncol(x))] <- val_c
   }
   
-  # return
-  return(ans_mat)
+  # return matrix
+  res
 }
 
 # convert a list of 2-column matrices to a 3-column data frame

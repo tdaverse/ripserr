@@ -27,7 +27,7 @@ vietoris_rips(dataset, ...)
   ...
 )
 
-\method{vietoris_rips}{ts}(dataset, ...)
+\method{vietoris_rips}{ts}(dataset, data_dim = max(tsp(dataset)[3], 2), ...)
 
 \method{vietoris_rips}{default}(dataset, ...)
 }
@@ -46,7 +46,8 @@ calculated}
 \item{dim}{deprecated; passed to \code{max_dim} or ignored if \code{max_dim} is
 specified}
 
-\item{data_dim}{desired end data dimension}
+\item{data_dim}{desired end data dimension (for \code{"ts"}, defaults to obs/time
+if > 1)}
 
 \item{dim_lag}{time series lag factor between dimensions}
 
@@ -99,6 +100,15 @@ plot(
   ld.phom$birth, ld.phom$death,
   pch = ld.phom$dimension + 1, col = ld.phom$dimension + 1,
   xlim = c(0, 3200), ylim = c(0, 3200), asp = 1
+)
+abline(a = 0, b = 1)
+
+# multiple time series; window defaults to period
+( sb.phom <- vietoris_rips(Seatbelts[, 2:4]) )
+plot(
+  sb.phom$birth, sb.phom$death,
+  pch = sb.phom$dimension + 1, col = sb.phom$dimension + 1,
+  xlim = c(0, 1600), ylim = c(0, 1600), asp = 1
 )
 abline(a = 0, b = 1)
 }

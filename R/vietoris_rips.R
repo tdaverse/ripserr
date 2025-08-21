@@ -50,6 +50,15 @@
 #'   xlim = c(0, 3200), ylim = c(0, 3200), asp = 1
 #' )
 #' abline(a = 0, b = 1)
+#' 
+#' # multiple time series; window defaults to period
+#' ( sb.phom <- vietoris_rips(Seatbelts[, 2:4]) )
+#' plot(
+#'   sb.phom$birth, sb.phom$death,
+#'   pch = sb.phom$dimension + 1, col = sb.phom$dimension + 1,
+#'   xlim = c(0, 1600), ylim = c(0, 1600), asp = 1
+#' )
+#' abline(a = 0, b = 1)
 # Notes:
 # - figure out format from `dataset`
 # - return_format will be "df" (opinionated) w/ additional "PHom" S3 class
@@ -173,7 +182,9 @@ vietoris_rips.dist <- function(
 }
 
 #' @aliases vietoris_rips.numeric vietoris_rips.ts
-#' @param data_dim desired end data dimension
+#' @importFrom stats tsp
+#' @param data_dim desired end data dimension (for `"ts"`, defaults to obs/time
+#'   if > 1)
 #' @param dim_lag time series lag factor between dimensions
 #' @param sample_lag time series lag factor between samples (rows)
 #' @param method currently only allows `"qa"` (quasi-attractor method)
@@ -187,10 +198,11 @@ vietoris_rips.numeric <- function(
     method = "qa",
     ...
 ) {
+  dataset <- as.matrix(dataset)
   
   # ensure valid arguments passed
   validate_params_ts_vr(
-    vec_len = length(dataset),
+    vec_len = nrow(dataset),
     data_dim = data_dim,
     dim_lag = dim_lag,
     sample_lag = sample_lag,
@@ -217,10 +229,10 @@ vietoris_rips.numeric <- function(
 #' @rdname vietoris_rips
 #' @export vietoris_rips.ts
 #' @export
-vietoris_rips.ts <- function(dataset, ...) {
+vietoris_rips.ts <- function(dataset, data_dim = max(tsp(dataset)[3], 2), ...) {
   
   # convert to numeric and pass to vietoris_rips.numeric
-  ans <- vietoris_rips.numeric(as.numeric(dataset), ...)
+  ans <- vietoris_rips.numeric(as.matrix(dataset), data_dim = data_dim, ...)
   
   # return
   return(ans)
