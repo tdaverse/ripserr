@@ -7,6 +7,7 @@
 \alias{vietoris_rips.dist}
 \alias{vietoris_rips.numeric}
 \alias{vietoris_rips.ts}
+\alias{vietoris_rips.mts}
 \alias{vietoris_rips.default}
 \title{Calculate Persistent Homology via a Vietoris-Rips Complex}
 \usage{
@@ -28,6 +29,8 @@ vietoris_rips(dataset, ...)
 )
 
 \method{vietoris_rips}{ts}(dataset, data_dim = max(tsp(dataset)[3], 2), ...)
+
+\method{vietoris_rips}{mts}(dataset, data_dim = max(tsp(dataset)[3], 2), ...)
 
 \method{vietoris_rips}{default}(dataset, ...)
 }

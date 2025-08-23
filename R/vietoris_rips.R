@@ -201,11 +201,10 @@ vietoris_rips.numeric <- function(
     method = "qa",
     ...
 ) {
-  dataset <- as.matrix(dataset)
   
   # ensure valid arguments passed
   validate_params_ts_vr(
-    vec_len = nrow(dataset),
+    vec_len = if (is.matrix(dataset)) nrow(dataset) else length(dataset),
     data_dim = data_dim,
     dim_lag = dim_lag,
     sample_lag = sample_lag,
@@ -215,10 +214,17 @@ vietoris_rips.numeric <- function(
   # convert numeric vector (as time series) to appropriate matrix
   converted <- switch(
     method,
-    qa = numeric_to_quasi_attractor(
-      dataset, data_dim,
-      dim_lag, sample_lag
-    ),
+    qa = if (is.matrix(dataset)) {
+      numeric_matrix_to_quasi_attractor(
+        dataset, data_dim,
+        dim_lag, sample_lag
+      )
+    } else {
+      numeric_vector_to_quasi_attractor(
+        dataset, data_dim,
+        dim_lag, sample_lag
+      )
+    },
     stop(paste("invalid method; this line of code should never be reached"))
   )
   
@@ -232,9 +238,29 @@ vietoris_rips.numeric <- function(
 #' @rdname vietoris_rips
 #' @export vietoris_rips.ts
 #' @export
-vietoris_rips.ts <- function(dataset, data_dim = max(tsp(dataset)[3], 2), ...) {
+vietoris_rips.ts <- function(
+    dataset,
+    data_dim = max(tsp(dataset)[3], 2),
+    ...
+) {
   
-  # convert to numeric and pass to vietoris_rips.numeric
+  # convert to numeric vector and pass to vietoris_rips.numeric
+  ans <- vietoris_rips.numeric(as.numeric(dataset), data_dim = data_dim, ...)
+  
+  # return
+  return(ans)
+}
+
+#' @rdname vietoris_rips
+#' @export vietoris_rips.mts
+#' @export
+vietoris_rips.mts <- function(
+    dataset,
+    data_dim = max(tsp(dataset)[3], 2),
+    ...
+) {
+  
+  # convert to numeric matrix and pass to vietoris_rips.numeric
   ans <- vietoris_rips.numeric(as.matrix(dataset), data_dim = data_dim, ...)
   
   # return
