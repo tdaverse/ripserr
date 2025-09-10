@@ -33,7 +33,7 @@ or \code{"persistence"} (from the
 \strong{\href{https://cran.r-project.org/package=phutil}{phutil}} package)}
 }
 \value{
-\code{"PHom"} or \code{"persistence"} object
+\code{"PHom"} or \code{\link[phutil:persistence]{"persistence"}} object
 }
 \description{
 This function is an R wrapper for the CubicalRipser C++ library to calculate

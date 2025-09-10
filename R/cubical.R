@@ -18,7 +18,7 @@
 #' @param ... other relevant parameters
 #' @rdname cubical
 #' @export cubical
-#' @return `"PHom"` or `"persistence"` object
+#' @return `"PHom"` or [`"persistence"`][phutil::as_persistence] object
 #' @examples 
 #' 
 #' # 2-dim example
@@ -116,7 +116,7 @@ cubical.array <- function(
   ans <- switch(
     match.arg(return_class),
     PHom = new_PHom(ans),
-    persistence = as_persistence(
+    persistence = phutil::as_persistence(
       ans,
       engine = "ripserr::cubical",
       filtration = "cubical",

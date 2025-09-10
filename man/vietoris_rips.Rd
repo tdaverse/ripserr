@@ -75,7 +75,7 @@ or \code{"persistence"} (from the
 \item{method}{currently only allows \code{"qa"} (quasi-attractor method)}
 }
 \value{
-\code{"PHom"} or \code{"persistence"} object
+\code{"PHom"} or \code{\link[phutil:persistence]{"persistence"}} object
 }
 \description{
 This function is an R wrapper for the Ripser C++ library to
