@@ -88,7 +88,15 @@ vietoris_rips.matrix <- function(
   if (nrow(dataset) == 1L) {
     return(switch(
       match.arg(return_class),
-      PHom = new_PHom(),
+      PHom = {
+        lifecycle::deprecate_soft(
+          "1.1.0",
+          I("'PHom' class"),
+          with = I("'persistence' from the {phutil} package"),
+          id = "PHom"
+        )
+        new_PHom()
+      },
       persistence = phutil::as_persistence(
         matrix(NA_real_, nrow = 0L, ncol = 3L),
         engine = "ripserr::vietoris_rips",
@@ -128,7 +136,15 @@ vietoris_rips.matrix <- function(
   # coerce to 'PHom' class
   ans <- switch(
     match.arg(return_class),
-    PHom = new_PHom(ripser_ans_to_df(ans)),
+    PHom = {
+      lifecycle::deprecate_soft(
+        "1.1.0",
+        I("'PHom' class"),
+        with = I("'persistence' from the {phutil} package"),
+        id = "PHom"
+      )
+      new_PHom(ripser_ans_to_df(ans))
+    },
     persistence = phutil::as_persistence(
       ans,
       engine = "ripserr::vietoris_rips",
@@ -184,7 +200,15 @@ vietoris_rips.dist <- function(
   # coerce to 'PHom' class
   ans <- switch(
     match.arg(return_class),
-    PHom = new_PHom(ripser_ans_to_df(ans)),
+    PHom = {
+      lifecycle::deprecate_soft(
+        "1.1.0",
+        I("'PHom' class"),
+        with = I("'persistence' from the {phutil} package"),
+        id = "PHom"
+      )
+      new_PHom(ripser_ans_to_df(ans))
+    },
     persistence = phutil::as_persistence(
       ans,
       engine = "ripserr::vietoris_rips",

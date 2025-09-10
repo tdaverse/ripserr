@@ -115,7 +115,15 @@ cubical.array <- function(
   # convert data frame to a PHom object
   ans <- switch(
     match.arg(return_class),
-    PHom = new_PHom(ans),
+    PHom = {
+      lifecycle::deprecate_soft(
+        "1.1.0",
+        I("'PHom' class"),
+        with = I("'persistence' from the {phutil} package"),
+        id = "PHom"
+      )
+      new_PHom(ans)
+    },
     persistence = phutil::as_persistence(
       ans,
       engine = "ripserr::cubical",
