@@ -23,10 +23,13 @@
 #'
 #' `vietoris_rips.numeric` and `vietoris_rips.ts` both calculate persistent
 #' homology of a time series object. The time series object is converted to a
-#' matrix using the quasi-attractor method detailed in Umeda (2017)
-#' <doi:10.1527/tjsai.D-G72>. Persistent homology of the resulting matrix is
-#' then calculated.
-#'
+#' matrix using the sliding window embedding introduced in Perea & Harer (2015)
+#' <doi:10.1007/s10208-014-9206-z> and used to obtain quasi-attractors in Umeda
+#' (2017) <doi:10.1527/tjsai.D-G72>. Persistent homology of the resulting matrix
+#' is then calculated. (NB: If a multi-time series is unclassed, then method
+#' dispatch will pass it to `vietoris_rips.matrix`).
+#' 
+
 #' @param dataset object on which to calculate persistent homology
 #' @param ... other relevant parameters
 #' @rdname vietoris_rips
@@ -41,6 +44,24 @@
 #'
 #' # calculate persistent homology (num.pts by 3 numeric matrix)
 #' pers.hom <- vietoris_rips(pt.cloud)
+#' 
+#' # sliding window persistent homology
+#' ( ld.phom <- vietoris_rips(ldeaths, data_dim = 12) )
+#' plot(
+#'   ld.phom$birth, ld.phom$death,
+#'   pch = ld.phom$dimension + 1, col = ld.phom$dimension + 1,
+#'   xlim = c(0, 3200), ylim = c(0, 3200), asp = 1
+#' )
+#' abline(a = 0, b = 1)
+#' 
+#' # multiple time series; window defaults to period
+#' ( sb.phom <- vietoris_rips(Seatbelts[, 2:4]) )
+#' plot(
+#'   sb.phom$birth, sb.phom$death,
+#'   pch = sb.phom$dimension + 1, col = sb.phom$dimension + 1,
+#'   xlim = c(0, 1600), ylim = c(0, 1600), asp = 1
+#' )
+#' abline(a = 0, b = 1)
 # Notes:
 # - figure out format from `dataset`
 # - return_format will be "df" (opinionated) w/ additional "PHom" S3 class
@@ -164,7 +185,9 @@ vietoris_rips.dist <- function(
 }
 
 #' @aliases vietoris_rips.numeric vietoris_rips.ts
-#' @param data_dim desired end data dimension
+#' @importFrom stats tsp
+#' @param data_dim desired end data dimension (for `"ts"`, defaults to obs/time
+#'   if > 1)
 #' @param dim_lag time series lag factor between dimensions
 #' @param sample_lag time series lag factor between samples (rows)
 #' @param method currently only allows `"qa"` (quasi-attractor method)
@@ -181,7 +204,7 @@ vietoris_rips.numeric <- function(
   
   # ensure valid arguments passed
   validate_params_ts_vr(
-    vec_len = length(dataset),
+    vec_len = if (is.matrix(dataset)) nrow(dataset) else length(dataset),
     data_dim = data_dim,
     dim_lag = dim_lag,
     sample_lag = sample_lag,
@@ -191,10 +214,17 @@ vietoris_rips.numeric <- function(
   # convert numeric vector (as time series) to appropriate matrix
   converted <- switch(
     method,
-    qa = numeric_to_quasi_attractor(
-      dataset, data_dim,
-      dim_lag, sample_lag
-    ),
+    qa = if (is.matrix(dataset)) {
+      numeric_matrix_to_quasi_attractor(
+        dataset, data_dim,
+        dim_lag, sample_lag
+      )
+    } else {
+      numeric_vector_to_quasi_attractor(
+        dataset, data_dim,
+        dim_lag, sample_lag
+      )
+    },
     stop(paste("invalid method; this line of code should never be reached"))
   )
   
@@ -208,10 +238,30 @@ vietoris_rips.numeric <- function(
 #' @rdname vietoris_rips
 #' @export vietoris_rips.ts
 #' @export
-vietoris_rips.ts <- function(dataset, ...) {
+vietoris_rips.ts <- function(
+    dataset,
+    data_dim = max(tsp(dataset)[3], 2),
+    ...
+) {
   
-  # convert to numeric and pass to vietoris_rips.numeric
-  ans <- vietoris_rips.numeric(as.numeric(dataset), ...)
+  # convert to numeric vector and pass to vietoris_rips.numeric
+  ans <- vietoris_rips.numeric(as.numeric(dataset), data_dim = data_dim, ...)
+  
+  # return
+  return(ans)
+}
+
+#' @rdname vietoris_rips
+#' @export vietoris_rips.mts
+#' @export
+vietoris_rips.mts <- function(
+    dataset,
+    data_dim = max(tsp(dataset)[3], 2),
+    ...
+) {
+  
+  # convert to numeric matrix and pass to vietoris_rips.numeric
+  ans <- vietoris_rips.numeric(as.matrix(dataset), data_dim = data_dim, ...)
   
   # return
   return(ans)

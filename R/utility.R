@@ -220,13 +220,15 @@ validate_dist_vr <- function(dataset) {
 
 #####DATA FORMATTING#####
 
-# convert numeric vector (time series) to matrix for persistent homology
+# convert time series to matrix for persistent homology
 #   calculation based on quasi-attractor method in:
 #     Umeda Y. Time Series Classification via Topological Data Analysis.
 #     Transactions of the Japanese Society for Artificial Intelligence. 2017;
 #     32(3): DG72 1-12. doi: 10.1527/tjsai.D-G72
-numeric_to_quasi_attractor <- function(vec, data_dim,
-                                       dim_lag, sample_lag) {
+# eventually replace `data_dim` and `dim_lag` with `window_dim` and `window_lag`
+numeric_vector_to_quasi_attractor <- function(
+    vec, data_dim, dim_lag, sample_lag
+) {
   # sequence of terms to be included in final series
   sample_seq <- seq(from = 1, to = length(vec), by = sample_lag)
   
@@ -248,6 +250,30 @@ numeric_to_quasi_attractor <- function(vec, data_dim,
   
   # return
   return(ans_mat)
+}
+numeric_matrix_to_quasi_attractor <- function(
+    mat, data_dim, dim_lag, sample_lag
+) {
+  # convert vector to single-column matrix
+  mat <- as.matrix(mat)
+  
+  # initialize matrix
+  sample_seq <- seq(from = 1, to = nrow(mat), by = sample_lag)
+  ans_mat <- matrix(
+    NA_real_,
+    nrow = length(sample_seq) - dim_lag * (data_dim - 1L),
+    ncol = ncol(mat) * data_dim
+  )
+  
+  # fill in matrix window-wise
+  for (col_c in seq_len(data_dim)) {
+    seq_c <- sample_seq[1 + dim_lag * (col_c - 1L) + seq(nrow(ans_mat)) - 1L]
+    val_c <- mat[seq_c, , drop = FALSE]
+    ans_mat[, (col_c - 1L) * ncol(mat) + seq(ncol(mat))] <- val_c
+  }
+  
+  # return matrix
+  ans_mat
 }
 
 # convert a list of 2-column matrices to a 3-column data frame

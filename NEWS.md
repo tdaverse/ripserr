@@ -1,3 +1,12 @@
+# next version
+
+## sliding window embeddings of multivariable time series (breaking change)
+
+Previously only univariable time series could be passed to `vietoris_rips()` via the sliding window embedding (used for quasi-attractor detection).
+An additional unexported embedding function has been written to handle multivariable time series. (It underperforms the original function on univariable time series, which therefore continue to rely on the original.)
+
+Furthermore, whereas `data_dim` previously defaulted to `2`, it now defaults to the number of observations per time unit of a time series as recovered by `tsp()`. (The behavior for unclassed numeric vectors remains unchanged.)
+
 # ripserr 1.0.0
 
 This major version replaces an outdated version of the Ripser C++ library with its current version.
