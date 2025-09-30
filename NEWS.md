@@ -1,5 +1,10 @@
 # next version
 
+## permission for deaths before births and superlevel set filtrations of rasters
+
+A logical argument `sublevel` has been added to `cubical` that, when `FALSE`, will pre- and post-transform raster data in order to obtain superlevel set persistent homology.
+Enabling this, an assertion that all `birth < death` has been removed from checks of persistence data.
+
 ## sliding window embeddings of multivariable time series (breaking change)
 
 Previously only univariable time series could be passed to `vietoris_rips()` via the sliding window embedding (used for quasi-attractor detection).
