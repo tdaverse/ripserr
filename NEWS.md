@@ -1,9 +1,30 @@
 # next version
 
-## output class
+### output class
 
 The new `return_class` parameter allows the user to specify whether to output persistence data in the legacy `'PHom'` class or the `'persistence'` class from {phutil}.
 It defaults to `'PHom'` but will switch to `'persistence'` when the `'PHom'` class is deprecated in a future version.
+
+## Vietoris-Rips PH
+
+### sliding window embeddings of multivariable time series (breaking change)
+
+Previously only univariable time series could be passed to `vietoris_rips()` via the sliding window embedding (used for quasi-attractor detection).
+An additional unexported embedding function has been written to handle multivariable time series. (It underperforms the original function on univariable time series, which therefore continue to rely on the original.)
+
+Furthermore, whereas `data_dim` previously defaulted to `2`, it now defaults to the number of observations per time unit of a time series as recovered by `tsp()`. (The behavior for unclassed numeric vectors remains unchanged.)
+
+## cubical PH
+
+### functionality for 1-dimensional arrays
+
+`cubical()` can now handle 1-dimensional arrays (for which no dedicated source code exists) by treating them as 2-dimensional (with an expanse of 1 in the second dimension).
+This enables the new method `cubical.numeric()` to accept vectors.
+
+### deaths before births and superlevel set filtrations
+
+A logical argument `sublevel` has been added to `cubical` that, when `FALSE`, will pre- and post-transform raster data in order to obtain superlevel set persistent homology.
+Enabling this, an assertion that all `birth < death` has been removed from checks of persistence data.
 
 # ripserr 1.0.0
 

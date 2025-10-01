@@ -12,7 +12,10 @@
 #' previous versions of `R`, in which objects with class `matrix` do not
 #' necessarily also have class `array`, `dataset` is converted to an `array`
 #' and persistent homology is then calculated using `cubical.array`.
-#'
+#' 
+#' Note that the superlevel set filtration (`sublevel = FALSE`) will yield a
+#' persistence diagram in which `death` precedes `birth`.
+#' 
 #' @title Calculating Persistent Homology via a Cubical Complex
 #' @param dataset object on which to calculate persistent homology
 #' @param ... other relevant parameters
@@ -20,6 +23,11 @@
 #' @export cubical
 #' @return `"PHom"` or [`"persistence"`][phutil::as_persistence] object
 #' @examples 
+#' 
+#' # 1-dim example
+#' dataset <- rnorm(1500)
+#' dim(dataset) <- 1500
+#' cubical_hom1 <- cubical(dataset)
 #' 
 #' # 2-dim example
 #' dataset <- rnorm(10 ^ 2)
@@ -35,6 +43,10 @@
 #' dataset <- rnorm(5 ^ 4)
 #' dim(dataset) <- rep(5, 4)
 #' ( cubical_hom4 <- cubical(dataset) )
+#' 
+#' # sublevel versus superlevel
+#' cubical(volcano)
+#' cubical(volcano, sublevel = FALSE)
 # Notes:
 # - figure out format from `dataset`
 # - return_format will be "df" (opinionated) w/ additional "PHom" S3 class
@@ -48,6 +60,8 @@ cubical <- function(dataset, ...) {
 #' @param threshold maximum simplicial complex diameter to explore
 #' @param method either `"lj"` (for Link Join) or `"cp"` (for Compute Pairs);
 #'   see Kaji et al. (2020) <https://arxiv.org/abs/2005.12692> for details
+#' @param sublevel logical; whether to take the sublevel set filtration or else
+#'   the superlevel set filtration
 #' @param return_class class of output object; either `"PHom"` (default; legacy)
 #'   or `"persistence"` (from the
 #'   **[phutil](https://cran.r-project.org/package=phutil)** package)
@@ -57,13 +71,22 @@ cubical.array <- function(
     dataset,
     threshold = 9999,
     method = "lj",
+    sublevel = TRUE,
     return_class = c("PHom", "persistence"),
     ...
 ) {
+  # do this before checks since it modifies `dataset`
+  if (! is.logical(sublevel) || is.na(sublevel))
+    stop("`sublevel` must be `TRUE` or `FALSE`.")
+  if (! sublevel) dataset <- -dataset
+  
   # ensure valid arguments passed
   validate_params_cub(threshold = threshold,
                       method = method)
   validate_arr_cub(dataset)
+  
+  # if dataset is 1-dimensional, treat it as 2-dimensional
+  if (length(dim(dataset)) == 1L) dim(dataset) <- c(dim(dataset), 1L)
   
   # transform method parameter for C++ function
   method_int <- switch(method,
@@ -98,19 +121,20 @@ cubical.array <- function(
                                dim(dataset)[4])
                 })
   
+  # INEFFICIENT COPYING STEP, TRY TO FIND A WAY AROUND THIS, IF POSSIBLE
+  # remove unnecessary feature (dim = -1, birth = min value, death = threshold)
+  remove_row <- which(ans[, 1L] == -1 &
+            close_numeric(ans[, 2L], min(dataset)) &
+            close_numeric(ans[, 3L], threshold))
+  if (is.integer(remove_row) & length(remove_row) == 1L)
+    ans <- ans[-remove_row, , drop = FALSE]
+  
+  if (! sublevel) ans[, c(2L, 3L)] <- -ans[, c(2L, 3L)]
+  
   # properly format persistent homology output
   ans <- as.data.frame(ans)
   colnames(ans) <- c("dimension", "birth", "death")
   ans$dimension <- as.integer(ans$dimension)
-  
-  # INEFFICIENT COPYING STEP, TRY TO FIND A WAY AROUND THIS, IF POSSIBLE
-  # remove unnecessary feature (dim = -1, birth = min value, death = threshold)
-  remove_row <- which(ans$dimension == -1 &
-                      close_numeric(ans$birth, min(dataset)) &
-                      close_numeric(ans$death, threshold))
-  if (is.integer(remove_row) & length(remove_row) == 1) {
-    ans <- ans[-remove_row, ]
-  }
   
   # convert data frame to a PHom object
   ans <- switch(
@@ -151,5 +175,18 @@ cubical.matrix <- function(dataset, ...) {
   ans <- cubical.array(dataset, ...)
   
   # return
+  return(ans)
+}
+
+#' @rdname cubical
+#' @export cubical.numeric
+#' @export
+cubical.numeric <- function(dataset, ...) {
+  # convert the numeric vector to a 1-dimensional array
+  dataset <- as.array(dataset, dim = 1L)
+  
+  # calculate persistent homology using cubical.array
+  ans <- cubical.array(dataset, ...)
+  
   return(ans)
 }
