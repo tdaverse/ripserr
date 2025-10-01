@@ -15,9 +15,25 @@ vietoris_rips(dataset, ...)
 
 \method{vietoris_rips}{data.frame}(dataset, ...)
 
-\method{vietoris_rips}{matrix}(dataset, max_dim = 1L, threshold = -1, p = 2L, dim = NULL, ...)
+\method{vietoris_rips}{matrix}(
+  dataset,
+  max_dim = 1L,
+  threshold = -1,
+  p = 2L,
+  dim = NULL,
+  return_class = c("PHom", "persistence"),
+  ...
+)
 
-\method{vietoris_rips}{dist}(dataset, max_dim = 1L, threshold = -1, p = 2L, dim = NULL, ...)
+\method{vietoris_rips}{dist}(
+  dataset,
+  max_dim = 1L,
+  threshold = -1,
+  p = 2L,
+  dim = NULL,
+  return_class = c("PHom", "persistence"),
+  ...
+)
 
 \method{vietoris_rips}{numeric}(
   dataset,
@@ -49,6 +65,10 @@ calculated}
 \item{dim}{deprecated; passed to \code{max_dim} or ignored if \code{max_dim} is
 specified}
 
+\item{return_class}{class of output object; either \code{"PHom"} (default; legacy)
+or \code{"persistence"} (from the
+\strong{\href{https://cran.r-project.org/package=phutil}{phutil}} package)}
+
 \item{data_dim}{desired end data dimension (for \code{"ts"}, defaults to obs/time
 if > 1)}
 
@@ -59,7 +79,7 @@ if > 1)}
 \item{method}{currently only allows \code{"qa"} (quasi-attractor method)}
 }
 \value{
-\code{PHom} object
+\code{"PHom"} or \code{\link[phutil:persistence]{"persistence"}} object
 }
 \description{
 This function is an R wrapper for the Ripser C++ library to
@@ -97,7 +117,7 @@ rand.angle <- runif(num.pts, 0, 2*pi)
 pt.cloud <- cbind(cos(rand.angle), sin(rand.angle))
 
 # calculate persistent homology (num.pts by 3 numeric matrix)
-pers.hom <- vietoris_rips(pt.cloud)
+( pers.hom <- vietoris_rips(pt.cloud) )
 
 # sliding window persistent homology
 ( ld.phom <- vietoris_rips(ldeaths, data_dim = 12) )
