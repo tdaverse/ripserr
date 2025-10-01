@@ -84,7 +84,7 @@ template <class Key> using hash = std::hash<Key>;
 
 #endif
 
-typedef float value_t;
+typedef double value_t;
 typedef int64_t index_t;
 typedef uint16_t coefficient_t;
 
@@ -413,7 +413,7 @@ template <typename DistanceMatrix> class ripser {
 	const DistanceMatrix dist;
 	const index_t n, dim_max;
 	const value_t threshold;
-	const float ratio;
+	const double ratio;
 	const coefficient_t modulus;
 	const binomial_coeff_table binomial_coeff;
 	const std::vector<coefficient_t> multiplicative_inverse;
@@ -436,7 +436,7 @@ public:
   // ripserq: Accumulate pairs in an object to be returned to the user.
   std::vector<std::vector<std::pair<value_t, value_t>>> persistence_pairs;
   
-	ripser(DistanceMatrix&& _dist, index_t _dim_max, value_t _threshold, float _ratio,
+	ripser(DistanceMatrix&& _dist, index_t _dim_max, value_t _threshold, double _ratio,
 	       coefficient_t _modulus)
 	    : dist(std::move(_dist)), n(dist.size()),
 	      dim_max(std::min(_dim_max, index_t(dist.size() - 2))), threshold(_threshold),
@@ -1257,7 +1257,7 @@ int main(int argc, char** argv) {
 
 	index_t dim_max = 1;
 	value_t threshold = std::numeric_limits<value_t>::max();
-	float ratio = 1;
+	double ratio = 1;
 	coefficient_t modulus = 2;
 
 	for (index_t i = 1; i < argc; ++i) {
@@ -1382,7 +1382,7 @@ int main(int argc, char** argv) {
 #endif
 
 // [[Rcpp::export()]]
-Rcpp::List ripser_cpp_dist(const Rcpp::NumericVector &dataset, int dim, double thresh, float ratio, int p) {
+Rcpp::List ripser_cpp_dist(const Rcpp::NumericVector &dataset, int dim, double thresh, double ratio, int p) {
   std::vector<value_t> distances(dataset.begin(), dataset.end());
   
   compressed_lower_distance_matrix dist(compressed_upper_distance_matrix(std::move(distances)));
