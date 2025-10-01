@@ -122,7 +122,7 @@ validate_arr_cub <- function(dataset) {
   error_class(dataset, "dataset", "array")
   
   # dataset should have either 2, 3, or 4 dimensions (only ones supported)
-  if (!(length(dim(dataset)) %in% c(2, 3, 4))) {
+  if (!(length(dim(dataset)) %in% seq(4))) {
     stop(paste("dataset parameter must have either 2, 3, or 4 dimensions,",
                "passed argument has", length(dim(dataset)), "dimensions"))
   }
@@ -139,7 +139,11 @@ validate_arr_cub <- function(dataset) {
   }
   
   # make sure dataset is not too large
-  if (length(dim(dataset)) == 2) {
+  if (length(dim(dataset)) == 1L) {
+    if (dim(dataset) > 2000) {
+      stop(paste("Max size for dim 1 = 2000; passed size =", dim(dataset)))
+    }
+  } else if (length(dim(dataset)) == 2) {
     if (dim(dataset)[1] > 2000 |
         dim(dataset)[2] > 1000) {
       stop(paste("Max size for dim 2 = 2000 x 1000; passed size =",

@@ -1,6 +1,6 @@
 Package: ripserr
 Title: Calculate Persistent Homology with Ripser-Based Engines
-Version: 1.0.0
+Version: 1.0.0.0003
 Authors@R:
     c(person(given = "Raoul R.",
              family = "Wadhwa",

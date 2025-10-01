@@ -24,6 +24,11 @@
 #' @return `PHom` object
 #' @examples 
 #' 
+#' # 1-dim example
+#' dataset <- rnorm(1500)
+#' dim(dataset) <- 1500
+#' cubical_hom1 <- cubical(dataset)
+#' 
 #' # 2-dim example
 #' dataset <- rnorm(10 ^ 2)
 #' dim(dataset) <- rep(10, 2)
@@ -74,6 +79,8 @@ cubical.array <- function(
                       method = method)
   validate_arr_cub(dataset)
   
+  # if dataset is 1-dimensional, treat it as 2-dimensional
+  if (length(dim(dataset)) == 1L) dim(dataset) <- c(dim(dataset), 1L)
   
   # transform method parameter for C++ function
   method_int <- switch(method,
@@ -145,5 +152,18 @@ cubical.matrix <- function(dataset, ...) {
   ans <- cubical.array(dataset, ...)
   
   # return
+  return(ans)
+}
+
+#' @rdname cubical
+#' @export cubical.numeric
+#' @export
+cubical.numeric <- function(dataset, ...) {
+  # convert the numeric vector to a 1-dimensional array
+  dataset <- as.array(dataset, dim = 1L)
+  
+  # calculate persistent homology using cubical.array
+  ans <- cubical.array(dataset, ...)
+  
   return(ans)
 }

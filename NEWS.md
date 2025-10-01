@@ -1,16 +1,30 @@
 # next version
 
-## permission for deaths before births and superlevel set filtrations of rasters
+## Vietoris-Rips PH
 
-A logical argument `sublevel` has been added to `cubical` that, when `FALSE`, will pre- and post-transform raster data in order to obtain superlevel set persistent homology.
-Enabling this, an assertion that all `birth < death` has been removed from checks of persistence data.
+## censored death values
 
-## sliding window embeddings of multivariable time series (breaking change)
+This version addresses #39 by encoding deaths that exceed the threshold as undefined (`NaN`) rather than infinite (`Inf`) then converting these values to missing (`NA_REAL`) while populating the `Rcpp::NumericMatrix` returned to R.
+A single infinite degree-0 feature for the connected component is retained.
+
+### sliding window embeddings of multivariable time series (breaking change)
 
 Previously only univariable time series could be passed to `vietoris_rips()` via the sliding window embedding (used for quasi-attractor detection).
 An additional unexported embedding function has been written to handle multivariable time series. (It underperforms the original function on univariable time series, which therefore continue to rely on the original.)
 
 Furthermore, whereas `data_dim` previously defaulted to `2`, it now defaults to the number of observations per time unit of a time series as recovered by `tsp()`. (The behavior for unclassed numeric vectors remains unchanged.)
+
+## cubical PH
+
+### functionality for 1-dimensional arrays
+
+`cubical()` can now handle 1-dimensional arrays (for which no dedicated source code exists) by treating them as 2-dimensional (with an expanse of 1 in the second dimension).
+This enables the new method `cubical.numeric()` to accept vectors.
+
+### deaths before births and superlevel set filtrations
+
+A logical argument `sublevel` has been added to `cubical` that, when `FALSE`, will pre- and post-transform raster data in order to obtain superlevel set persistent homology.
+Enabling this, an assertion that all `birth < death` has been removed from checks of persistence data.
 
 # ripserr 1.0.0
 

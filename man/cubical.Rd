@@ -4,6 +4,7 @@
 \alias{cubical}
 \alias{cubical.array}
 \alias{cubical.matrix}
+\alias{cubical.numeric}
 \title{Calculating Persistent Homology via a Cubical Complex}
 \usage{
 cubical(dataset, ...)
@@ -11,6 +12,8 @@ cubical(dataset, ...)
 \method{cubical}{array}(dataset, threshold = 9999, method = "lj", sublevel = TRUE, ...)
 
 \method{cubical}{matrix}(dataset, ...)
+
+\method{cubical}{numeric}(dataset, ...)
 }
 \arguments{
 \item{dataset}{object on which to calculate persistent homology}
@@ -49,6 +52,11 @@ Note that the superlevel set filtration (\code{sublevel = FALSE}) will yield a
 persistence diagram in which \code{death} precedes \code{birth}.
 }
 \examples{
+
+# 1-dim example
+dataset <- rnorm(1500)
+dim(dataset) <- 1500
+cubical_hom1 <- cubical(dataset)
 
 # 2-dim example
 dataset <- rnorm(10 ^ 2)
