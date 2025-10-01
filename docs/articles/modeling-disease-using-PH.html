@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ripserr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -88,7 +88,7 @@ Persistent Homology</h1>
                         <h4 data-toc-skip class="author">Xinyi Zhang,
 Jason Cory Brunson</h4>
             
-            <h4 data-toc-skip class="date">2025-04-30</h4>
+            <h4 data-toc-skip class="date">2025-09-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/tdaverse/ripserr/blob/HEAD/vignettes/modeling-disease-using-PH.Rmd" class="external-link"><code>vignettes/modeling-disease-using-PH.Rmd</code></a></small>
       <div class="hidden name"><code>modeling-disease-using-PH.Rmd</code></div>
@@ -188,9 +188,10 @@ respectively.</p>
 <span><span class="va">AC_rips</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vietoris_rips.html">vietoris_rips</a></span><span class="op">(</span><span class="va">AC_coord</span><span class="op">)</span> <span class="co">##filtration</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/frame.html" class="external-link">plot.new</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">max_finite_death</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">AC_rips</span><span class="op">$</span><span class="va">death</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/is.finite.html" class="external-link">is.finite</a></span><span class="op">(</span><span class="va">AC_rips</span><span class="op">$</span><span class="va">death</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.window.html" class="external-link">plot.window</a></span><span class="op">(</span></span>
-<span>  xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">AC_rips</span><span class="op">$</span><span class="va">death</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">AC_rips</span><span class="op">$</span><span class="va">death</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">max_finite_death</span><span class="op">)</span>,</span>
+<span>  ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">max_finite_death</span><span class="op">)</span>,</span>
 <span>  asp <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span></span>
@@ -251,12 +252,12 @@ within this data frame.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">caseModel</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">stateAbbSort</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">caseModel</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##     H0  H1       H1MD       H1ML        POP     TEMP    PRECIP  CASE</span></span>
-<span><span class="co">## AC  13   2 0.06063392 0.07681639   4.729529 25.66136 169.20068  2568</span></span>
-<span><span class="co">## AL 101  29 0.03059555 0.12310635 118.607876 24.67370  96.40583 11296</span></span>
-<span><span class="co">## AM  29   3 1.24451720 1.24898089   2.442278 26.49226 198.98254 17832</span></span>
-<span><span class="co">## AP  12   1 0.28318879 0.28318879   5.158925 26.22867 224.78617  1708</span></span>
-<span><span class="co">## BA 412 147 0.04711213 0.31302836  26.638086 23.88865  80.96277  6111</span></span>
-<span><span class="co">## CE 179  63 0.04965020 0.27650333  58.958386 26.22163  78.03878 30219</span></span></code></pre>
+<span><span class="co">## AC  14   2 0.06063393 0.07681638   4.729529 25.66136 169.20068  2568</span></span>
+<span><span class="co">## AL 102  29 0.03059556 0.12310635 118.607876 24.67370  96.40583 11296</span></span>
+<span><span class="co">## AM  30   3 1.24451733 1.24898100   2.442278 26.49226 198.98254 17832</span></span>
+<span><span class="co">## AP  13   1 0.28318882 0.28318882   5.158925 26.22867 224.78617  1708</span></span>
+<span><span class="co">## BA 413 145 0.04901767 0.31302834  26.638086 23.88865  80.96277  6111</span></span>
+<span><span class="co">## CE 180  63 0.04965019 0.27650332  58.958386 26.22163  78.03878 30219</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="cases-visualization">Cases Visualization<a class="anchor" aria-label="anchor" href="#cases-visualization"></a>
@@ -298,21 +299,21 @@ predictive value
 <span><span class="co">## </span></span>
 <span><span class="co">## Residuals:</span></span>
 <span><span class="co">##     Min      1Q  Median      3Q     Max </span></span>
-<span><span class="co">## -2.3891 -1.1671 -0.1294  0.7238  3.3588 </span></span>
+<span><span class="co">## -2.3891 -1.1654 -0.1291  0.7239  3.3595 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Coefficients:</span></span>
 <span><span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)   </span></span>
-<span><span class="co">## (Intercept) 1.416851   4.061618   0.349  0.73053   </span></span>
-<span><span class="co">## POP         0.007909   0.003406   2.322  0.02988 * </span></span>
-<span><span class="co">## TEMP        0.238266   0.144471   1.649  0.11331   </span></span>
-<span><span class="co">## PRECIP      0.001867   0.008762   0.213  0.83324   </span></span>
-<span><span class="co">## H0          0.007375   0.002306   3.198  0.00415 **</span></span>
+<span><span class="co">## (Intercept) 1.404949   4.062529   0.346  0.73275   </span></span>
+<span><span class="co">## POP         0.007921   0.003407   2.325  0.02969 * </span></span>
+<span><span class="co">## TEMP        0.238363   0.144454   1.650  0.11313   </span></span>
+<span><span class="co">## PRECIP      0.001877   0.008761   0.214  0.83234   </span></span>
+<span><span class="co">## H0          0.007377   0.002306   3.200  0.00413 **</span></span>
 <span><span class="co">## ---</span></span>
 <span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Residual standard error: 1.634 on 22 degrees of freedom</span></span>
-<span><span class="co">## Multiple R-squared:  0.399,  Adjusted R-squared:  0.2898 </span></span>
-<span><span class="co">## F-statistic: 3.652 on 4 and 22 DF,  p-value: 0.0199</span></span></code></pre>
+<span><span class="co">## Multiple R-squared:  0.3992, Adjusted R-squared:   0.29 </span></span>
+<span><span class="co">## F-statistic: 3.655 on 4 and 22 DF,  p-value: 0.01984</span></span></code></pre>
 <p>To check error assumptions for linear regression, we plot residuals
 versus fitted values and theoretical quantiles versus standardized
 residuals. We observe that residuals for each fitted values are evenly
@@ -344,8 +345,8 @@ report.</p>
 <span><span class="co">## Model 1: log(CASE) ~ POP + TEMP + H0</span></span>
 <span><span class="co">## Model 2: log(CASE) ~ POP + TEMP + PRECIP + H0</span></span>
 <span><span class="co">##   #Df  LogLik Df  Chisq Pr(&gt;Chisq)</span></span>
-<span><span class="co">## 1   5 -48.834                     </span></span>
-<span><span class="co">## 2   6 -48.807  1 0.0557     0.8135</span></span></code></pre>
+<span><span class="co">## 1   5 -48.831                     </span></span>
+<span><span class="co">## 2   6 -48.803  1 0.0563     0.8125</span></span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit.1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">CASE</span><span class="op">)</span> <span class="op">~</span> <span class="va">POP</span> <span class="op">+</span> <span class="va">TEMP</span> <span class="op">+</span> <span class="va">H0</span>, data <span class="op">=</span> <span class="va">caseModel</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit.1</span><span class="op">)</span></span></code></pre></div>
@@ -355,20 +356,20 @@ report.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## Residuals:</span></span>
 <span><span class="co">##     Min      1Q  Median      3Q     Max </span></span>
-<span><span class="co">## -2.3757 -1.1723 -0.0940  0.6976  3.3161 </span></span>
+<span><span class="co">## -2.3756 -1.1705 -0.0936  0.6976  3.3166 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Coefficients:</span></span>
 <span><span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)   </span></span>
-<span><span class="co">## (Intercept) 1.771317   3.627567   0.488  0.62997   </span></span>
-<span><span class="co">## POP         0.007684   0.003170   2.424  0.02362 * </span></span>
-<span><span class="co">## TEMP        0.235534   0.140883   1.672  0.10811   </span></span>
-<span><span class="co">## H0          0.007161   0.002032   3.524  0.00182 **</span></span>
+<span><span class="co">## (Intercept) 1.761653   3.627981   0.486  0.63186   </span></span>
+<span><span class="co">## POP         0.007694   0.003170   2.427  0.02346 * </span></span>
+<span><span class="co">## TEMP        0.235612   0.140867   1.673  0.10796   </span></span>
+<span><span class="co">## H0          0.007162   0.002031   3.526  0.00181 **</span></span>
 <span><span class="co">## ---</span></span>
 <span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Residual standard error: 1.6 on 23 degrees of freedom</span></span>
-<span><span class="co">## Multiple R-squared:  0.3978, Adjusted R-squared:  0.3193 </span></span>
-<span><span class="co">## F-statistic: 5.065 on 3 and 23 DF,  p-value: 0.007721</span></span></code></pre>
+<span><span class="co">## Multiple R-squared:  0.398,  Adjusted R-squared:  0.3194 </span></span>
+<span><span class="co">## F-statistic: 5.068 on 3 and 23 DF,  p-value: 0.007698</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="second-fit-model-with-topological-features">Second fit: Model with Topological Features<a class="anchor" aria-label="anchor" href="#second-fit-model-with-topological-features"></a>
@@ -392,24 +393,24 @@ significant. Thus, we prefer to exclude irrelevant variables.</p>
 <span><span class="co">##     data = caseModel)</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Residuals:</span></span>
-<span><span class="co">##    Min     1Q Median     3Q    Max </span></span>
-<span><span class="co">## -2.014 -1.151  0.246  0.577  3.068 </span></span>
+<span><span class="co">##     Min      1Q  Median      3Q     Max </span></span>
+<span><span class="co">## -1.9556 -1.1606  0.2781  0.5272  3.0658 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Coefficients:</span></span>
 <span><span class="co">##              Estimate Std. Error t value Pr(&gt;|t|)   </span></span>
-<span><span class="co">## (Intercept)  3.228176   3.473642   0.929  0.36380   </span></span>
-<span><span class="co">## POP          0.009529   0.003143   3.032  0.00659 **</span></span>
-<span><span class="co">## TEMP         0.155718   0.138196   1.127  0.27317   </span></span>
-<span><span class="co">## H0          -0.021864   0.023392  -0.935  0.36109   </span></span>
-<span><span class="co">## H1           0.078002   0.063214   1.234  0.23153   </span></span>
-<span><span class="co">## H1ML         3.632102   1.767727   2.055  0.05321 . </span></span>
-<span><span class="co">## H1MD        -1.377716   1.941589  -0.710  0.48615   </span></span>
+<span><span class="co">## (Intercept)  3.231339   3.466734   0.932  0.36240   </span></span>
+<span><span class="co">## POP          0.009540   0.003137   3.042  0.00644 **</span></span>
+<span><span class="co">## TEMP         0.156633   0.137891   1.136  0.26942   </span></span>
+<span><span class="co">## H0          -0.022641   0.023373  -0.969  0.34428   </span></span>
+<span><span class="co">## H1           0.080924   0.063805   1.268  0.21926   </span></span>
+<span><span class="co">## H1ML         3.606118   1.752755   2.057  0.05292 . </span></span>
+<span><span class="co">## H1MD        -1.345753   1.927491  -0.698  0.49310   </span></span>
 <span><span class="co">## ---</span></span>
 <span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Residual standard error: 1.508 on 20 degrees of freedom</span></span>
-<span><span class="co">## Multiple R-squared:  0.5348, Adjusted R-squared:  0.3952 </span></span>
-<span><span class="co">## F-statistic: 3.832 on 6 and 20 DF,  p-value: 0.01049</span></span></code></pre>
+<span><span class="co">## Residual standard error: 1.505 on 20 degrees of freedom</span></span>
+<span><span class="co">## Multiple R-squared:  0.5368, Adjusted R-squared:  0.3979 </span></span>
+<span><span class="co">## F-statistic: 3.864 on 6 and 20 DF,  p-value: 0.01009</span></span></code></pre>
 <p>Similarly, the two plots below exhibit that error terms from the
 regression model are normally distributed and centered at zero. There
 are a few outliers from the Q-Q plot, but their effects are trivial in
@@ -433,22 +434,22 @@ Therefore, we leave out <code>H1MD</code> in our model.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## Residuals:</span></span>
 <span><span class="co">##     Min      1Q  Median      3Q     Max </span></span>
-<span><span class="co">## -1.9994 -0.9372  0.1673  0.6046  3.0713 </span></span>
+<span><span class="co">## -1.9543 -0.9471  0.2150  0.5538  3.0678 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Coefficients:</span></span>
 <span><span class="co">##              Estimate Std. Error t value Pr(&gt;|t|)   </span></span>
-<span><span class="co">## (Intercept)  3.121003   3.429087   0.910  0.37307   </span></span>
-<span><span class="co">## POP          0.009399   0.003101   3.032  0.00635 **</span></span>
-<span><span class="co">## TEMP         0.160272   0.136405   1.175  0.25316   </span></span>
-<span><span class="co">## H0          -0.017450   0.022281  -0.783  0.44226   </span></span>
-<span><span class="co">## H1           0.067017   0.060560   1.107  0.28097   </span></span>
-<span><span class="co">## H1ML         2.731668   1.216049   2.246  0.03557 * </span></span>
+<span><span class="co">## (Intercept)  3.131348   3.421244   0.915  0.37044   </span></span>
+<span><span class="co">## POP          0.009410   0.003092   3.043  0.00618 **</span></span>
+<span><span class="co">## TEMP         0.161011   0.136057   1.183  0.24987   </span></span>
+<span><span class="co">## H0          -0.018619   0.022374  -0.832  0.41467   </span></span>
+<span><span class="co">## H1           0.070886   0.061401   1.154  0.26128   </span></span>
+<span><span class="co">## H1ML         2.731621   1.211053   2.256  0.03489 * </span></span>
 <span><span class="co">## ---</span></span>
 <span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Residual standard error: 1.49 on 21 degrees of freedom</span></span>
-<span><span class="co">## Multiple R-squared:  0.5231, Adjusted R-squared:  0.4095 </span></span>
-<span><span class="co">## F-statistic: 4.606 on 5 and 21 DF,  p-value: 0.005412</span></span></code></pre>
+<span><span class="co">## Residual standard error: 1.486 on 21 degrees of freedom</span></span>
+<span><span class="co">## Multiple R-squared:  0.5255, Adjusted R-squared:  0.4126 </span></span>
+<span><span class="co">## F-statistic: 4.652 on 5 and 21 DF,  p-value: 0.005153</span></span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">lmtest</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/lrtest.html" class="external-link">lrtest</a></span><span class="op">(</span><span class="va">fit.test0</span>, <span class="va">fit.2</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Likelihood ratio test</span></span>
@@ -456,8 +457,8 @@ Therefore, we leave out <code>H1MD</code> in our model.</p>
 <span><span class="co">## Model 1: log(CASE) ~ POP + TEMP + H0 + H1 + H1ML</span></span>
 <span><span class="co">## Model 2: log(CASE) ~ POP + TEMP + H0 + H1 + H1ML + H1MD</span></span>
 <span><span class="co">##   #Df  LogLik Df  Chisq Pr(&gt;Chisq)</span></span>
-<span><span class="co">## 1   7 -45.687                     </span></span>
-<span><span class="co">## 2   8 -45.351  1 0.6713     0.4126</span></span></code></pre>
+<span><span class="co">## 1   7 -45.616                     </span></span>
+<span><span class="co">## 2   8 -45.291  1 0.6502       0.42</span></span></code></pre>
 <p>We observe that coefficients of both H0 and H1 are not statistically
 significant. Also, it is concerning because the coefficient of H0 in the
 nested model above is negative, which means more mosquito occurrences
@@ -473,21 +474,21 @@ confounding.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## Residuals:</span></span>
 <span><span class="co">##     Min      1Q  Median      3Q     Max </span></span>
-<span><span class="co">## -2.2853 -1.0814 -0.1371  0.6899  3.1475 </span></span>
+<span><span class="co">## -2.2852 -1.0814 -0.1375  0.6900  3.1474 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Coefficients:</span></span>
 <span><span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)   </span></span>
-<span><span class="co">## (Intercept) 2.708512   3.426125   0.791  0.43765   </span></span>
-<span><span class="co">## POP         0.009607   0.003111   3.089  0.00537 **</span></span>
-<span><span class="co">## TEMP        0.158410   0.137089   1.156  0.26027   </span></span>
-<span><span class="co">## H0          0.007117   0.001902   3.742  0.00113 **</span></span>
-<span><span class="co">## H1ML        2.471004   1.199093   2.061  0.05135 . </span></span>
+<span><span class="co">## (Intercept) 2.698803   3.426291   0.788  0.43929   </span></span>
+<span><span class="co">## POP         0.009618   0.003111   3.092  0.00532 **</span></span>
+<span><span class="co">## TEMP        0.158484   0.137065   1.156  0.25997   </span></span>
+<span><span class="co">## H0          0.007119   0.001902   3.744  0.00112 **</span></span>
+<span><span class="co">## H1ML        2.471396   1.198857   2.061  0.05127 . </span></span>
 <span><span class="co">## ---</span></span>
 <span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Residual standard error: 1.498 on 22 degrees of freedom</span></span>
-<span><span class="co">## Multiple R-squared:  0.4952, Adjusted R-squared:  0.4035 </span></span>
-<span><span class="co">## F-statistic: 5.396 on 4 and 22 DF,  p-value: 0.003494</span></span></code></pre>
+<span><span class="co">## Residual standard error: 1.497 on 22 degrees of freedom</span></span>
+<span><span class="co">## Multiple R-squared:  0.4954, Adjusted R-squared:  0.4037 </span></span>
+<span><span class="co">## F-statistic: 5.401 on 4 and 22 DF,  p-value: 0.00348</span></span></code></pre>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">lmtest</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/lrtest.html" class="external-link">lrtest</a></span><span class="op">(</span><span class="va">fit.test1</span>, <span class="va">fit.test0</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Likelihood ratio test</span></span>
@@ -495,8 +496,8 @@ confounding.</p>
 <span><span class="co">## Model 1: log(CASE) ~ POP + TEMP + H0 + H1ML</span></span>
 <span><span class="co">## Model 2: log(CASE) ~ POP + TEMP + H0 + H1 + H1ML</span></span>
 <span><span class="co">##   #Df  LogLik Df  Chisq Pr(&gt;Chisq)</span></span>
-<span><span class="co">## 1   6 -46.452                     </span></span>
-<span><span class="co">## 2   7 -45.687  1 1.5303     0.2161</span></span></code></pre>
+<span><span class="co">## 1   6 -46.447                     </span></span>
+<span><span class="co">## 2   7 -45.616  1 1.6614     0.1974</span></span></code></pre>
 <p>The likelihood ratio test suggests that we need to choose the simpler
 model without <code>H1</code>
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.2161</mn></mrow><annotation encoding="application/x-tex">p = 0.2161</annotation></semantics></math>).
@@ -518,20 +519,20 @@ and observe an improvement of the adjusted R-squared when adding
 <span><span class="co">## </span></span>
 <span><span class="co">## Residuals:</span></span>
 <span><span class="co">##     Min      1Q  Median      3Q     Max </span></span>
-<span><span class="co">## -2.3757 -1.1723 -0.0940  0.6976  3.3161 </span></span>
+<span><span class="co">## -2.3756 -1.1705 -0.0936  0.6976  3.3166 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Coefficients:</span></span>
 <span><span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)   </span></span>
-<span><span class="co">## (Intercept) 1.771317   3.627567   0.488  0.62997   </span></span>
-<span><span class="co">## POP         0.007684   0.003170   2.424  0.02362 * </span></span>
-<span><span class="co">## TEMP        0.235534   0.140883   1.672  0.10811   </span></span>
-<span><span class="co">## H0          0.007161   0.002032   3.524  0.00182 **</span></span>
+<span><span class="co">## (Intercept) 1.761653   3.627981   0.486  0.63186   </span></span>
+<span><span class="co">## POP         0.007694   0.003170   2.427  0.02346 * </span></span>
+<span><span class="co">## TEMP        0.235612   0.140867   1.673  0.10796   </span></span>
+<span><span class="co">## H0          0.007162   0.002031   3.526  0.00181 **</span></span>
 <span><span class="co">## ---</span></span>
 <span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Residual standard error: 1.6 on 23 degrees of freedom</span></span>
-<span><span class="co">## Multiple R-squared:  0.3978, Adjusted R-squared:  0.3193 </span></span>
-<span><span class="co">## F-statistic: 5.065 on 3 and 23 DF,  p-value: 0.007721</span></span></code></pre>
+<span><span class="co">## Multiple R-squared:  0.398,  Adjusted R-squared:  0.3194 </span></span>
+<span><span class="co">## F-statistic: 5.068 on 3 and 23 DF,  p-value: 0.007698</span></span></code></pre>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit.2</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -540,21 +541,21 @@ and observe an improvement of the adjusted R-squared when adding
 <span><span class="co">## </span></span>
 <span><span class="co">## Residuals:</span></span>
 <span><span class="co">##     Min      1Q  Median      3Q     Max </span></span>
-<span><span class="co">## -2.2853 -1.0814 -0.1371  0.6899  3.1475 </span></span>
+<span><span class="co">## -2.2852 -1.0814 -0.1375  0.6900  3.1474 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Coefficients:</span></span>
 <span><span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)   </span></span>
-<span><span class="co">## (Intercept) 2.708512   3.426125   0.791  0.43765   </span></span>
-<span><span class="co">## POP         0.009607   0.003111   3.089  0.00537 **</span></span>
-<span><span class="co">## TEMP        0.158410   0.137089   1.156  0.26027   </span></span>
-<span><span class="co">## H0          0.007117   0.001902   3.742  0.00113 **</span></span>
-<span><span class="co">## H1ML        2.471004   1.199093   2.061  0.05135 . </span></span>
+<span><span class="co">## (Intercept) 2.698803   3.426291   0.788  0.43929   </span></span>
+<span><span class="co">## POP         0.009618   0.003111   3.092  0.00532 **</span></span>
+<span><span class="co">## TEMP        0.158484   0.137065   1.156  0.25997   </span></span>
+<span><span class="co">## H0          0.007119   0.001902   3.744  0.00112 **</span></span>
+<span><span class="co">## H1ML        2.471396   1.198857   2.061  0.05127 . </span></span>
 <span><span class="co">## ---</span></span>
 <span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Residual standard error: 1.498 on 22 degrees of freedom</span></span>
-<span><span class="co">## Multiple R-squared:  0.4952, Adjusted R-squared:  0.4035 </span></span>
-<span><span class="co">## F-statistic: 5.396 on 4 and 22 DF,  p-value: 0.003494</span></span></code></pre>
+<span><span class="co">## Residual standard error: 1.497 on 22 degrees of freedom</span></span>
+<span><span class="co">## Multiple R-squared:  0.4954, Adjusted R-squared:  0.4037 </span></span>
+<span><span class="co">## F-statistic: 5.401 on 4 and 22 DF,  p-value: 0.00348</span></span></code></pre>
 <p><code>H0</code> and <code>H1ML</code> are both positively related to
 the number of cases in each state. A higher value of <code>H0</code>
 indicates more <em>A. aegypti</em> occurrences within the given state,
@@ -583,9 +584,9 @@ the range around 200.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">Coord_Example</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">Example_States</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">Coord_Example</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"H0"</span>, <span class="st">"H1ML"</span>, <span class="st">"CASE"</span><span class="op">)</span>;<span class="va">Coord_Example</span></span></code></pre></div>
 <pre><code><span><span class="co">##     H0      H1ML   CASE</span></span>
-<span><span class="co">## PE 184 0.1594328   7985</span></span>
-<span><span class="co">## CE 179 0.2765033  30219</span></span>
-<span><span class="co">## GO 245 0.3654354 139357</span></span></code></pre>
+<span><span class="co">## PE 185 0.1594328   7985</span></span>
+<span><span class="co">## CE 180 0.2765033  30219</span></span>
+<span><span class="co">## GO 246 0.3654354 139357</span></span></code></pre>
 <p>While controlling <code>H0</code>, we want to give a visualized
 interpretation of how <code>H1ML</code> positively relates to the number
 of cases. To achieve this, we plot <em>A. aegypti</em> occurrences on an
@@ -700,12 +701,12 @@ Dataset, <a href="https://doi.org/10.5061/dryad.47v3c" class="external-link uri"
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Raoul Wadhwa, Matt Piekenbrock, Jason Cory Brunson, Xinyi Zhang.</p>
+<p>Developed by Raoul R. Wadhwa, Matt Piekenbrock, Jason Cory Brunson, Xinyi Zhang, Alice Zhang, Kent Phipps, Sean Hershkowitz.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer>
