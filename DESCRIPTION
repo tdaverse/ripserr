@@ -1,6 +1,6 @@
 Package: ripserr
 Title: Calculate Persistent Homology with Ripser-Based Engines
-Version: 1.0.0
+Version: 1.0.0.0003
 Authors@R:
     c(person(given = "Raoul R.",
              family = "Wadhwa",
@@ -71,7 +71,7 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 URL: https://github.com/tdaverse/ripserr/
 BugReports: https://github.com/tdaverse/ripserr/issues
 LinkingTo: Rcpp
