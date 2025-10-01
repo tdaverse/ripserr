@@ -1,0 +1,7 @@
+citation(auto = meta)
+
+citFooter(paste(
+  "Please also cite",
+  "Ripser <doi:10.1007/s41468-021-00071-5> and",
+  "Cubical Ripser <doi:10.48550/arXiv.2005.12692> accordingly."
+))
