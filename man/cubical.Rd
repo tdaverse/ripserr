@@ -4,13 +4,16 @@
 \alias{cubical}
 \alias{cubical.array}
 \alias{cubical.matrix}
+\alias{cubical.numeric}
 \title{Calculating Persistent Homology via a Cubical Complex}
 \usage{
 cubical(dataset, ...)
 
-\method{cubical}{array}(dataset, threshold = 9999, method = "lj", ...)
+\method{cubical}{array}(dataset, threshold = 9999, method = "lj", sublevel = TRUE, ...)
 
 \method{cubical}{matrix}(dataset, ...)
+
+\method{cubical}{numeric}(dataset, ...)
 }
 \arguments{
 \item{dataset}{object on which to calculate persistent homology}
@@ -21,6 +24,9 @@ cubical(dataset, ...)
 
 \item{method}{either \code{"lj"} (for Link Join) or \code{"cp"} (for Compute Pairs);
 see Kaji et al. (2020) \url{https://arxiv.org/abs/2005.12692} for details}
+
+\item{sublevel}{logical; whether to take the sublevel set filtration or else
+the superlevel set filtration}
 }
 \value{
 \code{PHom} object
@@ -41,8 +47,16 @@ element in the \code{array}.
 previous versions of \code{R}, in which objects with class \code{matrix} do not
 necessarily also have class \code{array}, \code{dataset} is converted to an \code{array}
 and persistent homology is then calculated using \code{cubical.array}.
+
+Note that the superlevel set filtration (\code{sublevel = FALSE}) will yield a
+persistence diagram in which \code{death} precedes \code{birth}.
 }
 \examples{
+
+# 1-dim example
+dataset <- rnorm(1500)
+dim(dataset) <- 1500
+cubical_hom1 <- cubical(dataset)
 
 # 2-dim example
 dataset <- rnorm(10 ^ 2)
@@ -57,4 +71,8 @@ cubical_hom3 <- cubical(dataset)
 # 4-dim example
 dataset <- rnorm(5 ^ 4)
 dim(dataset) <- rep(5, 4)
+
+# sublevel versus superlevel
+cubical(volcano)
+cubical(volcano, sublevel = FALSE)
 }

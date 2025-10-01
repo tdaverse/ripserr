@@ -7,6 +7,7 @@
 \alias{vietoris_rips.dist}
 \alias{vietoris_rips.numeric}
 \alias{vietoris_rips.ts}
+\alias{vietoris_rips.mts}
 \alias{vietoris_rips.default}
 \title{Calculate Persistent Homology via a Vietoris-Rips Complex}
 \usage{
@@ -27,7 +28,9 @@ vietoris_rips(dataset, ...)
   ...
 )
 
-\method{vietoris_rips}{ts}(dataset, ...)
+\method{vietoris_rips}{ts}(dataset, data_dim = max(tsp(dataset)[3], 2), ...)
+
+\method{vietoris_rips}{mts}(dataset, data_dim = max(tsp(dataset)[3], 2), ...)
 
 \method{vietoris_rips}{default}(dataset, ...)
 }
@@ -46,7 +49,8 @@ calculated}
 \item{dim}{deprecated; passed to \code{max_dim} or ignored if \code{max_dim} is
 specified}
 
-\item{data_dim}{desired end data dimension}
+\item{data_dim}{desired end data dimension (for \code{"ts"}, defaults to obs/time
+if > 1)}
 
 \item{dim_lag}{time series lag factor between dimensions}
 
@@ -79,9 +83,11 @@ metric space.
 
 \code{vietoris_rips.numeric} and \code{vietoris_rips.ts} both calculate persistent
 homology of a time series object. The time series object is converted to a
-matrix using the quasi-attractor method detailed in Umeda (2017)
-\url{doi:10.1527/tjsai.D-G72}. Persistent homology of the resulting matrix is
-then calculated.
+matrix using the sliding window embedding introduced in Perea & Harer (2015)
+\url{doi:10.1007/s10208-014-9206-z} and used to obtain quasi-attractors in Umeda
+(2017) \url{doi:10.1527/tjsai.D-G72}. Persistent homology of the resulting matrix
+is then calculated. (NB: If a multi-time series is unclassed, then method
+dispatch will pass it to \code{vietoris_rips.matrix}).
 }
 \examples{
 
@@ -92,4 +98,22 @@ pt.cloud <- cbind(cos(rand.angle), sin(rand.angle))
 
 # calculate persistent homology (num.pts by 3 numeric matrix)
 pers.hom <- vietoris_rips(pt.cloud)
+
+# sliding window persistent homology
+( ld.phom <- vietoris_rips(ldeaths, data_dim = 12) )
+plot(
+  ld.phom$birth, ld.phom$death,
+  pch = ld.phom$dimension + 1, col = ld.phom$dimension + 1,
+  xlim = c(0, 3200), ylim = c(0, 3200), asp = 1
+)
+abline(a = 0, b = 1)
+
+# multiple time series; window defaults to period
+( sb.phom <- vietoris_rips(Seatbelts[, 2:4]) )
+plot(
+  sb.phom$birth, sb.phom$death,
+  pch = sb.phom$dimension + 1, col = sb.phom$dimension + 1,
+  xlim = c(0, 1600), ylim = c(0, 1600), asp = 1
+)
+abline(a = 0, b = 1)
 }

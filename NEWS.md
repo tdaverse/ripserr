@@ -1,8 +1,29 @@
 # next version
 
+## Vietoris-Rips PH
+
 ## float to double
 
 Ripser stores values of the `value_t` type and `ratio` as floats. This is not incompatible with R, but R users are likely to expect numeric values to be handled as doubles. Both values are now stored as doubles.
+
+### sliding window embeddings of multivariable time series (breaking change)
+
+Previously only univariable time series could be passed to `vietoris_rips()` via the sliding window embedding (used for quasi-attractor detection).
+An additional unexported embedding function has been written to handle multivariable time series. (It underperforms the original function on univariable time series, which therefore continue to rely on the original.)
+
+Furthermore, whereas `data_dim` previously defaulted to `2`, it now defaults to the number of observations per time unit of a time series as recovered by `tsp()`. (The behavior for unclassed numeric vectors remains unchanged.)
+
+## cubical PH
+
+### functionality for 1-dimensional arrays
+
+`cubical()` can now handle 1-dimensional arrays (for which no dedicated source code exists) by treating them as 2-dimensional (with an expanse of 1 in the second dimension).
+This enables the new method `cubical.numeric()` to accept vectors.
+
+### deaths before births and superlevel set filtrations
+
+A logical argument `sublevel` has been added to `cubical` that, when `FALSE`, will pre- and post-transform raster data in order to obtain superlevel set persistent homology.
+Enabling this, an assertion that all `birth < death` has been removed from checks of persistence data.
 
 # ripserr 1.0.0
 
