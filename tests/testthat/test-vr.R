@@ -3,13 +3,11 @@ context("vietoris_rips")
 test_that("basic vietoris-rips works", {
   # setup vals (including reproducibility)
   set.seed(42)
-  INPUT_SIZE <- 10
   
-  MIN_DIM <- 2
-  MAX_DIM <- 4
+  dim_range <- seq(2, 4)
   
   # check dimensions 2 through 4
-  for (curr_dim in MIN_DIM:MAX_DIM) {
+  for (curr_dim in dim_range) {
     curr_data <- runif(50 * curr_dim)
     dim(curr_data) <- c(50, curr_dim)
     
@@ -25,6 +23,15 @@ test_that("basic vietoris-rips works", {
     expect_equal(expected, actual)
   }
   
+})
+
+test_that("degree-0 vietoris-rips agrees with single-linkage", {
+  euro_n <- attr(eurodist, "Size")
+  euro_sl <- hclust(eurodist, method = "single")
+  euro_vr <- vietoris_rips(eurodist, max_dim = 0)
+  
+  expect_equal(euro_vr$birth, rep(0, euro_n))
+  expect_equal(euro_vr$death, c(euro_sl$height, Inf))
 })
 
 # generate dataset (set seed for reproducibility, altho new one would be fine)
