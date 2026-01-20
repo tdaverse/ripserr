@@ -130,6 +130,9 @@ vietoris_rips.matrix <- function(
   
   # calculate persistent homology
   ans <- ripser_cpp_dist(dataset, max_dim, threshold, 1., p)
+  # change last missing value to infinity
+  stopifnot(is.na(ans[[1L]][nrow(ans[[1L]]), 2L]))
+  ans[[1L]][nrow(ans[[1L]]), 2L] <- Inf
   
   # coerce to 'PHom' class
   ans <- new_PHom(ripser_ans_to_df(ans))
@@ -176,6 +179,9 @@ vietoris_rips.dist <- function(
   
   # calculate persistent homology
   ans <- ripser_cpp_dist(dataset, max_dim, threshold, 1., p)
+  # change last missing value to infinity
+  stopifnot(is.na(ans[[1L]][nrow(ans[[1L]]), 2L]))
+  ans[[1L]][nrow(ans[[1L]]), 2L] <- Inf
   
   # coerce to 'PHom' class
   ans <- new_PHom(ripser_ans_to_df(ans))
