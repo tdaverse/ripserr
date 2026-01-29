@@ -159,7 +159,7 @@ window.Quarto = {
 <p>Concluding our sponsored work is an upgrade to the R package {ripserr}. This is a lightweight wrapper around Ulrich Bauer’s <code>Ripser</code> library <span class="citation" data-cites="Bauer2021">(<a href="#ref-Bauer2021" role="doc-biblioref">Bauer 2021</a>)</span>, still perhaps the fastest implementation of PH using the Vietoris–Rips (VR) filtration. {ripserr} uses {Rcpp} to bind this C++ engine, as well as the cubical PH engine <code>Cubical Ripser</code> employing the same design principles <span class="citation" data-cites="Kaji2020">(<a href="#ref-Kaji2020" role="doc-biblioref">Kaji, Sudo, and Ahara 2020</a>)</span>, to R.</p>
 <section id="past" class="level2">
 <h2 class="anchored" data-anchor-id="past">Past</h2>
-<p><code>Ripser</code> was first first released in 2016, but it went through several upgrades before being described in the celebrated journal article <span class="citation" data-cites="Bauer2021">(<a href="#ref-Bauer2021" role="doc-biblioref">Bauer 2021</a>)</span>. Bauer itemizes four tactics used to reduce computation time:</p>
+<p><code>Ripser</code> was first released in 2016, but it went through several upgrades before being described in the celebrated journal article <span class="citation" data-cites="Bauer2021">(<a href="#ref-Bauer2021" role="doc-biblioref">Bauer 2021</a>)</span>. Bauer itemizes four tactics used to reduce computation time:</p>
 <ol type="1">
 <li>Leverage the nilpotency of the boundary operator (<span class="math inline">\(\partial^2 = 0\)</span>, key to the definition of homology) to clear trivial cycles from the matrix reduction procedure <span class="citation" data-cites="Chen2011">(<a href="#ref-Chen2011" role="doc-biblioref">Chen and Kerber 2011</a>)</span>.</li>
 <li>Use the clearing step of (1) in the calculation of persistent <em>cohomology</em> rather than homology <span class="citation" data-cites="deSilva2011">(<a href="#ref-deSilva2011" role="doc-biblioref">de Silva, Morozov, and Vejdemo-Johansson 2011</a>)</span>, which turns out to be much faster especially for low homological degree (the vast majority of practical use cases).</li>
@@ -170,7 +170,7 @@ window.Quarto = {
 </section>
 <section id="present" class="level2">
 <h2 class="anchored" data-anchor-id="present">Present</h2>
-<p>The upgrade to {ripserr} v1.0.0 was straightforward:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> We plopped the current “main” version of <code>Ripser</code> into where the previous version had been, reconfiguring the {Rcpp} infrastructure along the way.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> This brought two immediate improvements: a modest increase in efficiency, and proper encodings of deaths at infinity.</p>
+<p>The upgrade to {ripserr} v1.0.0<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> was straightforward, though not at all trivial: Essentially, we plopped the current “main” version of <code>Ripser</code> into where the previous version had been, reconfiguring the {Rcpp} infrastructure along the way.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> This brought two immediate improvements: a modest increase in efficiency, and proper encodings of deaths at infinity, and we illustrate these below.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ripserr)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">"ripserr"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -178,14 +178,15 @@ window.Quarto = {
 <pre><code>[1] '1.0.0'</code></pre>
 </div>
 </div>
-<p>Below is a comparison of {ripserr} runtimes to compute degree-2 persistent homology on uniform samples of size 840 from 4 embedded manifolds: the circle <span class="math inline">\(\mathbb{S}^1\)</span>, the torus <span class="math inline">\(\mathbb{T}^2\)</span>, the real projective plane <span class="math inline">\(\mathbb{RP}^2\)</span>, and the orthogonal matrix group <span class="math inline">\(O(3)\)</span>. This is not an exhaustive comparison—many real-world data sets will be much larger and higher-dimensional—but it illustrates a practical improvement of the upgrade: The efficiency gains are substantial, reducing runtimes by about 2/3 across all shapes. The v0.1.1 runtimes might even be advantaged by having used the implementation on the <code>short</code> branch of the <code>Ripser</code> repo; we changed to the main library to clear the way for several future upgrades described below.</p>
+<p>It also required some deeper engagement with the source: to ensure that outputs were properly collected and reformatted for return to R, to expose additional parameters between R and C++, and so on. In several small ways, we tried to make this upgrade more faithful to the core tool and more familiar to users with some TDA background.</p>
+<p><a href="#fig-benchmark" class="quarto-xref">Figure&nbsp;1</a> compares the runtimes of two versions of {ripserr} to compute degree-2 persistence on samples from 4 manifolds: the circle <span class="math inline">\(\mathbb{S}^1\)</span>, the torus <span class="math inline">\(\mathbb{T}^2\)</span>, the real projective plane <span class="math inline">\(\mathbb{RP}^2\)</span>, and the orthogonal matrix group <span class="math inline">\(O(3)\)</span>. (The first three were generated using {tdaunif}; the fourth was borrowed from Ripser.) This is not an exhaustive comparison—many real-world data sets will be much larger and higher-dimensional—but it illustrates a practical improvement of the upgrade: The efficiency gains are substantial, reducing runtimes by about 2/3 across all shapes. The v0.1.1 runtimes might even be advantaged by having used the implementation on the <code>short</code> branch of the <code>Ripser</code> repo; we changed to the main library to clear the way for several future upgrades described below.</p>
 <div id="fig-benchmark" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-benchmark-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="benchmark-plot.jpg" class="img-fluid figure-img">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-benchmark-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-benchmark-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Runtimes (in seconds) of 3 calculations each of 2-dimensional Vietoris–Rips persistent homology of samples of size 840 from 4 embedded manifolds.
 </figcaption>
 </figure>
 </div>

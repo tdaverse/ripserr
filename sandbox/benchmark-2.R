@@ -35,7 +35,7 @@ bind_rows(mutate(m0, version = "0.1.1"), mutate(m1, version = "1.0.0")) |>
   ) +
   scale_y_discrete(limits = rev) +
   scale_color_brewer(type = "qual", palette = 2) +
-  labs(x = "runtime", y = "manifold") ->
+  labs(x = "Runtime", y = "Manifold", color = "Version") ->
   ripserr_benchmark_plot
 ggsave(
   "sandbox/benchmark-plot.jpg", ripserr_benchmark_plot,

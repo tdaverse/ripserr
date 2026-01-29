@@ -15,7 +15,7 @@ This is a lightweight wrapper around Ulrich Bauer's `Ripser` library [@Bauer2021
 
 ## Past
 
-`Ripser` was first first released in 2016, but it went through several upgrades before being described in the celebrated journal article [@Bauer2021].
+`Ripser` was first released in 2016, but it went through several upgrades before being described in the celebrated journal article [@Bauer2021].
 Bauer itemizes four tactics used to reduce computation time:
 
 1. Leverage the nilpotency of the boundary operator ($\partial^2 = 0$, key to the definition of homology) to clear trivial cycles from the matrix reduction procedure [@Chen2011].
@@ -28,9 +28,9 @@ A subsequent release additionally included the `Cubical Ripser` library of @Kaji
 
 ## Present
 
-The upgrade to {ripserr} v1.0.0 was straightforward:[^v0.3.0]
-We plopped the current "main" version of `Ripser` into where the previous version had been, reconfiguring the {Rcpp} infrastructure along the way.[^forks]
-This brought two immediate improvements: a modest increase in efficiency, and proper encodings of deaths at infinity.
+The upgrade to {ripserr} v1.0.0[^v0.3.0] was straightforward, though not at all trivial:
+Essentially, we plopped the current "main" version of `Ripser` into where the previous version had been, reconfiguring the {Rcpp} infrastructure along the way.[^forks]
+This brought two immediate improvements: a modest increase in efficiency, and proper encodings of deaths at infinity, and we illustrate these below.
 
 [^v0.3.0]: While we draw comparisons to v0.1.1, we published one minor update v0.3.0 with many new features independent of the source code upgrade and another v0.4.0 with a new data set. This was done in order to ensure that the features would be tested between the old and new source code and differences would be caught that might have been missed.
 [^forks]: To resolve unexpected issues and simplify the commit history, exploratory work was done in several new forks and consolidated in [the `ripserq` branch of a new `Ripser` fork](https://github.com/corybrunson/ripser/tree/ripserq).
@@ -40,14 +40,16 @@ library(ripserr)
 packageVersion("ripserr")
 ```
 
-Below is a comparison of {ripserr} runtimes to compute degree-2 persistent homology on uniform samples of size 840 from 4 embedded manifolds: the circle $\mathbb{S}^1$, the torus $\mathbb{T}^2$, the real projective plane $\mathbb{RP}^2$, and the orthogonal matrix group $O(3)$.
+It also required some deeper engagement with the source: to ensure that outputs were properly collected and reformatted for return to R, to expose additional parameters between R and C++, and so on.
+In several small ways, we tried to make this upgrade more faithful to the core tool and more familiar to users with some TDA background.
+
+@fig-benchmark compares the runtimes of two versions of {ripserr} to compute degree-2 persistence on samples from 4 manifolds: the circle $\mathbb{S}^1$, the torus $\mathbb{T}^2$, the real projective plane $\mathbb{RP}^2$, and the orthogonal matrix group $O(3)$.
+(The first three were generated using {tdaunif}; the fourth was borrowed from Ripser.)
 This is not an exhaustive comparison—many real-world data sets will be much larger and higher-dimensional—but it illustrates a practical improvement of the upgrade:
 The efficiency gains are substantial, reducing runtimes by about 2/3 across all shapes.
 The v0.1.1 runtimes might even be advantaged by having used the implementation on the `short` branch of the `Ripser` repo; we changed to the main library to clear the way for several future upgrades described below.
 
-::: {#fig-benchmark}
-![](benchmark-plot.jpg)
-:::
+![Runtimes (in seconds) of 3 calculations each of 2-dimensional Vietoris--Rips persistent homology of samples of size 840 from 4 embedded manifolds.](benchmark-plot.jpg){#fig-benchmark}
 
 One source of confusion with the previous version of {ripserr} was that persistent pairs whose deaths exceeded the `threshold` limit, including the one pair with death at infinity, were omitted from the output.
 This was ultimately a limitation of the shortened Ripser code used to originate the package so could only be resolved by updating the source.
