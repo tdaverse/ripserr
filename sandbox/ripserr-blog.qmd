@@ -26,6 +26,8 @@ Bauer itemizes four tactics used to reduce computation time:
 In 2018, @Wadhwa2019a coupled the then-current "short" version of `Ripser` to the multi-purpose package {TDAstats}, and later into the slim {ripserr} package [@Wadhwa2025].
 A subsequent release additionally included the `Cubical Ripser` library of @Kaji2020, of which we'll say a bit more at the end.
 
+{ripserr} is becoming a lynchpin of the TDAverse: It powers the computation of PH in {tdarec} and the not-yet-published {ggtda}, which bring PH into tidyverse and tidymodels workflows, and it couples with {phutil} and other tools in development to better interoperate within our own collection.
+
 ## Present
 
 The upgrade to {ripserr} v1.0.0[^v0.3.0] was straightforward, though not at all trivial:
@@ -100,3 +102,4 @@ Meanwhile, `vietoris_rips()` now accepts multivariate, not only univariate, time
 Some syntax is scheduled to change, but when the time comes existing parameters will only be soft-deprecated.
 
 As ever, we welcome user feedback on every front!
+And as before, we thank the R Consortium, especially for supporting the research assistants who performed much of this work.
