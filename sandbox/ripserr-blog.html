@@ -167,14 +167,60 @@ window.Quarto = {
 <li>Omit from the implicit matrix reduction procedure in (3) the pivots corresponding to a type of persistence pairs that can be locally determined, hence very efficiently computed.</li>
 </ol>
 <p>In 2018, <span class="citation" data-cites="Wadhwa2019a">Wadhwa et al. (<a href="#ref-Wadhwa2019a" role="doc-biblioref">2019</a>)</span> coupled the then-current “short” version of <code>Ripser</code> to the multi-purpose package {TDAstats}, and later into the slim {ripserr} package <span class="citation" data-cites="Wadhwa2025">(<a href="#ref-Wadhwa2025" role="doc-biblioref">Wadhwa et al. 2025</a>)</span>. A subsequent release additionally included the <code>Cubical Ripser</code> library of <span class="citation" data-cites="Kaji2020">Kaji, Sudo, and Ahara (<a href="#ref-Kaji2020" role="doc-biblioref">2020</a>)</span>, of which we’ll say a bit more at the end.</p>
-<p>{ripserr} is becoming a lynchpin of the TDAverse: It powers the computation of PH in {tdarec} and the not-yet-published {ggtda}, which bring PH into tidyverse and tidymodels workflows, and it couples with {phutil} and other tools in development to better interoperate within our own collection.</p>
+<p>{ripserr} is becoming an underpin of the TDAverse: It powers the computation of PH in the {recipes} extension <a href="https://cran.r-project.org/package=tdarec">{tdarec}</a> and the {ggplot2} extension <a href="https://github.com/tdaverse/ggtda">{ggtda}</a>, which bring PH into tidyverse and tidymodels workflows, and it couples with {phutil} and other tools in development to better interoperate within our own collection.</p>
 </section>
 <section id="present" class="level2">
 <h2 class="anchored" data-anchor-id="present">Present</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ripserr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>{ripserr} computes the birth and death radii of intervals (“features”) in the Vietoris–Rips persistence module for a point cloud (finite metric space). The results are returned as a <code>PHom</code> object, a light data frame wrapper with a concise print method. For example, a large sample from a 2-sphere yields two dominant features, which encode the 0-dimensional connected component and the 2-dimensional spherical cell:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sample from a 2-sphere</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> tdaunif<span class="sc">::</span><span class="fu">sample_sphere</span>(<span class="at">n =</span> <span class="dv">360</span>, <span class="at">dim =</span> <span class="dv">2</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              x          y           z
+[1,]  0.6950053  0.7148633 -0.07705941
+[2,] -0.9269321  0.3366223 -0.16577805
+[3,]  0.8770019  0.2864807 -0.38574137
+[4,]  0.2473417 -0.1929500 -0.94952219
+[5,]  0.9876131 -0.1317003 -0.08529550
+[6,]  0.8143361 -0.3929420 -0.42714554</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute &amp; print persistent homology</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>( x_ph <span class="ot">&lt;-</span> <span class="fu">vietoris_rips</span>(x, <span class="at">max_dim =</span> <span class="dv">2</span>) )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>PHom object containing persistence data for 470 features.
+
+Contains:
+* 360 0-dim features
+* 109 1-dim features
+* 1 2-dim feature
+
+Radius/diameter: min = 0; max = Inf.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># inspect most-persistent features</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>x_ph <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transform</span>(<span class="at">persistence =</span> <span class="fu">abs</span>(death <span class="sc">-</span> birth)) <span class="sc">|&gt;</span> </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sort_by</span>(<span class="sc">~</span> persistence) <span class="sc">|&gt;</span> </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tail</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    dimension     birth     death persistence
+445         1 0.2175734 0.4652618   0.2476883
+357         0 0.0000000 0.2578951   0.2578951
+358         0 0.0000000 0.2597977   0.2597977
+359         0 0.0000000 0.2608302   0.2608302
+470         2 0.5466326 1.6464263   1.0997937
+360         0 0.0000000       Inf         Inf</code></pre>
+</div>
+</div>
+<p>{ripserr} accepts several input data structures, including the coordinate matrix above, but converts them to <code>dist</code> internally before passing to Ripser. This allows more flexibility on the R side while simplifying the interface to C++. The output constitutes one <em>persistence diagram</em> for each dimension of feature (gap, loop, cell, or higher-order enclosure), and we refer to such data for one or more point clouds as <em>persistence data</em>.</p>
 <p>The upgrade to {ripserr} v1.0.0<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> was straightforward, though not at all trivial: Essentially, we plopped the current “main” version of <code>Ripser</code> into where the previous version had been, reconfiguring the {Rcpp} infrastructure along the way.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> This brought two immediate improvements: a modest increase in efficiency, and proper encodings of deaths at infinity, and we illustrate these below.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ripserr)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">"ripserr"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check installed version</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">"ripserr"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] '1.0.0'</code></pre>
 </div>
@@ -195,9 +241,9 @@ Figure&nbsp;1: Runtimes (in seconds) of 3 calculations each of 2-dimensional Vie
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>UScitiesD <span class="sc">|&gt;</span> </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vietoris_rips</span>(<span class="at">threshold =</span> <span class="cn">Inf</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>UScitiesD <span class="sc">|&gt;</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vietoris_rips</span>(<span class="at">threshold =</span> <span class="cn">Inf</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   dimension birth death
 1          0     0   205
@@ -215,9 +261,9 @@ Figure&nbsp;1: Runtimes (in seconds) of 3 calculations each of 2-dimensional Vie
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>UScitiesD <span class="sc">|&gt;</span> </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vietoris_rips</span>(<span class="at">threshold =</span> <span class="dv">800</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>UScitiesD <span class="sc">|&gt;</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vietoris_rips</span>(<span class="at">threshold =</span> <span class="dv">800</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   dimension birth death
 1          0     0   205
@@ -234,7 +280,7 @@ Figure&nbsp;1: Runtimes (in seconds) of 3 calculations each of 2-dimensional Vie
 </div>
 </div>
 </div>
-<p>The unbounded results are unchanged from v0.1.1, except that the feature with infinite death, representing the connected component formed at sufficiently large scales, is included. The results with bounded threshold additionally include features whose births subceed the threshold but whose deaths exceed it. Though note that the degree-1 component, not yet born at a radius of 800 miles, remains absent.</p>
+<p>The unbounded results are unchanged from v0.1.1, except that the feature with infinite death, representing the connected component formed at sufficiently large scales, is included. The results with bounded threshold additionally include features whose births subceed the threshold but whose deaths exceed it. Note that the degree-1 component, not yet born at a radius of 800 miles, remains absent.</p>
 <p>Unfortunately, it remains ambiguous which deaths are censored by the threshold versus truly infinite; <a href="https://github.com/tdaverse/ripserr/tree/missing-r">the <code>missing-r</code> deveopment branch</a> solves this problem for now, though the next update will hopefully include a more elegant solution. In the upcoming output, the <code>death</code> column distingishes between those of unknown scale (<code>NA</code>) and the complete connected component (<code>Inf</code>).</p>
 </section>
 <section id="future" class="level2">
@@ -242,7 +288,13 @@ Figure&nbsp;1: Runtimes (in seconds) of 3 calculations each of 2-dimensional Vie
 <p>Several upgrades are in the works and fall into three bins: continuations of the recent source code upgrade, analogous upgrades to <code>Cubical Ripser</code>, and miscellaneous new R-side features.</p>
 <p>Continuing recent work, we are interested to switch the distance measurement type from floats to doubles, enabling greater precision and matching user expectations of R at minimal computational cost, though this will require some careful testing. Another interest is to make available coefficients other than <span class="math inline">\(\mathbb{Z}/2\mathbb{Z}\)</span>. The parameter <code>p</code> has been with the package from the beginning but does not affect the compiled source; we plan to provide multiple compilations with the package so that the efficiency gains of binary remain available. Finally, we will adapt code from alternate branches of <code>Ripser</code> to collect representative cocycles and cycles along the computation, which will dramatically expand the potential utility of the package.</p>
 <p>The change from float to double and the collection of representative (co)cycles are also planned for a future upgrade to the <code>Cubical Ripser</code> code. Additionally, the somewhat artificial limits on array dimensions, imposed on the source code and pre-empted by data checks on the R side, will be revised or, if possible, removed in favor of R-side warnings and optional user-specified limits. As computational resources and perhaps algorithmic efficiency improve, this will allow users to deploy <code>Cubical Risper</code> on more diverse image datasets subject to their own size limits.</p>
-<p>Strictly on the R side, recent changes to the development version on GitHub allow <code>cubical()</code> to perform superlevel as well as sublevel set filtrations, by way of an internal transformation of the array data (and using the same parameter, <code>sublevel</code> with default <code>TRUE</code>, as <code>TDA::gridDiag()</code>). <code>cubical()</code> can also now handle 1-dimensional arrays by coercion to matrices and passage to the source code for 2-dimensional rasters. Meanwhile, <code>vietoris_rips()</code> now accepts multivariate, not only univariate, time series, and the dimensionality of the sliding window embedding <span class="citation" data-cites="Perea2015 Umeda2017">(<a href="#ref-Perea2015" role="doc-biblioref">Perea and Harer 2015</a>; <a href="#ref-Umeda2017" role="doc-biblioref">Umeda 2017</a>)</span> defaults more naturally to the period, if one is available, rather than to 2. Some syntax is scheduled to change, but when the time comes existing parameters will only be soft-deprecated.</p>
+<p>Strictly on the R side, recent changes to the development version on GitHub extend these tools to new data types and settings:</p>
+<ul>
+<li>An internal transformation of the array data allows <code>cubical()</code> to perform superlevel as well as sublevel set filtrations. This is controlled by the new <code>sublevel</code> parameter, which behaves like that of <code>TDA::gridDiag()</code>.</li>
+<li><code>cubical()</code> can also now handle 1-dimensional arrays by coercion to matrices and passage to the source code for 2-dimensional rasters.</li>
+<li>Meanwhile, <code>vietoris_rips()</code> now accepts multivariate, not only univariate, time series, and the dimensionality of the sliding window embedding <span class="citation" data-cites="Perea2015 Umeda2017">(<a href="#ref-Perea2015" role="doc-biblioref">Perea and Harer 2015</a>; <a href="#ref-Umeda2017" role="doc-biblioref">Umeda 2017</a>)</span> defaults more naturally to the period, if one is available, rather than to 2. Some syntax is scheduled to change, but when the time comes existing parameters will only be soft-deprecated.</li>
+<li>Finally, {ripserr}’s <code>PHom</code> class will soon be deprecated in favor of {phutil}’s <code>persistence</code> class, as part of a slow harmonization across the TDAverse.</li>
+</ul>
 <p>As ever, we welcome user feedback on every front! And as before, we thank the R Consortium, especially for supporting the research assistants who performed much of this work.</p>
 
 </section>

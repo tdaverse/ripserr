@@ -26,9 +26,35 @@ Bauer itemizes four tactics used to reduce computation time:
 In 2018, @Wadhwa2019a coupled the then-current "short" version of `Ripser` to the multi-purpose package {TDAstats}, and later into the slim {ripserr} package [@Wadhwa2025].
 A subsequent release additionally included the `Cubical Ripser` library of @Kaji2020, of which we'll say a bit more at the end.
 
-{ripserr} is becoming a lynchpin of the TDAverse: It powers the computation of PH in {tdarec} and the not-yet-published {ggtda}, which bring PH into tidyverse and tidymodels workflows, and it couples with {phutil} and other tools in development to better interoperate within our own collection.
+{ripserr} is becoming an underpin of the TDAverse: It powers the computation of PH in the {recipes} extension [{tdarec}](https://cran.r-project.org/package=tdarec) and the {ggplot2} extension [{ggtda}](https://github.com/tdaverse/ggtda), which bring PH into tidyverse and tidymodels workflows, and it couples with {phutil} and other tools in development to better interoperate within our own collection.
 
 ## Present
+
+```{r setup}
+library(ripserr)
+```
+
+{ripserr} computes the birth and death radii of intervals ("features") in the Vietoris--Rips persistence module for a point cloud (finite metric space).
+The results are returned as a `PHom` object, a light data frame wrapper with a concise print method.
+For example, a large sample from a 2-sphere yields two dominant features, which encode the 0-dimensional connected component and the 2-dimensional spherical cell:
+
+```{r phom}
+# sample from a 2-sphere
+x <- tdaunif::sample_sphere(n = 360, dim = 2)
+head(x)
+# compute & print persistent homology
+( x_ph <- vietoris_rips(x, max_dim = 2) )
+# inspect most-persistent features
+x_ph |> 
+  as.data.frame() |> 
+  transform(persistence = abs(death - birth)) |> 
+  sort_by(~ persistence) |> 
+  tail()
+```
+
+{ripserr} accepts several input data structures, including the coordinate matrix above, but converts them to `dist` internally before passing to Ripser.
+This allows more flexibility on the R side while simplifying the interface to C++.
+The output constitutes one _persistence diagram_ for each dimension of feature (gap, loop, cell, or higher-order enclosure), and we refer to such data for one or more point clouds as _persistence data_.
 
 The upgrade to {ripserr} v1.0.0[^v0.3.0] was straightforward, though not at all trivial:
 Essentially, we plopped the current "main" version of `Ripser` into where the previous version had been, reconfiguring the {Rcpp} infrastructure along the way.[^forks]
@@ -37,8 +63,8 @@ This brought two immediate improvements: a modest increase in efficiency, and pr
 [^v0.3.0]: While we draw comparisons to v0.1.1, we published one minor update v0.3.0 with many new features independent of the source code upgrade and another v0.4.0 with a new data set. This was done in order to ensure that the features would be tested between the old and new source code and differences would be caught that might have been missed.
 [^forks]: To resolve unexpected issues and simplify the commit history, exploratory work was done in several new forks and consolidated in [the `ripserq` branch of a new `Ripser` fork](https://github.com/corybrunson/ripser/tree/ripserq).
 
-```{r setup}
-library(ripserr)
+```{r version}
+# check installed version
 packageVersion("ripserr")
 ```
 
@@ -79,7 +105,7 @@ UScitiesD |>
 ::::
 
 The unbounded results are unchanged from v0.1.1, except that the feature with infinite death, representing the connected component formed at sufficiently large scales, is included.
-The results with bounded threshold additionally include features whose births subceed the threshold but whose deaths exceed it. Though note that the degree-1 component, not yet born at a radius of 800 miles, remains absent.
+The results with bounded threshold additionally include features whose births subceed the threshold but whose deaths exceed it. Note that the degree-1 component, not yet born at a radius of 800 miles, remains absent.
 
 Unfortunately, it remains ambiguous which deaths are censored by the threshold versus truly infinite; [the `missing-r` deveopment branch](https://github.com/tdaverse/ripserr/tree/missing-r) solves this problem for now, though the next update will hopefully include a more elegant solution.
 In the upcoming output, the `death` column distingishes between those of unknown scale (`NA`) and the complete connected component (`Inf`).
@@ -96,10 +122,13 @@ The change from float to double and the collection of representative (co)cycles 
 Additionally, the somewhat artificial limits on array dimensions, imposed on the source code and pre-empted by data checks on the R side, will be revised or, if possible, removed in favor of R-side warnings and optional user-specified limits.
 As computational resources and perhaps algorithmic efficiency improve, this will allow users to deploy `Cubical Risper` on more diverse image datasets subject to their own size limits.
 
-Strictly on the R side, recent changes to the development version on GitHub allow `cubical()` to perform superlevel as well as sublevel set filtrations, by way of an internal transformation of the array data (and using the same parameter, `sublevel` with default `TRUE`, as `TDA::gridDiag()`).
-`cubical()` can also now handle 1-dimensional arrays by coercion to matrices and passage to the source code for 2-dimensional rasters.
-Meanwhile, `vietoris_rips()` now accepts multivariate, not only univariate, time series, and the dimensionality of the sliding window embedding [@Perea2015; @Umeda2017] defaults more naturally to the period, if one is available, rather than to 2.
+Strictly on the R side, recent changes to the development version on GitHub extend these tools to new data types and settings:
+
+* An internal transformation of the array data allows `cubical()` to perform superlevel as well as sublevel set filtrations. This is controlled by the new `sublevel` parameter, which behaves like that of `TDA::gridDiag()`.
+* `cubical()` can also now handle 1-dimensional arrays by coercion to matrices and passage to the source code for 2-dimensional rasters.
+* Meanwhile, `vietoris_rips()` now accepts multivariate, not only univariate, time series, and the dimensionality of the sliding window embedding [@Perea2015; @Umeda2017] defaults more naturally to the period, if one is available, rather than to 2.
 Some syntax is scheduled to change, but when the time comes existing parameters will only be soft-deprecated.
+* Finally, {ripserr}'s `PHom` class will soon be deprecated in favor of {phutil}'s `persistence` class, as part of a slow harmonization across the TDAverse.
 
 As ever, we welcome user feedback on every front!
 And as before, we thank the R Consortium, especially for supporting the research assistants who performed much of this work.
