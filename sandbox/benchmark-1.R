@@ -63,6 +63,52 @@ zt9
 
 stop()
 
+# TDA, Dionysus
+load("sandbox/sample.rda")
+mD <- bench::mark(
+  TDA::ripsDiag(
+    as.matrix(dist(w)), maxdimension = 2L, maxscale = max(w),
+    dist = "arbitrary", library = "Dionysus"
+  ),
+  TDA::ripsDiag(
+    as.matrix(dist(x)), maxdimension = 2L, maxscale = max(x),
+    dist = "arbitrary", library = "Dionysus"
+  ),
+  TDA::ripsDiag(
+    as.matrix(dist(y)), maxdimension = 2L, maxscale = max(y),
+    dist = "arbitrary", library = "Dionysus"
+  ),
+  TDA::ripsDiag(
+    as.matrix(dist(z)), maxdimension = 2L, maxscale = max(z),
+    dist = "arbitrary", library = "Dionysus"
+  ),
+  check = FALSE, iterations = 3L
+)
+save(mD, file = "sandbox/sample-D.rda")
+
+# TDA, PHAT
+load("sandbox/sample.rda")
+mP <- bench::mark(
+  TDA::ripsDiag(
+    as.matrix(dist(w)), maxdimension = 2L, maxscale = max(w),
+    dist = "arbitrary", library = "PHAT"
+  ),
+  TDA::ripsDiag(
+    as.matrix(dist(x)), maxdimension = 2L, maxscale = max(x),
+    dist = "arbitrary", library = "PHAT"
+  ),
+  TDA::ripsDiag(
+    as.matrix(dist(y)), maxdimension = 2L, maxscale = max(y),
+    dist = "arbitrary", library = "PHAT"
+  ),
+  TDA::ripsDiag(
+    as.matrix(dist(z)), maxdimension = 2L, maxscale = max(z),
+    dist = "arbitrary", library = "PHAT"
+  ),
+  check = FALSE, iterations = 3L
+)
+save(mP, file = "sandbox/sample-P.rda")
+
 # v0.1.1
 load("sandbox/sample.rda")
 m0 <- bench::mark(
