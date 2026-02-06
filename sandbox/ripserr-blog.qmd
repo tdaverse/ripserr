@@ -71,11 +71,13 @@ packageVersion("ripserr")
 It also required some deeper engagement with the source: to ensure that outputs were properly collected and reformatted for return to R, to expose additional parameters between R and C++, and so on.
 In several small ways, we tried to make this upgrade more faithful to the core tool and more familiar to users with some TDA background.
 
-@fig-benchmark compares the runtimes of two versions of {ripserr} to compute degree-2 persistence on samples from 4 manifolds: the circle $\mathbb{S}^1$, the torus $\mathbb{T}^2$, the real projective plane $\mathbb{RP}^2$, and the orthogonal matrix group $O(3)$.
+@fig-benchmark compares the runtimes of two versions of {ripserr} to compute degree-2 persistence on samples from 4 manifolds: the circle $\mathbb{S}^1$, the torus $\mathbb{T}^2$, the real projective plane $\mathbb{RP}^2$, and the orthogonal matrix group $O(3)$.[^ripsDiag]
 (The first three were generated using {tdaunif}; the fourth was borrowed from Ripser.)
 This is not an exhaustive comparison—many real-world data sets will be much larger and higher-dimensional—but it illustrates a practical improvement of the upgrade:
 The efficiency gains are substantial, reducing runtimes by about 2/3 across all shapes.
 The v0.1.1 runtimes might even be advantaged by having used the implementation on the `short` branch of the `Ripser` repo; we changed to the main library to clear the way for several future upgrades described below.
+
+[^ripsDiag]: We tried to benchmark the same calculations using `TDA::ripsDiag(library = "Dionysus")`, the only library option for `dist` objects, but they failed to complete.
 
 ![Runtimes (in seconds) of 3 calculations each of 2-dimensional Vietoris--Rips persistent homology of samples of size 840 from 4 embedded manifolds.](benchmark-plot.jpg){#fig-benchmark}
 
