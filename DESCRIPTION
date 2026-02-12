@@ -79,7 +79,9 @@ Depends: R (>= 3.5.0)
 Imports: 
     Rcpp (>= 1.0),
     stats (>= 3.0),
-    utils (>= 3.0)
+    utils (>= 3.0),
+    phutil,
+    lifecycle
 Suggests: 
     covr (>= 3.5),
     knitr (>= 1.29),

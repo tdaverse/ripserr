@@ -55,3 +55,13 @@ test_that("2-dim cubical returns same values as validated tests", {
   expect_equal(mean(test_output$birth), mean(output_data$birth), tolerance = 0.025)
   expect_equal(mean(test_output$death), mean(output_data$death), tolerance = 0.025)
 })
+
+test_that("specified class is returned", {
+  # calculate 'PHom' object
+  expect_s3_class(cubical(test_data, return_class = "PHom"),
+                  "PHom")
+  
+  # calculate 'persistence' object
+  expect_s3_class(cubical(test_data, return_class = "persistence"),
+                  "persistence")
+})
