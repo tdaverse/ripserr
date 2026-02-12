@@ -2,6 +2,10 @@
 
 ## Vietoris-Rips PH
 
+## float to double
+
+Ripser stores values of the `value_t` type and `ratio` as floats. This is not incompatible with R, but R users are likely to expect numeric values to be handled as doubles. Both values are now stored as doubles.
+
 ### sliding window embeddings of multivariable time series (breaking change)
 
 Previously only univariable time series could be passed to `vietoris_rips()` via the sliding window embedding (used for quasi-attractor detection).
