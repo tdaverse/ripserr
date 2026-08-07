@@ -71,7 +71,6 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 URL: https://github.com/tdaverse/ripserr/
 BugReports: https://github.com/tdaverse/ripserr/issues
 LinkingTo: Rcpp
@@ -87,3 +86,4 @@ Suggests:
     testthat (>= 2.3),
     lmtest
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0

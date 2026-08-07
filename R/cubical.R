@@ -88,37 +88,38 @@ cubical.array <- function(
                        cp = 1)
   
   # calculate persistent homology based on dimension of dataset
-  ans <- switch(length(dim(dataset)) - 1, # goes from {2,3,4} to {1,2,3} for switch
-                # 2-dimensional array
-                {
-                  cubical_2dim(dataset, threshold, method_int)
-                },
-                # 3-dimensional array
-                {
-                  temp_mat <- dataset
-                  dim(temp_mat) <- prod(dim(dataset))
+  # ans <- switch(length(dim(dataset)) - 1, # goes from {2,3,4} to {1,2,3} for switch
+  #               # 2-dimensional array
+  #               {
+  #                 cubical_2dim(dataset, threshold, method_int)
+  #               },
+  #               # 3-dimensional array
+  #               {
+  #                 temp_mat <- dataset
+  #                 dim(temp_mat) <- prod(dim(dataset))
                   
-                  cubical_3dim(temp_mat, threshold, method_int,
-                               dim(dataset)[1],
-                               dim(dataset)[2],
-                               dim(dataset)[3])
-                },
-                # 4-dimensional array
-                {
-                  temp_mat <- dataset
-                  dim(temp_mat) <- prod(dim(dataset))
+  #                 cubical_3dim(temp_mat, threshold, method_int,
+  #                              dim(dataset)[1],
+  #                              dim(dataset)[2],
+  #                              dim(dataset)[3])
+  #               },
+  #               # 4-dimensional array
+  #               {
+  #                 temp_mat <- dataset
+  #                 dim(temp_mat) <- prod(dim(dataset))
                   
-                  cubical_4dim(temp_mat, threshold, method_int,
-                               dim(dataset)[1],
-                               dim(dataset)[2],
-                               dim(dataset)[3],
-                               dim(dataset)[4])
-                })
+  #                 cubical_4dim(temp_mat, threshold, method_int,
+  #                              dim(dataset)[1],
+  #                              dim(dataset)[2],
+  #                              dim(dataset)[3],
+  #                              dim(dataset)[4])
+  #               })
+  ans <- cubical_compute(as.vector(dataset), dim(dataset), threshold=threshold)
   
   # INEFFICIENT COPYING STEP, TRY TO FIND A WAY AROUND THIS, IF POSSIBLE
   # remove unnecessary feature (dim = -1, birth = min value, death = threshold)
-  remove_row <- which(ans[, 1L] == -1 &
-            close_numeric(ans[, 2L], min(dataset)) &
+  # changing this removal step based on updated cubicalripser
+  remove_row <- which(close_numeric(ans[, 2L], min(dataset)) &
             close_numeric(ans[, 3L], threshold))
   if (is.integer(remove_row) & length(remove_row) == 1L)
     ans <- ans[-remove_row, , drop = FALSE]
