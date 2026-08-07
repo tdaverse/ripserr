@@ -10,49 +10,19 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// cubical_2dim
-Rcpp::NumericMatrix cubical_2dim(const Rcpp::NumericMatrix& image, double threshold, int method);
-RcppExport SEXP _ripserr_cubical_2dim(SEXP imageSEXP, SEXP thresholdSEXP, SEXP methodSEXP) {
+// cubical_compute
+Rcpp::NumericMatrix cubical_compute(Rcpp::NumericVector data, Rcpp::IntegerVector dims, int maxdim, bool top_dim, bool embedded, double threshold);
+RcppExport SEXP _ripserr_cubical_compute(SEXP dataSEXP, SEXP dimsSEXP, SEXP maxdimSEXP, SEXP top_dimSEXP, SEXP embeddedSEXP, SEXP thresholdSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type image(imageSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type dims(dimsSEXP);
+    Rcpp::traits::input_parameter< int >::type maxdim(maxdimSEXP);
+    Rcpp::traits::input_parameter< bool >::type top_dim(top_dimSEXP);
+    Rcpp::traits::input_parameter< bool >::type embedded(embeddedSEXP);
     Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
-    Rcpp::traits::input_parameter< int >::type method(methodSEXP);
-    rcpp_result_gen = Rcpp::wrap(cubical_2dim(image, threshold, method));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cubical_3dim
-Rcpp::NumericMatrix cubical_3dim(Rcpp::NumericVector& image, double threshold, int method, int nx, int ny, int nz);
-RcppExport SEXP _ripserr_cubical_3dim(SEXP imageSEXP, SEXP thresholdSEXP, SEXP methodSEXP, SEXP nxSEXP, SEXP nySEXP, SEXP nzSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type image(imageSEXP);
-    Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
-    Rcpp::traits::input_parameter< int >::type method(methodSEXP);
-    Rcpp::traits::input_parameter< int >::type nx(nxSEXP);
-    Rcpp::traits::input_parameter< int >::type ny(nySEXP);
-    Rcpp::traits::input_parameter< int >::type nz(nzSEXP);
-    rcpp_result_gen = Rcpp::wrap(cubical_3dim(image, threshold, method, nx, ny, nz));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cubical_4dim
-Rcpp::NumericMatrix cubical_4dim(Rcpp::NumericVector& image, double threshold, int method, int nx, int ny, int nz, int nt);
-RcppExport SEXP _ripserr_cubical_4dim(SEXP imageSEXP, SEXP thresholdSEXP, SEXP methodSEXP, SEXP nxSEXP, SEXP nySEXP, SEXP nzSEXP, SEXP ntSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type image(imageSEXP);
-    Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
-    Rcpp::traits::input_parameter< int >::type method(methodSEXP);
-    Rcpp::traits::input_parameter< int >::type nx(nxSEXP);
-    Rcpp::traits::input_parameter< int >::type ny(nySEXP);
-    Rcpp::traits::input_parameter< int >::type nz(nzSEXP);
-    Rcpp::traits::input_parameter< int >::type nt(ntSEXP);
-    rcpp_result_gen = Rcpp::wrap(cubical_4dim(image, threshold, method, nx, ny, nz, nt));
+    rcpp_result_gen = Rcpp::wrap(cubical_compute(data, dims, maxdim, top_dim, embedded, threshold));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -73,9 +43,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_ripserr_cubical_2dim", (DL_FUNC) &_ripserr_cubical_2dim, 3},
-    {"_ripserr_cubical_3dim", (DL_FUNC) &_ripserr_cubical_3dim, 6},
-    {"_ripserr_cubical_4dim", (DL_FUNC) &_ripserr_cubical_4dim, 7},
+    {"_ripserr_cubical_compute", (DL_FUNC) &_ripserr_cubical_compute, 6},
     {"_ripserr_ripser_cpp_dist", (DL_FUNC) &_ripserr_ripser_cpp_dist, 5},
     {NULL, NULL, 0}
 };
