@@ -79,9 +79,6 @@ cubical.array <- function(
                       method = method)
   validate_arr_cub(dataset)
   
-  # if dataset is 1-dimensional, treat it as 2-dimensional
-  if (length(dim(dataset)) == 1L) dim(dataset) <- c(dim(dataset), 1L)
-  
   # transform method parameter for C++ function
   method_int <- switch(method,
                        lj = 0,

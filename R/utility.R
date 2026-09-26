@@ -121,9 +121,9 @@ validate_arr_cub <- function(dataset) {
   # make sure correct class (in case generic method manually called)
   error_class(dataset, "dataset", "array")
   
-  # dataset should have either 2, 3, or 4 dimensions (only ones supported)
+  # dataset should have 1, 2, 3, or 4 dimensions (only ones supported)
   if (!(length(dim(dataset)) %in% seq(4))) {
-    stop(paste("dataset parameter must have either 2, 3, or 4 dimensions,",
+    stop(paste("dataset parameter must have at most 4 dimensions,",
                "passed argument has", length(dim(dataset)), "dimensions"))
   }
   
