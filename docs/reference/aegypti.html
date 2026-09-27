@@ -19,7 +19,7 @@ and reverse-geocoded to states."><!-- mathjax --><script src="https://cdnjs.clou
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ripserr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -122,9 +122,10 @@ and reverse-geocoded to states.</p>
 <span class="r-in"><span><span class="va">acre_coord</span> <span class="op">&lt;-</span> <span class="va">aegypti</span><span class="op">[</span><span class="va">aegypti</span><span class="op">$</span><span class="va">state_code</span> <span class="op">==</span> <span class="st">"AC"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">acre_rips</span> <span class="op">&lt;-</span> <span class="fu"><a href="vietoris_rips.html">vietoris_rips</a></span><span class="op">(</span><span class="va">acre_coord</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/frame.html" class="external-link">plot.new</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">xymax</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">acre_rips</span><span class="op">$</span><span class="va">death</span>, <span class="cn">Inf</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.window.html" class="external-link">plot.window</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">acre_rips</span><span class="op">$</span><span class="va">death</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">acre_rips</span><span class="op">$</span><span class="va">death</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">xymax</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">xymax</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  asp <span class="op">=</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span></span></span>
@@ -143,11 +144,11 @@ and reverse-geocoded to states.</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Raoul Wadhwa, Matt Piekenbrock, Jason Cory Brunson, Xinyi Zhang.</p>
+  <p></p><p>Developed by Raoul R. Wadhwa, Matt Piekenbrock, Jason Cory Brunson, Xinyi Zhang, Alice Zhang, Kent Phipps, Sean Hershkowitz.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer></div>
