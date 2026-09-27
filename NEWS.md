@@ -2,9 +2,9 @@
 
 ## Vietoris-Rips PH
 
-## float to double
+### float to double
 
-Ripser stores values of the `value_t` type and `ratio` as floats. This is not incompatible with R, but R users are likely to expect numeric values to be handled as doubles. Both values are now stored as doubles.
+Ripser (the C++ library) stores values of the `value_t` type and `ratio` as floats. This is not incompatible with R, but R users are likely to expect numeric values to be handled as doubles. The C++ code in ripserr now stores and handles both values as doubles.
 
 ### sliding window embeddings of multivariable time series (breaking change)
 
