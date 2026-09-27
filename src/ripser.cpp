@@ -1272,12 +1272,12 @@ int main(int argc, char** argv) {
 		} else if (arg == "--threshold") {
 			std::string parameter = std::string(argv[++i]);
 			size_t next_pos;
-			threshold = std::stof(parameter, &next_pos);
+			threshold = std::stod(parameter, &next_pos);
 			if (next_pos != parameter.size()) print_usage_and_exit(-1);
 		} else if (arg == "--ratio") {
 			std::string parameter = std::string(argv[++i]);
 			size_t next_pos;
-			ratio = std::stof(parameter, &next_pos);
+			ratio = std::stod(parameter, &next_pos);
 			if (next_pos != parameter.size()) print_usage_and_exit(-1);
 		} else if (arg == "--format") {
 			std::string parameter = std::string(argv[++i]);

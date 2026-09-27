@@ -76,3 +76,24 @@ test_that("consistency across generic methods for time series", {
   # compare persistent homology across classes
   expect_equal(num_phom, ts_phom)
 })
+
+test_that("sub-float, sup-double differences are detected", {
+  # equilateral triangle
+  a <- rbind(
+    c(0,0),
+    c(sqrt(3)/2,.5),
+    c(sqrt(3)/2,-.5)
+  )
+  
+  # unrounded distances
+  d <- dist(a)
+  # persistent homology does not detect rounding (at double-ish tolerance)
+  p <- vietoris_rips(d)
+  expect_true(max(abs(p$death[1:2] - 1)) < 1e-14)
+  
+  # distances rounded to precision between float and double
+  d <- dist(round(a, digits = 13L))
+  # persistent homology detects rounding (fails when Ripser uses floats)
+  p <- vietoris_rips(d)
+  expect_false(max(abs(p$death[1:2] - 1)) < 1e-14)
+})
