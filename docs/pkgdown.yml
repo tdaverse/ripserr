@@ -1,8 +1,8 @@
 pandoc: '2.19'
-pkgdown: 2.1.1
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   cubical: cubical.html
   modeling-disease-using-PH: modeling-disease-using-PH.html
   vietoris-rips: vietoris-rips.html
-last_built: 2025-04-30T13:55Z
+last_built: 2025-10-01T00:17Z
