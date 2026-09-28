@@ -11,6 +11,13 @@ new_PHom <- function(x = data.frame(dimension = integer(0),
                      dim_col = 1,
                      b_col = 2,
                      d_col = 3) {
+  lifecycle::deprecate_soft(
+    "1.1.0",
+    I("'PHom' class"),
+    with = I("'persistence' from the {phutil} package"),
+    id = "PHom"
+  )
+  
   # parameter validity checked in PHom helper
   
   # construct df for PHom object
@@ -118,6 +125,13 @@ valid_colval <- function(df, val, val_name) {
 #' # print feature details to confirm accuracy
 #' print.data.frame(df_phom)
 PHom <- function(x, dim_col = 1, birth_col = 2, death_col = 3) {
+  lifecycle::deprecate_soft(
+    "1.1.0",
+    I("'PHom' class"),
+    with = I("'persistence' from the {phutil} package"),
+    id = "PHom"
+  )
+  
   ## basic parameter checks (column nums/names are valid, etc.)
   if (!is.data.frame(x)) {
     x <- as.data.frame(x)
@@ -163,6 +177,13 @@ PHom <- function(x, dim_col = 1, birth_col = 2, death_col = 3) {
 #' # print feature details to confirm accuracy
 #' print.data.frame(df_phom)
 as.PHom <- function(x, dim_col = 1, birth_col = 2, death_col = 3) {
+  lifecycle::deprecate_soft(
+    "1.1.0",
+    I("'PHom' class"),
+    with = I("'persistence' from the {phutil} package"),
+    id = "PHom"
+  )
+  
   x <- as.data.frame(x)
   
   return(PHom(x))
@@ -191,6 +212,13 @@ as.PHom <- function(x, dim_col = 1, birth_col = 2, death_col = 3) {
 #' # confirm that persistence data is NOT valid
 #' is.PHom(df)
 is.PHom <- function(x) {
+  lifecycle::deprecate_soft(
+    "1.1.0",
+    I("'PHom' class"),
+    with = I("'persistence' from the {phutil} package"),
+    id = "PHom"
+  )
+  
   # use validate to implement checks
   return(
     validate_PHom(x = x, error = FALSE)
@@ -243,7 +271,7 @@ print.PHom <- function(x, ...) {
                         "; max = ",
                         signif(max(x$death[is.finite(x$death)], na.rm = TRUE),
                                digits = 5),
-                        "."),
+                        ".\n"),
                  "")
   
   cat(paste(ans1, ans2, ans3, sep = "\n\n"))

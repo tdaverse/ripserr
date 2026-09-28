@@ -21,7 +21,7 @@
 #' @param ... other relevant parameters
 #' @rdname cubical
 #' @export cubical
-#' @return `PHom` object
+#' @return `"PHom"` or [`"persistence"`][phutil::as_persistence] object
 #' @examples 
 #' 
 #' # 1-dim example
@@ -32,23 +32,24 @@
 #' # 2-dim example
 #' dataset <- rnorm(10 ^ 2)
 #' dim(dataset) <- rep(10, 2)
-#' cubical_hom2 <- cubical(dataset)
+#' ( cubical_hom2 <- cubical(dataset) )
 #' 
 #' # 3-dim example
 #' dataset <- rnorm(8 ^ 3)
 #' dim(dataset) <- rep(8, 3)
-#' cubical_hom3 <- cubical(dataset)
+#' ( cubical_hom3 <- cubical(dataset) )
 #' 
 #' # 4-dim example
 #' dataset <- rnorm(5 ^ 4)
 #' dim(dataset) <- rep(5, 4)
+#' ( cubical_hom4 <- cubical(dataset) )
 #' 
 #' # sublevel versus superlevel
 #' cubical(volcano)
 #' cubical(volcano, sublevel = FALSE)
 # Notes:
 # - figure out format from `dataset`
-# - return_format will be "df" (opinionated) w/ additional "PHom" S3 class
+# - prefer 'persistence' class return; legacy 'PHom' class is soft-deprecated
 # - standardize will be a different method (can be connected w/ magrittr pipe)
 # - apart from dataset, only `threshold = 9999, method = "lj"` are needed
 cubical <- function(dataset, ...) {
@@ -61,12 +62,17 @@ cubical <- function(dataset, ...) {
 #'   see Kaji et al. (2020) <https://arxiv.org/abs/2005.12692> for details
 #' @param sublevel logical; whether to take the sublevel set filtration or else
 #'   the superlevel set filtration
+#' @param return_type class of output object; either `"PHom"` (default; legacy)
+#'   or `"persistence"` (from the
+#'   **[phutil](https://cran.r-project.org/package=phutil)** package)
 #' @export cubical.array
 #' @export
 cubical.array <- function(
     dataset,
-    threshold = 9999, method = "lj",
+    threshold = 9999,
+    method = "lj",
     sublevel = TRUE,
+    return_type = c("PHom", "persistence"),
     ...
 ) {
   # do this before checks since it modifies `dataset`
@@ -131,7 +137,24 @@ cubical.array <- function(
   ans$dimension <- as.integer(ans$dimension)
   
   # convert data frame to a PHom object
-  ans <- new_PHom(ans)
+  ans <- switch(
+    match.arg(return_type),
+    PHom = {
+      lifecycle::deprecate_soft(
+        "1.1.0",
+        I("'PHom' class"),
+        with = I("'persistence' from the {phutil} package"),
+        id = "PHom"
+      )
+      new_PHom(ans)
+    },
+    persistence = phutil::as_persistence(
+      ans,
+      engine = "ripserr::cubical",
+      filtration = "cubical",
+      parameters = list(threshold = threshold, method = method)
+    )
+  )
   
   # return
   return(ans)
