@@ -671,10 +671,17 @@ public:
 #endif
 		  // ripserq: Accumulate pairs in an object to be returned to the user.
 #ifdef COLLECT_PERSISTENCE_PAIRS
-		for (index_t i = 0; i < n - 1; ++i)
-		  // ripserq: `quiet_NaN()` for deaths that subceed threshold.
-		  if (dset.find(i) == i) persistence_pairs[0].emplace_back(0.0, std::numeric_limits<value_t>::quiet_NaN());
-	  if (dset.find(n - 1) == n - 1) persistence_pairs[0].emplace_back(0.0, std::numeric_limits<value_t>::infinity());
+		// ripserq: `quiet_NaN()` for all but earliest (index) unpaired birth.
+		bool first_component_paired = false;
+		for (index_t i = 0; i < n; ++i) {
+		  if (dset.find(i) != i) continue;
+		  if (first_component_paired) {
+		    persistence_pairs[0].emplace_back(0.0, std::numeric_limits<value_t>::quiet_NaN());
+		  } else {
+		    persistence_pairs[0].emplace_back(0.0, std::numeric_limits<value_t>::infinity());
+		    first_component_paired = true;
+		  }
+		}
 #endif
 	}
 
