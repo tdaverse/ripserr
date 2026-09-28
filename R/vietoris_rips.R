@@ -64,7 +64,7 @@
 #' abline(a = 0, b = 1)
 # Notes:
 # - figure out format from `dataset`
-# - return_format will be "df" (opinionated) w/ additional "PHom" S3 class
+# - prefer 'persistence' class return; legacy 'PHom' class is soft-deprecated
 # - standardize will be a different method (can be connected w/ magrittr pipe)
 # - apart from dataset, only `max_dim = 1L, threshold = -1, p = 2L` are needed
 vietoris_rips <- function(dataset, ...) {
@@ -90,7 +90,7 @@ vietoris_rips.data.frame <- function(dataset, ...) {
 #'   specified
 #' @param threshold maximum simplicial complex diameter to explore
 #' @param p prime field in which to calculate persistent homology
-#' @param return_class class of output object; either `"PHom"` (default; legacy)
+#' @param return_type class of output object; either `"PHom"` (default; legacy)
 #'   or `"persistence"` (from the
 #'   **[phutil](https://cran.r-project.org/package=phutil)** package)
 #' @export vietoris_rips.matrix
@@ -101,14 +101,14 @@ vietoris_rips.matrix <- function(
     threshold = -1,
     p = 2L,
     dim = NULL,
-    return_class = c("PHom", "persistence"),
+    return_type = c("PHom", "persistence"),
     ...
 ) {
   
   # shortcut for special case (only 1 row should return empty PHom)
   if (nrow(dataset) == 1L) {
     return(switch(
-      match.arg(return_class),
+      match.arg(return_type),
       PHom = {
         lifecycle::deprecate_soft(
           "1.1.0",
@@ -156,7 +156,7 @@ vietoris_rips.matrix <- function(
   
   # coerce to 'PHom' class
   ans <- switch(
-    match.arg(return_class),
+    match.arg(return_type),
     PHom = {
       lifecycle::deprecate_soft(
         "1.1.0",
@@ -187,7 +187,7 @@ vietoris_rips.dist <- function(
     threshold = -1,
     p = 2L,
     dim = NULL,
-    return_class = c("PHom", "persistence"),
+    return_type = c("PHom", "persistence"),
     ...
 ) {
   
@@ -220,7 +220,7 @@ vietoris_rips.dist <- function(
   
   # coerce to 'PHom' class
   ans <- switch(
-    match.arg(return_class),
+    match.arg(return_type),
     PHom = {
       lifecycle::deprecate_soft(
         "1.1.0",

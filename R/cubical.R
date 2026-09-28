@@ -49,7 +49,7 @@
 #' cubical(volcano, sublevel = FALSE)
 # Notes:
 # - figure out format from `dataset`
-# - return_format will be "df" (opinionated) w/ additional "PHom" S3 class
+# - prefer 'persistence' class return; legacy 'PHom' class is soft-deprecated
 # - standardize will be a different method (can be connected w/ magrittr pipe)
 # - apart from dataset, only `threshold = 9999, method = "lj"` are needed
 cubical <- function(dataset, ...) {
@@ -62,7 +62,7 @@ cubical <- function(dataset, ...) {
 #'   see Kaji et al. (2020) <https://arxiv.org/abs/2005.12692> for details
 #' @param sublevel logical; whether to take the sublevel set filtration or else
 #'   the superlevel set filtration
-#' @param return_class class of output object; either `"PHom"` (default; legacy)
+#' @param return_type class of output object; either `"PHom"` (default; legacy)
 #'   or `"persistence"` (from the
 #'   **[phutil](https://cran.r-project.org/package=phutil)** package)
 #' @export cubical.array
@@ -72,7 +72,7 @@ cubical.array <- function(
     threshold = 9999,
     method = "lj",
     sublevel = TRUE,
-    return_class = c("PHom", "persistence"),
+    return_type = c("PHom", "persistence"),
     ...
 ) {
   # do this before checks since it modifies `dataset`
@@ -138,7 +138,7 @@ cubical.array <- function(
   
   # convert data frame to a PHom object
   ans <- switch(
-    match.arg(return_class),
+    match.arg(return_type),
     PHom = {
       lifecycle::deprecate_soft(
         "1.1.0",

@@ -21,7 +21,7 @@ vietoris_rips(dataset, ...)
   threshold = -1,
   p = 2L,
   dim = NULL,
-  return_class = c("PHom", "persistence"),
+  return_type = c("PHom", "persistence"),
   ...
 )
 
@@ -31,7 +31,7 @@ vietoris_rips(dataset, ...)
   threshold = -1,
   p = 2L,
   dim = NULL,
-  return_class = c("PHom", "persistence"),
+  return_type = c("PHom", "persistence"),
   ...
 )
 
@@ -65,7 +65,7 @@ calculated}
 \item{dim}{deprecated; passed to \code{max_dim} or ignored if \code{max_dim} is
 specified}
 
-\item{return_class}{class of output object; either \code{"PHom"} (default; legacy)
+\item{return_type}{class of output object; either \code{"PHom"} (default; legacy)
 or \code{"persistence"} (from the
 \strong{\href{https://cran.r-project.org/package=phutil}{phutil}} package)}
 
@@ -79,7 +79,7 @@ if > 1)}
 \item{method}{currently only allows \code{"qa"} (quasi-attractor method)}
 }
 \value{
-\code{"PHom"} or \code{\link[phutil:persistence]{"persistence"}} object
+\code{"PHom"} or \code{\link[phutil:as_persistence]{"persistence"}} object
 }
 \description{
 This function is an R wrapper for the Ripser C++ library to

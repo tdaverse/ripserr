@@ -14,7 +14,7 @@ cubical(dataset, ...)
   threshold = 9999,
   method = "lj",
   sublevel = TRUE,
-  return_class = c("PHom", "persistence"),
+  return_type = c("PHom", "persistence"),
   ...
 )
 
@@ -35,12 +35,12 @@ see Kaji et al. (2020) \url{https://arxiv.org/abs/2005.12692} for details}
 \item{sublevel}{logical; whether to take the sublevel set filtration or else
 the superlevel set filtration}
 
-\item{return_class}{class of output object; either \code{"PHom"} (default; legacy)
+\item{return_type}{class of output object; either \code{"PHom"} (default; legacy)
 or \code{"persistence"} (from the
 \strong{\href{https://cran.r-project.org/package=phutil}{phutil}} package)}
 }
 \value{
-\code{"PHom"} or \code{\link[phutil:persistence]{"persistence"}} object
+\code{"PHom"} or \code{\link[phutil:as_persistence]{"persistence"}} object
 }
 \description{
 This function is an R wrapper for the CubicalRipser C++ library to calculate
