@@ -671,8 +671,17 @@ public:
 #endif
 		  // ripserq: Accumulate pairs in an object to be returned to the user.
 #ifdef COLLECT_PERSISTENCE_PAIRS
-    for (index_t i = 0; i < n; ++i)
-      if (dset.find(i) == i) persistence_pairs[0].emplace_back(0.0, std::numeric_limits<value_t>::infinity());
+		// ripserq: `quiet_NaN()` for all but earliest (index) unpaired birth.
+		bool first_component_paired = false;
+		for (index_t i = 0; i < n; ++i) {
+		  if (dset.find(i) != i) continue;
+		  if (first_component_paired) {
+		    persistence_pairs[0].emplace_back(0.0, std::numeric_limits<value_t>::quiet_NaN());
+		  } else {
+		    persistence_pairs[0].emplace_back(0.0, std::numeric_limits<value_t>::infinity());
+		    first_component_paired = true;
+		  }
+		}
 #endif
 	}
 
@@ -863,7 +872,8 @@ public:
 #endif
 				  // ripserq: Accumulate pairs in an object to be returned to the user.
 #ifdef COLLECT_PERSISTENCE_PAIRS
-				  persistence_pairs[dim].emplace_back(diameter, std::numeric_limits<value_t>::infinity());
+				  // ripserq: `quiet_NaN()` for deaths that subceed threshold.
+				  persistence_pairs[dim].emplace_back(diameter, std::numeric_limits<value_t>::quiet_NaN());
 #endif
 					break;
 				}
@@ -1404,7 +1414,10 @@ Rcpp::List ripser_cpp_dist(const Rcpp::NumericVector &dataset, int dim, double t
     Rcpp::NumericMatrix mat(pairs.size(), 2);
     for (size_t i = 0; i < pairs.size(); ++i) {
       mat(i, 0) = pairs[i].first;
-      mat(i, 1) = pairs[i].second;
+      if (std::isnan(pairs[i].second))
+        mat(i, 1) = NA_REAL;
+      else
+        mat(i, 1) = pairs[i].second;
     }
     output[d] = mat;
   }
