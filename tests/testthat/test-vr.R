@@ -28,10 +28,24 @@ test_that("basic vietoris-rips works", {
 test_that("degree-0 vietoris-rips agrees with single-linkage", {
   euro_n <- attr(eurodist, "Size")
   euro_sl <- hclust(eurodist, method = "single")
-  euro_vr <- vietoris_rips(eurodist, max_dim = 0)
   
+  # no (i.e. infinite) threshold
+  euro_vr <- vietoris_rips(eurodist, max_dim = 0)
   expect_equal(euro_vr$birth, rep(0, euro_n))
   expect_equal(euro_vr$death, c(euro_sl$height, Inf))
+  
+  # finite threshold
+  euro_vr <- vietoris_rips(eurodist, max_dim = 0, threshold = 600)
+  expect_equal(euro_vr$birth, rep(0, euro_n))
+  expect_equal(
+    euro_vr$death[which(euro_sl$height < 600)],
+    euro_sl$height[euro_sl$height < 600]
+  )
+  expect_equal(
+    length(which(is.na(euro_vr$death))),
+    length(which(euro_sl$height >= 600))
+  )
+  expect_equal(length(which(is.infinite(euro_vr$death))), 1L)
 })
 
 # generate dataset (set seed for reproducibility, altho new one would be fine)
