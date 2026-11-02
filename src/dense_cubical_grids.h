@@ -24,7 +24,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "config.h"
 #include "cube.h"
-#include "npy.hpp"
+// cubicalripserq: .hpp -> .h
+#include "npy.h"
 
 using namespace std;
 
@@ -124,7 +125,8 @@ public:
 	// load image array from file
 	void loadImage(bool embedded){
 		// read file
-		cout << "Reading " << config->filename << endl;
+		// cubicalripserq: Rcpp streams
+		Rcpp::Rcout << "Reading " << config->filename << endl;
 		switch(config->format){
 			case DIPHA:
 			{
@@ -246,12 +248,12 @@ public:
 				try{
 					npy::LoadArrayFromNumpy(config->filename.c_str(), shape, fortran_order, arr);
 				} catch (...) {
-					cerr << "The data type of an numpy array should be numpy.float64." << endl;
-					exit(-2);
+					// cubicalripserq: Rcpp error handling
+					Rcpp::stop("The data type of an numpy array should be numpy.float64.");
 				}
 				if(shape.size() > 4){
-					cerr << "Input array should be 1,2,3, or 4 dimensional " << endl;
-					exit(-1);
+					// cubicalripserq: Rcpp error handling
+					Rcpp::stop("Input array should be 1,2,3, or 4 dimensional ");
 				}
 				dim = shape.size();
 				ax = shape[0];
@@ -274,14 +276,17 @@ public:
 				break;
 			}
 		}
-		cout << "dim = " << static_cast<int>(dim) << " T-construction = " << config->tconstruction << " method = " << config->method << endl;
+		// cubicalripserq: Rcpp streams
+		Rcpp::Rcout << "dim = " << static_cast<int>(dim) << " T-construction = " << config->tconstruction << " method = " << config->method << endl;
 		finalisePadding();
 		if (dim < 4){
-			cout << "x : y : z = " << img_x << " : " << img_y << " : " << img_z << endl;
-			//cout << "x : y : z = " << ax << " : " << ay << " : " << az << endl;
+			// cubicalripserq: Rcpp streams
+			Rcpp::Rcout << "x : y : z = " << img_x << " : " << img_y << " : " << img_z << endl;
+			//Rcpp::Rcout << "x : y : z = " << ax << " : " << ay << " : " << az << endl;
 		}else{
-			cout << "x : y : z : w = " << img_x << " : " << img_y << " : " << img_z << " : " << img_w << endl;
-			//cout << "x : y : z : w = " << ax << " : " << ay << " : " << az << " : " << aw << endl;
+			// cubicalripserq: Rcpp streams
+			Rcpp::Rcout << "x : y : z : w = " << img_x << " : " << img_y << " : " << img_z << " : " << img_w << endl;
+			//Rcpp::Rcout << "x : y : z : w = " << ax << " : " << ay << " : " << az << " : " << aw << endl;
 		}
 	}
 

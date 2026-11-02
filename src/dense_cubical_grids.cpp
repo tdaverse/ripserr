@@ -227,6 +227,7 @@ vector<uint32_t> DenseCubicalGrids::ParentVoxel(uint8_t _dim, Cube &c){
 				return {uint32_t(cx+dx), uint32_t(cy+dy), uint32_t(cz+dz), uint32_t(cw+dw)};
 		}
 	}
-	cerr << "parent voxel not found!" << endl;
+	// cubicalripserq: Rcpp streams
+	Rcpp::Rcerr << "parent voxel not found!" << endl;
 	return dim < 4 ? vector<uint32_t>{0,0,0} : vector<uint32_t>{0,0,0,0};
 }

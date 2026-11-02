@@ -15,6 +15,9 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <cstdint>
 #include <iostream>
 
+// cubicalripserq: Rcpp streams
+#include <Rcpp.h>
+
 constexpr uint64_t NONE = 0xffffffffffffffff;
 
 class Cube {
@@ -56,7 +59,8 @@ public:
 
     // Print method
     void print() const {
-        std::cout << "Cube(birth: " << birth << ", x: " << x() << ", y: " << y()
+        // cubicalripserq: Rcpp streams
+        Rcpp::Rcout << "Cube(birth: " << birth << ", x: " << x() << ", y: " << y()
                   << ", z: " << z() << ", w: " << w() << ", m: " << static_cast<int>(m()) << ")\n";
     }
 

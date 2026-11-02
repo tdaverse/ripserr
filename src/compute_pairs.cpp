@@ -182,7 +182,8 @@ ComputePairs::ComputePairs(DenseCubicalGrids *_dcg,
 void ComputePairs::compute_pairs_main(vector<Cube> &ctr) {
   auto ctl_size = ctr.size();
   if (config->verbose) {
-    cout << "# columns to reduce: " << ctl_size << endl;
+    // cubicalripserq: Rcpp streams
+    Rcpp::Rcout << "# columns to reduce: " << ctl_size << endl;
   }
 
   if (!pivot_column_index) {
@@ -290,7 +291,8 @@ void ComputePairs::compute_pairs_main(vector<Cube> &ctr) {
 
     wp->insert(wp->end(), local_wp.begin(), local_wp.end());
     if (config->verbose) {
-      cout << "# apparent pairs: " << num_apparent_pairs << endl;
+      // cubicalripserq: Rcpp streams
+      Rcpp::Rcout << "# apparent pairs: " << num_apparent_pairs << endl;
     }
     if (config->explicit_clearing && pivot_column_index) {
       pivot_column_index->compress_to_clearing_bits();
@@ -397,7 +399,8 @@ void ComputePairs::compute_pairs_main(vector<Cube> &ctr) {
   wp->insert(wp->end(), local_wp.begin(), local_wp.end());
 
   if (config->verbose) {
-    cout << "# apparent pairs: " << num_apparent_pairs << endl;
+    // cubicalripserq: Rcpp streams
+    Rcpp::Rcout << "# apparent pairs: " << num_apparent_pairs << endl;
   }
   if (config->explicit_clearing && pivot_column_index) {
     pivot_column_index->compress_to_clearing_bits();
@@ -558,7 +561,8 @@ void ComputePairs::assemble_columns_to_reduce(vector<Cube> &ctr, uint8_t _dim) {
         for (uint32_t y = 0; y < dcg->ay; ++y) {
           for (uint32_t x = 0; x < dcg->ax; ++x) {
             birth = dcg->getBirth(x, y, z, w, m, dim);
-            //                        cout << x << "," << y << "," << z << ", "
+            // cubicalripserq: Rcpp streams
+            //                        Rcpp::Rcout << x << "," << y << "," << z << ", "
             //                        << m << "," << birth << endl;
             if (birth < threshold) {
               const uint64_t index = static_cast<uint64_t>(x) |
@@ -582,6 +586,7 @@ void ComputePairs::assemble_columns_to_reduce(vector<Cube> &ctr, uint8_t _dim) {
     clock_t end = clock();
     const double time =
         static_cast<double>(end - start) / CLOCKS_PER_SEC * 1000.0;
-    cout << "Sorting took: " << time << endl;
+    // cubicalripserq: Rcpp streams
+    Rcpp::Rcout << "Sorting took: " << time << endl;
   }
 }

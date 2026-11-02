@@ -37,7 +37,8 @@ public:
         death_z = _death_z;
         death_w = _death_w;
         if (print == true) {
-            std::cout << "[" << birth << "," << death << ")" << " birth loc. (" << birth_x << "," << birth_y << "," << birth_z << "," << birth_w << "), " << " death loc. (" << death_x << "," << death_y << "," << death_z << "," << death_w << ")" << std::endl;
+            // cubicalripserq: Rcpp streams
+            Rcpp::Rcout << "[" << birth << "," << death << ")" << " birth loc. (" << birth_x << "," << birth_y << "," << birth_z << "," << birth_w << "), " << " death loc. (" << death_x << "," << death_y << "," << death_z << "," << death_w << ")" << std::endl;
         }
     }
     WritePairs(uint8_t _dim, Cube _birthC, Cube _deathC, DenseCubicalGrids* _dcg, bool print = false){
@@ -58,9 +59,11 @@ public:
             //_birthC.print();
             //_deathC.print();
             if (_dcg->dim < 4)
-                std::cout << "[" << birth << "," << death << ")" << " birth loc. (" << birth_x << "," << birth_y << "," << birth_z << "), " << " death loc. (" << death_x << "," << death_y << "," << death_z << ")" << std::endl;
+                // cubicalripserq: Rcpp streams
+                Rcpp::Rcout << "[" << birth << "," << death << ")" << " birth loc. (" << birth_x << "," << birth_y << "," << birth_z << "), " << " death loc. (" << death_x << "," << death_y << "," << death_z << ")" << std::endl;
             else
-                std::cout << "[" << birth << "," << death << ")" << " birth loc. (" << birth_x << "," << birth_y << "," << birth_z << "," << birth_w << "), " << " death loc. (" << death_x << "," << death_y << "," << death_z << "," << death_w << ")" << std::endl;
+                // cubicalripserq: Rcpp streams
+                Rcpp::Rcout << "[" << birth << "," << death << ")" << " birth loc. (" << birth_x << "," << birth_y << "," << birth_z << "," << birth_w << "), " << " death loc. (" << death_x << "," << death_y << "," << death_z << "," << death_w << ")" << std::endl;
         }
     }
 

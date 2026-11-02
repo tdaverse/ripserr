@@ -101,7 +101,10 @@ void JointPairs::joint_pairs_main(vector<Cube>& ctr, int current_dim) {
             static const int8_t dw4d[4] = {0, 0, 0, 1};
 
             const int m = e->m();
-            if (m < 0 || m >= 4) std::exit(-1);
+            // cubicalripserq: throw instead of exit
+            if (m < 0 || m >= 4) {
+              throw std::invalid_argument("joint_pairs: edge type must be 0 to 3");
+            }
 
             // neighbor coordinates with strict per-axis bounds check
             const int64_t nx = static_cast<int64_t>(ex) + dx4d[m];
@@ -123,7 +126,10 @@ void JointPairs::joint_pairs_main(vector<Cube>& ctr, int current_dim) {
             static const int8_t dy[13]={0,1,0, 1,-1,-1, 1,-1, 0, 1,-1, 0, 1};
             static const int8_t dz[13]={0,0,1, 0, 0, 1, 1, 1, 1, 1,-1,-1,-1};
             const int m = e->m();
-            if (m < 0 || m >= 13) std::exit(-1);
+            // cubicalripserq: throw instead of exit
+            if (m < 0 || m >= 13) {
+              if (m < 0 || m >= 13) throw std::invalid_argument("joint_pairs: edge type must be 0 to 12");
+            }
 
             const int64_t nx = static_cast<int64_t>(ex) + dx[m];
             const int64_t ny = static_cast<int64_t>(ey) + dy[m];
@@ -136,12 +142,14 @@ void JointPairs::joint_pairs_main(vector<Cube>& ctr, int current_dim) {
 
         u = dset.find(uind);
         v = dset.find(vind);
-        //cout << "u: " << uind << ", v: " << vind << endl;
+        // cubicalripserq: Rcpp streams
+        //Rcpp::Rcout << "u: " << uind << ", v: " << vind << endl;
 
         if (u != v) {  // If u and v are not already connected
             double birth;
             uint64_t birth_ind, death_ind;
-            //cout << dset.birthtime[u] << ", " << dset.birthtime[v] << endl;
+            // cubicalripserq: Rcpp streams
+            //Rcpp::Rcout << dset.birthtime[u] << ", " << dset.birthtime[v] << endl;
             // Determine which component is younger and will be merged
             if (dset.birthtime[u] >= dset.birthtime[v]) {
                 birth = dset.birthtime[u];
@@ -163,7 +171,8 @@ void JointPairs::joint_pairs_main(vector<Cube>& ctr, int current_dim) {
 
             double death = e->birth;
             dset.link(u, v);  // Union the sets
-            //cout << "Pair found: [" << birth << ", " << death << ") from indices " << birth_ind << " to " << death_ind << endl;
+            // cubicalripserq: Rcpp streams
+            //Rcpp::Rcout << "Pair found: [" << birth << ", " << death << ") from indices " << birth_ind << " to " << death_ind << endl;
 
             // Record the birth-death pair if they are not equal
             if (birth != death) {
@@ -205,7 +214,8 @@ void JointPairs::joint_pairs_main(vector<Cube>& ctr, int current_dim) {
         auto new_end = std::remove_if(ctr.begin(), ctr.end(), [](const Cube& e) { return e.index == NONE; });
         ctr.erase(new_end, ctr.end());
         // No need to sort again since ctr was already sorted
-		//	cout << ctr.size() << endl;
+		// cubicalripserq: Rcpp streams
+    //	Rcpp::Rcout << ctr.size() << endl;
 		//	std::sort(ctr.begin(), ctr.end(), CubeComparator()); // we can skip sorting as it is already sorted
 	}
 }

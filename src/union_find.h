@@ -37,7 +37,8 @@ inline UnionFind::UnionFind(DenseCubicalGrids* _dcg) {
 	}
 	parent.resize(static_cast<size_t>(n));
 	birthtime.resize(static_cast<size_t>(n));
-	//cout << n << " vertices" << endl;
+	// cubicalripserq: Rcpp streams
+	//Rcpp::Rcout << n << " vertices" << endl;
 
 	uint32_t i=0;
 	auto append_vertex = [&](double birth) {
