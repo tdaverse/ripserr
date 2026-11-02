@@ -1,5 +1,9 @@
 # next version
 
+## source code
+
+The outdated Cubical Ripser C++ library is reploced with a more recent version.
+
 ## Vietoris-Rips PH
 
 ### float to double

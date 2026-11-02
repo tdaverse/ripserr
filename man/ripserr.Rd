@@ -22,6 +22,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Jason Cory Brunson \email{cornelioid@gmail.com} (\href{https://orcid.org/0000-0003-3126-9494}{ORCID})
   \item Raoul R. Wadhwa \email{raoulwadhwa@gmail.com} (\href{https://orcid.org/0000-0003-0503-9580}{ORCID})
   \item Matt Piekenbrock \email{matt.piekenbrock@gmail.com}
   \item Xinyi Zhang \email{ezhang0927@gmail.com}
